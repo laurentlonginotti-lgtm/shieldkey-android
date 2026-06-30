@@ -69,5 +69,7 @@ dependencies {
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.compose.material3:material3'
+    // Argon2id (dérivation du mot de passe maître) — lib native, pas de conflit BouncyCastle
+    implementation 'com.lambdapioneer.argon2kt:argon2kt:1.5.0'
     debugImplementation 'androidx.compose.ui:ui-tooling'
 }
