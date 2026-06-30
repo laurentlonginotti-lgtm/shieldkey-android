@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShieldKey — Icône clé + bouclier</title>
+<style>
+  :root{
+    --bg0:#0B1220; --bg1:#0e1830; --bg2:#0a1a2e;
+    --em1:#10B981; --em2:#34D399; --em3:#0d9b6c;
+    --gold:#F5C04E; --goldd:#e0a93b;
+    --ink:#F2FFFA; --text:#EAF2FF; --muted:#9FB0C9;
+    --glass:rgba(255,255,255,.06); --gb:rgba(255,255,255,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);min-height:100vh;
+    padding:34px 16px 70px;background:var(--bg0);
+    background-image:radial-gradient(60% 50% at 20% 0%,var(--bg1) 0%,transparent 60%),
+                     radial-gradient(55% 45% at 90% 8%,var(--bg2) 0%,transparent 55%);}
+  .wrap{max-width:1000px;margin:0 auto}
+  h1{text-align:center;font-size:26px;font-weight:700;letter-spacing:.5px}
+  h1 .k{color:var(--em1)}
+  .sub{text-align:center;color:var(--muted);margin:8px 0 34px;font-size:14px}
+
+  .grid{display:flex;gap:24px;justify-content:center;flex-wrap:wrap}
+  .card{flex:1;min-width:250px;max-width:300px;background:var(--glass);border:1px solid var(--gb);
+    border-radius:24px;padding:26px 22px;text-align:center;backdrop-filter:blur(12px);
+    box-shadow:0 20px 50px rgba(0,0,0,.4)}
+  .card h3{font-size:16px;margin-bottom:4px}
+  .card .tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.6px;
+    color:var(--em2);background:rgba(16,185,129,.12);padding:3px 9px;border-radius:7px;margin-bottom:18px}
+  .card p{color:var(--muted);font-size:12.5px;line-height:1.6;margin-top:16px}
+
+  /* icône d'accueil (squircle dégradé) */
+  .appicon{width:120px;height:120px;margin:0 auto;border-radius:30px;display:grid;place-items:center;
+    border:5px solid transparent;
+    background:radial-gradient(120% 120% at 30% 15%,var(--em2) 0%,var(--em1) 45%,var(--em3) 100%) padding-box,
+               conic-gradient(from 210deg,#ffffff,#0a0a0a,#ffffff,#0a0a0a,#ffffff,#0a0a0a,#ffffff) border-box;
+    box-shadow:0 18px 40px rgba(16,185,129,.35),inset 0 2px 3px rgba(255,255,255,.35),
+               inset 0 -10px 20px rgba(0,0,0,.18);position:relative;overflow:hidden}
+  .appicon::after{content:"";position:absolute;inset:0;border-radius:30px;
+    background:linear-gradient(160deg,rgba(255,255,255,.30),transparent 45%);pointer-events:none}
+  .appicon svg{width:74px;height:74px;position:relative;z-index:2;
+    filter:drop-shadow(0 3px 4px rgba(0,0,0,.25))}
+
+  .mini{display:flex;gap:18px;align-items:center;justify-content:center;margin-top:18px}
+  .logo-dark{width:54px;height:54px;border-radius:15px;background:var(--bg0);
+    border:1px solid var(--gb);display:grid;place-items:center}
+  .logo-dark svg{width:34px;height:34px}
+  .logo-sm{width:30px;height:30px;border-radius:9px;border:3px solid transparent;
+    background:radial-gradient(120% 120% at 30% 15%,var(--em2),var(--em1) 60%,var(--em3)) padding-box,
+               conic-gradient(from 210deg,#fff,#0a0a0a,#fff,#0a0a0a,#fff,#0a0a0a,#fff) border-box;
+    display:grid;place-items:center;box-shadow:0 4px 10px rgba(16,185,129,.4)}
+  .logo-sm svg{width:19px;height:19px}
+  .mlabel{font-size:10px;color:var(--muted);margin-top:6px}
+
+  /* téléphone démo */
+  .phonewrap{margin:54px auto 0;text-align:center}
+  .phone{width:260px;margin:18px auto 0;border-radius:38px;padding:12px;
+    background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+    border:1px solid var(--gb);box-shadow:0 30px 70px rgba(0,0,0,.55)}
+  .hs{border-radius:28px;height:430px;padding:22px 18px;
+    background:linear-gradient(160deg,#8aa6d8,#4a6aa5 50%,#2b3f6b);position:relative}
+  .hs .time{color:#cfe;font-size:13px;text-align:center;margin-bottom:20px;opacity:.8}
+  .apps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px 14px}
+  .app{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .app .sq{width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,.10)}
+  .app .nm{font-size:9px;color:#cdd9ee}
+  .app.sk .sq{border:3.5px solid transparent;
+    background:radial-gradient(120% 120% at 30% 15%,var(--em2),var(--em1) 50%,var(--em3)) padding-box,
+               conic-gradient(from 210deg,#fff,#0a0a0a,#fff,#0a0a0a,#fff,#0a0a0a,#fff) border-box;
+    display:grid;place-items:center;box-shadow:0 8px 18px rgba(16,185,129,.5),inset 0 1px 2px rgba(255,255,255,.4)}
+  .app.sk .sq svg{width:30px;height:30px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.3))}
+  .app.sk .nm{color:#fff;font-weight:600}
+
+  .reco{max-width:680px;margin:46px auto 0;background:var(--glass);border:1px solid var(--gb);
+    border-radius:18px;padding:20px 24px;font-size:13.5px;line-height:1.7;color:var(--text)}
+  .reco b{color:var(--em2)}
+  .reco .gold{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🛡️ Shield<span class="k">Key</span> — l'icône</h1>
+  <div class="sub">Vraie icône <b>clé + bouclier</b> · Émeraude Nuit · relief moderne (squircle, dégradé, lueur)</div>
+
+  <!-- defs SVG réutilisables -->
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <!-- A : bouclier + trou de serrure (clé sous-entendue) + contour doré léger -->
+      <g id="cA">
+        <path fill="currentColor" fill-rule="evenodd" d="
+          M50 9 C50 9 71 15 82 18 C85 18.8 87 19.5 87 23 L87 47 C87 69 72 84 50 93
+          C28 84 13 69 13 47 L13 23 C13 19.5 15 18.8 18 18 C29 15 50 9 50 9 Z
+          M50 31.5 a8.5 8.5 0 1 0 0.01 0 Z
+          M45.5 47 L42.5 64 L57.5 64 L54.5 47 Z"/>
+        <path fill="none" stroke="#F5C04E" stroke-width="4" stroke-linejoin="round" d="
+          M50 9 C50 9 71 15 82 18 C85 18.8 87 19.5 87 23 L87 47 C87 69 72 84 50 93
+          C28 84 13 69 13 47 L13 23 C13 19.5 15 18.8 18 18 C29 15 50 9 50 9 Z"/>
+      </g>
+      <!-- C : clé DORÉE plus grande, dont l'anneau est un bouclier -->
+      <g id="cC">
+        <!-- bouclier = tête de clé (compact, en haut) -->
+        <path fill="currentColor" fill-rule="evenodd" d="
+          M50 8 C50 8 63 12 69 14 C71 14.6 72 15 72 17.5 L72 31 C72 43 63 50 50 55
+          C37 50 28 43 28 31 L28 17.5 C28 15 29 14.6 31 14 C37 12 50 8 50 8 Z
+          M50 23 a5.5 5.5 0 1 0 0.01 0 Z
+          M47.5 33 L46 42 L54 42 L52.5 33 Z"/>
+        <!-- clé dorée, grande et dominante -->
+        <rect fill="#F5C04E" x="44.5" y="52" width="11" height="40" rx="3"/>
+        <rect fill="#F5C04E" x="55.5" y="70" width="13" height="6.5" rx="2"/>
+        <rect fill="#F5C04E" x="55.5" y="81" width="9" height="6.5" rx="2"/>
+      </g>
+    </defs>
+  </svg>
+
+  <div class="grid">
+
+    <!-- CONCEPT A -->
+    <div class="card">
+      <h3>Bouclier + serrure</h3>
+      <div class="tag">MINIMALISTE / PREMIUM</div>
+      <div class="appicon"><svg viewBox="0 0 100 100" style="color:var(--ink)"><use href="#cA"/></svg></div>
+      <div class="mini">
+        <div><div class="logo-dark"><svg viewBox="0 0 100 100" style="color:var(--em1)"><use href="#cA"/></svg></div><div class="mlabel">dans l'app</div></div>
+        <div><div class="logo-sm"><svg viewBox="0 0 100 100" style="color:var(--ink)"><use href="#cA"/></svg></div><div class="mlabel">petit</div></div>
+      </div>
+      <p>Le bouclier porte un <b>trou de serrure</b>. Ultra reconnaissable, très « app sérieuse ». La clé est suggérée, pas dessinée.</p>
+    </div>
+
+    <!-- CONCEPT B : bouclier + clé OR par-dessus -->
+    <div class="card">
+      <h3>Bouclier + clé dorée</h3>
+      <div class="tag">CLÉ ET BOUCLIER VISIBLES</div>
+      <div class="appicon">
+        <svg viewBox="0 0 100 100">
+          <!-- bouclier blanc -->
+          <path fill="var(--ink)" d="M50 9 C50 9 71 15 82 18 C85 18.8 87 19.5 87 23 L87 47 C87 69 72 84 50 93
+            C28 84 13 69 13 47 L13 23 C13 19.5 15 18.8 18 18 C29 15 50 9 50 9 Z"/>
+          <!-- clé dorée -->
+          <circle cx="50" cy="34" r="10" fill="none" stroke="var(--gold)" stroke-width="6"/>
+          <rect x="47" y="42" width="6" height="26" rx="2" fill="var(--gold)"/>
+          <rect x="53" y="55" width="7" height="4.5" rx="1.5" fill="var(--gold)"/>
+          <rect x="53" y="63" width="5" height="4.5" rx="1.5" fill="var(--gold)"/>
+        </svg>
+      </div>
+      <div class="mini">
+        <div><div class="logo-dark">
+          <svg viewBox="0 0 100 100">
+            <path fill="var(--em1)" d="M50 9 C50 9 71 15 82 18 C85 18.8 87 19.5 87 23 L87 47 C87 69 72 84 50 93 C28 84 13 69 13 47 L13 23 C13 19.5 15 18.8 18 18 C29 15 50 9 50 9 Z"/>
+            <circle cx="50" cy="34" r="10" fill="none" stroke="var(--gold)" stroke-width="6"/>
+            <rect x="47" y="42" width="6" height="26" rx="2" fill="var(--gold)"/>
+            <rect x="53" y="55" width="7" height="4.5" rx="1.5" fill="var(--gold)"/>
+            <rect x="53" y="63" width="5" height="4.5" rx="1.5" fill="var(--gold)"/>
+          </svg></div><div class="mlabel">dans l'app</div></div>
+        <div><div class="logo-sm">
+          <svg viewBox="0 0 100 100">
+            <path fill="var(--ink)" d="M50 9 C50 9 71 15 82 18 C85 18.8 87 19.5 87 23 L87 47 C87 69 72 84 50 93 C28 84 13 69 13 47 L13 23 C13 19.5 15 18.8 18 18 C29 15 50 9 50 9 Z"/>
+            <circle cx="50" cy="34" r="10" fill="none" stroke="var(--gold)" stroke-width="6"/>
+            <rect x="47" y="42" width="6" height="26" rx="2" fill="var(--gold)"/>
+          </svg></div><div class="mlabel">petit</div></div>
+      </div>
+      <p>Bouclier blanc + <span class="gold">clé dorée</span> bien visible. Reprend le <span class="gold">doré</span> de tes éléments Crypto/Euro → cohérent avec l'app.</p>
+    </div>
+
+    <!-- CONCEPT C : clé dont l'anneau est un bouclier -->
+    <div class="card">
+      <h3>Clé-bouclier fusionnés</h3>
+      <div class="tag">LES DEUX EN UN</div>
+      <div class="appicon"><svg viewBox="0 0 100 100" style="color:var(--ink)"><use href="#cC"/></svg></div>
+      <div class="mini">
+        <div><div class="logo-dark"><svg viewBox="0 0 100 100" style="color:var(--em1)"><use href="#cC"/></svg></div><div class="mlabel">dans l'app</div></div>
+        <div><div class="logo-sm"><svg viewBox="0 0 100 100" style="color:var(--ink)"><use href="#cC"/></svg></div><div class="mlabel">petit</div></div>
+      </div>
+      <p>Grande <span class="gold">clé dorée</span> dont l'anneau est un <b>bouclier</b> (avec serrure). La clé domine, le bouclier coiffe — original et très identitaire.</p>
+    </div>
+
+  </div>
+
+  <!-- DEMO HOME SCREEN -->
+  <div class="phonewrap">
+    <div class="sub" style="margin-bottom:0">À quoi ça ressemble sur l'écran d'accueil (concept A — choisi) :</div>
+    <div class="phone">
+      <div class="hs">
+        <div class="time">9:41</div>
+        <div class="apps">
+          <div class="app"><div class="sq"></div><div class="nm">Photos</div></div>
+          <div class="app"><div class="sq"></div><div class="nm">Messages</div></div>
+          <div class="app sk"><div class="sq">
+            <svg viewBox="0 0 100 100" style="color:var(--ink)"><use href="#cA"/></svg>
+            </div><div class="nm">ShieldKey</div></div>
+          <div class="app"><div class="sq"></div><div class="nm">Réglages</div></div>
+          <div class="app"><div class="sq"></div><div class="nm">Banque</div></div>
+          <div class="app"><div class="sq"></div><div class="nm">Mail</div></div>
+          <div class="app"><div class="sq"></div><div class="nm">Chrome</div></div>
+          <div class="app"><div class="sq"></div><div class="nm">Store</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reco">
+    <b>Mon avis :</b> tu veux une vraie clé + un vrai bouclier → le <b>concept B (bouclier + clé dorée)</b> est le plus clair et le plus « parlant », et le <span class="gold">doré</span> fait écho à tes éléments Euro/Crypto.
+    Le <b>concept C (fusion)</b> est le plus original et identitaire si tu veux te démarquer.
+    Le <b>concept A (serrure)</b> est le plus épuré/premium mais ne montre pas de clé dessinée.<br><br>
+    Dis-moi lequel tu retiens (ou un mélange) et je le finalise en <b>icône Android adaptative</b> (vector drawable) pour l'app + tous les formats du store.
+  </div>
+</div>
+</body>
+</html>

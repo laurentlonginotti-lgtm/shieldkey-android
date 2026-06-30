@@ -1,0 +1,10 @@
+<resources>
+    <!-- Thème fenêtre (évite le flash blanc au lancement). Les couleurs de l'UI
+         sont pilotées par Compose (ShieldKeyTheme). -->
+    <style name="Theme.ShieldKey" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/sk_bg</item>
+        <item name="android:statusBarColor">@color/sk_bg</item>
+        <item name="android:navigationBarColor">@color/sk_bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

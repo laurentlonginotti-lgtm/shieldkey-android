@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShieldKey — Aperçu design</title>
+<style>
+  :root{
+    /* valeurs par défaut écrasées par data-theme */
+    --bg0:#0B1220; --bg1:#0e1830; --bg2:#0a1a2e;
+    --accent:#10B981; --accent2:#34D399; --accentGlow:rgba(16,185,129,.45);
+    --crypto:#F5C04E; --euro:#38BDF8;
+    --text:#EAF2FF; --muted:#9FB0C9;
+    --glass:rgba(255,255,255,.06); --glassBorder:rgba(255,255,255,.12);
+  }
+  body[data-theme="violet"]{
+    --bg0:#0D0A1F; --bg1:#160f33; --bg2:#1a0f3a;
+    --accent:#7C5CFF; --accent2:#A855F7; --accentGlow:rgba(124,92,255,.5);
+    --crypto:#F5C04E; --euro:#22D3EE;
+    --text:#F2EEFF; --muted:#A99FCF;
+  }
+  body[data-theme="or"]{
+    --bg0:#0A0A0B; --bg1:#141210; --bg2:#1a160e;
+    --accent:#F5C04E; --accent2:#FFD580; --accentGlow:rgba(245,192,78,.4);
+    --crypto:#F5C04E; --euro:#7DD3FC;
+    --text:#F6F1E7; --muted:#B6AD98;
+    --glass:rgba(255,255,255,.05); --glassBorder:rgba(255,255,255,.10);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--bg0); color:var(--text);
+    min-height:100vh; padding:32px 16px 64px;
+    background-image:
+      radial-gradient(60% 50% at 20% 0%, var(--bg1) 0%, transparent 60%),
+      radial-gradient(55% 45% at 90% 10%, var(--bg2) 0%, transparent 55%);
+    transition:background .4s ease;
+  }
+  .wrap{max-width:960px;margin:0 auto}
+  .head{text-align:center;margin-bottom:26px}
+  .head h1{font-size:26px;letter-spacing:.5px;font-weight:700}
+  .head h1 .k{color:var(--accent)}
+  .head p{color:var(--muted);margin-top:6px;font-size:14px}
+
+  /* ---- sélecteur de thème ---- */
+  .themes{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:22px 0 34px}
+  .theme-btn{
+    cursor:pointer;border:1px solid var(--glassBorder);background:var(--glass);
+    color:var(--text);padding:10px 16px;border-radius:14px;font-size:13px;font-weight:600;
+    display:flex;align-items:center;gap:10px;backdrop-filter:blur(8px);transition:.2s;
+  }
+  .theme-btn:hover{transform:translateY(-2px)}
+  .theme-btn.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 8px 24px var(--accentGlow)}
+  .dot{width:16px;height:16px;border-radius:50%}
+  .d-emeraude{background:linear-gradient(135deg,#10B981,#34D399)}
+  .d-violet{background:linear-gradient(135deg,#7C5CFF,#A855F7)}
+  .d-or{background:linear-gradient(135deg,#F5C04E,#FFD580)}
+
+  .screens{display:flex;gap:30px;justify-content:center;flex-wrap:wrap;align-items:flex-start}
+
+  /* ---- téléphone ---- */
+  .phone{
+    width:300px;border-radius:42px;padding:14px;position:relative;
+    background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+    border:1px solid var(--glassBorder);
+    box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.03) inset;
+  }
+  .notch{width:120px;height:22px;background:#000;border-radius:0 0 16px 16px;
+    position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:5}
+  .screen{
+    border-radius:30px;overflow:hidden;height:620px;position:relative;
+    background:
+      radial-gradient(70% 40% at 30% 0%, var(--bg1) 0%, transparent 65%),
+      radial-gradient(60% 35% at 95% 8%, var(--bg2) 0%, transparent 55%),
+      var(--bg0);
+    transition:background .4s ease;
+  }
+  .scr-pad{padding:46px 16px 16px}
+
+  .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;
+    text-align:center;margin-bottom:8px}
+
+  /* ---- en-tête appli ---- */
+  .appbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:17px}
+  .logo{
+    width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:17px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 6px 18px var(--accentGlow);
+  }
+  .avatar{width:30px;height:30px;border-radius:50%;
+    background:linear-gradient(135deg,var(--glassBorder),transparent);
+    border:1px solid var(--glassBorder)}
+
+  .trust{
+    display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);
+    background:var(--glass);border:1px solid var(--glassBorder);border-radius:12px;
+    padding:8px 12px;margin-bottom:16px;backdrop-filter:blur(6px)
+  }
+  .trust b{color:var(--accent2);font-weight:600}
+  .pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);
+    box-shadow:0 0 0 0 var(--accentGlow);animation:p 2s infinite}
+  @keyframes p{0%{box-shadow:0 0 0 0 var(--accentGlow)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+
+  /* ---- onglets catégories ---- */
+  .chips{display:flex;gap:8px;overflow:auto;margin-bottom:16px;padding-bottom:4px}
+  .chip{white-space:nowrap;font-size:12px;padding:7px 13px;border-radius:20px;
+    border:1px solid var(--glassBorder);background:var(--glass);color:var(--muted)}
+  .chip.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#06121f;
+    border-color:transparent;font-weight:700;box-shadow:0 6px 16px var(--accentGlow)}
+
+  /* ---- carte item ---- */
+  .item{
+    display:flex;align-items:center;gap:13px;padding:14px;border-radius:18px;margin-bottom:11px;
+    background:var(--glass);border:1px solid var(--glassBorder);backdrop-filter:blur(14px);
+    box-shadow:0 8px 22px rgba(0,0,0,.25);transition:.2s
+  }
+  .item:hover{transform:translateY(-2px);border-color:var(--accent)}
+  .ic{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:19px;flex:none}
+  .ic-eu{background:linear-gradient(135deg,var(--euro),#0ea5e9)}
+  .ic-cr{background:linear-gradient(135deg,var(--crypto),#f59e0b)}
+  .ic-lg{background:linear-gradient(135deg,var(--accent),var(--accent2))}
+  .ic-nt{background:linear-gradient(135deg,#64748b,#94a3b8)}
+  .it-txt{flex:1;min-width:0}
+  .it-txt .t{font-size:14px;font-weight:600}
+  .it-txt .s{font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tag{font-size:9px;font-weight:700;padding:3px 7px;border-radius:7px;letter-spacing:.5px}
+  .tag-eu{background:rgba(56,189,248,.15);color:var(--euro)}
+  .tag-cr{background:rgba(245,192,78,.15);color:var(--crypto)}
+
+  /* ---- fab + nav ---- */
+  .fab{position:absolute;right:18px;bottom:78px;width:56px;height:56px;border-radius:18px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;
+    font-size:26px;color:#06121f;box-shadow:0 12px 28px var(--accentGlow);font-weight:700}
+  .nav{position:absolute;left:14px;right:14px;bottom:14px;height:58px;border-radius:20px;
+    background:var(--glass);border:1px solid var(--glassBorder);backdrop-filter:blur(18px);
+    display:flex;align-items:center;justify-content:space-around;font-size:20px;color:var(--muted)}
+  .nav .on{color:var(--accent)}
+
+  /* ---- écran de déverrouillage ---- */
+  .lock{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center;padding:24px}
+  .lock .big{
+    width:96px;height:96px;border-radius:30px;display:grid;place-items:center;font-size:44px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 18px 50px var(--accentGlow)}
+  .lock h2{font-size:21px}
+  .lock p{color:var(--muted);font-size:13px;max-width:200px}
+  .bio{width:74px;height:74px;border-radius:50%;border:2px solid var(--accent);display:grid;place-items:center;
+    font-size:34px;color:var(--accent);box-shadow:0 0 0 6px var(--accentGlow);animation:p 2.4s infinite}
+  .lk-trust{font-size:11px;color:var(--muted);position:absolute;bottom:22px;display:flex;gap:6px;align-items:center}
+
+  .cap{text-align:center;color:var(--muted);font-size:12px;margin-top:14px}
+  .foot{text-align:center;color:var(--muted);font-size:12px;margin-top:40px;line-height:1.7}
+</style>
+</head>
+<body data-theme="emeraude">
+  <div class="wrap">
+    <div class="head">
+      <h1>🛡️ Shield<span class="k">Key</span></h1>
+      <p>Aperçu design — clique sur une ambiance pour la voir en direct</p>
+    </div>
+
+    <div class="themes">
+      <div class="theme-btn active" data-set="emeraude"><span class="dot d-emeraude"></span> Émeraude Nuit</div>
+      <div class="theme-btn" data-set="violet"><span class="dot d-violet"></span> Violet Fintech</div>
+      <div class="theme-btn" data-set="or"><span class="dot d-or"></span> Or Premium</div>
+    </div>
+
+    <div class="screens">
+      <!-- ÉCRAN COFFRE -->
+      <div>
+        <div class="label">Coffre — accueil</div>
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="scr-pad">
+              <div class="appbar">
+                <div class="brand"><div class="logo">🛡️</div> ShieldKey</div>
+                <div class="avatar"></div>
+              </div>
+
+              <div class="trust"><span class="pulse"></span> <b>100&nbsp;% hors-ligne</b> · Chiffré AES-256 · Argon2id</div>
+
+              <div class="chips">
+                <div class="chip on">Tout</div>
+                <div class="chip">🔑 Connexions</div>
+                <div class="chip">💳 Cartes</div>
+                <div class="chip">₿ Crypto</div>
+                <div class="chip">📝 Notes</div>
+              </div>
+
+              <div class="item">
+                <div class="ic ic-eu">💳</div>
+                <div class="it-txt"><div class="t">Visa •••• 4827</div><div class="s">Paiement en ligne · EUR</div></div>
+                <div class="tag tag-eu">EURO</div>
+              </div>
+              <div class="item">
+                <div class="ic ic-cr">₿</div>
+                <div class="it-txt"><div class="t">Portefeuille Bitcoin</div><div class="s">Phrase de récup. · 24 mots</div></div>
+                <div class="tag tag-cr">CRYPTO</div>
+              </div>
+              <div class="item">
+                <div class="ic ic-cr">Ξ</div>
+                <div class="it-txt"><div class="t">MetaMask</div><div class="s">Clé privée · ETH</div></div>
+                <div class="tag tag-cr">CRYPTO</div>
+              </div>
+              <div class="item">
+                <div class="ic ic-lg">🔑</div>
+                <div class="it-txt"><div class="t">Gmail</div><div class="s">laurent@gmail.com</div></div>
+              </div>
+              <div class="item">
+                <div class="ic ic-nt">🏧</div>
+                <div class="it-txt"><div class="t">IBAN Compte courant</div><div class="s">FR76 •••• · EUR</div></div>
+                <div class="tag tag-eu">EURO</div>
+              </div>
+
+              <div class="fab">+</div>
+              <div class="nav"><span class="on">🗄️</span><span>🔍</span><span>🎲</span><span>⚙️</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉCRAN DÉVERROUILLAGE -->
+      <div>
+        <div class="label">Déverrouillage</div>
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="lock">
+              <div class="big">🛡️</div>
+              <h2>Shield<span style="color:var(--accent)">Key</span></h2>
+              <p>Votre coffre est verrouillé. Posez le doigt pour ouvrir.</p>
+              <div class="bio">👆</div>
+              <div class="lk-trust"><span class="pulse"></span> Aucune donnée ne quitte ce téléphone</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cap">Maquette statique — les couleurs, le relief verre dépoli et la lueur sont ceux qu'aura l'app.</div>
+
+    <div class="foot">
+      <b>Émeraude Nuit</b> : confiance / sécurité, sobre et rassurant.<br>
+      <b>Violet Fintech</b> : moderne « crypto / fintech 2026 », plus audacieux.<br>
+      <b>Or Premium</b> : luxe / « vos biens précieux », haut de gamme.
+    </div>
+  </div>
+
+<script>
+  document.querySelectorAll('.theme-btn').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.theme-btn').forEach(function(x){x.classList.remove('active')});
+      b.classList.add('active');
+      document.body.setAttribute('data-theme', b.getAttribute('data-set'));
+    });
+  });
+</script>
+</body>
+</html>

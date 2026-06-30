@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Liseré extérieur : dégradé conique (sweep) noir <-> blanc -->
+    <path android:pathData="M32,4 L76,4 A28,28 0 0 1 104,32 L104,76 A28,28 0 0 1 76,104 L32,104 A28,28 0 0 1 4,76 L4,32 A28,28 0 0 1 32,4 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:type="sweep" android:centerX="54" android:centerY="54">
+                <item android:offset="0.0" android:color="#FFFFFFFF"/>
+                <item android:offset="0.16" android:color="#FF0A0A0A"/>
+                <item android:offset="0.33" android:color="#FFFFFFFF"/>
+                <item android:offset="0.5" android:color="#FF0A0A0A"/>
+                <item android:offset="0.66" android:color="#FFFFFFFF"/>
+                <item android:offset="0.83" android:color="#FF0A0A0A"/>
+                <item android:offset="1.0" android:color="#FFFFFFFF"/>
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Fond émeraude (squircle intérieur) -->
+    <path android:pathData="M33,9 L75,9 A24,24 0 0 1 99,33 L99,75 A24,24 0 0 1 75,99 L33,99 A24,24 0 0 1 9,75 L9,33 A24,24 0 0 1 33,9 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:type="radial" android:centerX="42" android:centerY="34" android:gradientRadius="78">
+                <item android:offset="0.0" android:color="#FF34D399"/>
+                <item android:offset="0.5" android:color="#FF10B981"/>
+                <item android:offset="1.0" android:color="#FF0D9B6C"/>
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Bouclier + trou de serrure (blanc) + liseré doré -->
+    <group android:translateX="11" android:translateY="12" android:scaleX="0.86" android:scaleY="0.86">
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:fillType="evenOdd"
+            android:pathData="M50,9 C50,9 71,15 82,18 C85,18.8 87,19.5 87,23 L87,47 C87,69 72,84 50,93 C28,84 13,69 13,47 L13,23 C13,19.5 15,18.8 18,18 C29,15 50,9 50,9 Z M41.5,31.5 a8.5,8.5 0 1 1 17,0 a8.5,8.5 0 1 1 -17,0 Z M45.5,47 L42.5,64 L57.5,64 L54.5,47 Z"/>
+        <path
+            android:strokeColor="#FFF5C04E"
+            android:strokeWidth="4"
+            android:strokeLineJoin="round"
+            android:pathData="M50,9 C50,9 71,15 82,18 C85,18.8 87,19.5 87,23 L87,47 C87,69 72,84 50,93 C28,84 13,69 13,47 L13,23 C13,19.5 15,18.8 18,18 C29,15 50,9 50,9 Z"/>
+    </group>
+</vector>

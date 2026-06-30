@@ -1,0 +1,17 @@
+# Android / Gradle
+.gradle/
+build/
+app/build/
+local.properties
+*.iml
+.idea/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Keystore & secrets — NE JAMAIS COMMITTER
+*.jks
+*.keystore
+*.jks.base64
+PASSWORDS.txt
+keystore.properties

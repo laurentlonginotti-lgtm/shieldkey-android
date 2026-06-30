@@ -1,0 +1,73 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'com.shieldkey.vault'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.shieldkey.vault"
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName "0.1"
+        vectorDrawables { useSupportLibrary true }
+    }
+
+    // Signature release pilotée par variables d'environnement.
+    // En local : exporter les vars. En CI : injectées par GitHub Actions (secrets).
+    signingConfigs {
+        release {
+            def storeFilePath = System.getenv("KEYSTORE_FILE") ?: "release.jks"
+            storeFile file(storeFilePath)
+            storePassword System.getenv("KEYSTORE_PASSWORD") ?: ""
+            keyAlias System.getenv("KEY_ALIAS") ?: "shieldkey"
+            keyPassword System.getenv("KEY_PASSWORD") ?: System.getenv("KEYSTORE_PASSWORD") ?: ""
+        }
+    }
+
+    buildTypes {
+        release {
+            // R8 désactivé pour l'instant (on l'activera avec des règles dédiées
+            // quand on ajoutera BouncyCastle/Argon2). Build plus prévisible.
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // La signature ne s'applique que si le secret existe (sinon build non signé).
+            if (System.getenv("KEYSTORE_PASSWORD")) {
+                signingConfig signingConfigs.release
+            }
+        }
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.5.8'
+    }
+}
+
+dependencies {
+    implementation platform('androidx.compose:compose-bom:2024.02.01')
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.activity:activity-compose:1.8.2'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.ui:ui-graphics'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    implementation 'androidx.compose.material3:material3'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+}
