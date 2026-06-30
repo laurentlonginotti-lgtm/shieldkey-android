@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">ShieldKey</string>
+
+    <!-- Onboarding -->
+    <string name="onb_title">Créez votre coffre</string>
+    <string name="onb_subtitle">Choisissez un mot de passe maître. C\'est la seule clé de votre coffre — choisissez-le fort et mémorisable.</string>
+    <string name="field_master_password">Mot de passe maître</string>
+    <string name="err_min8">Au moins 8 caractères</string>
+    <string name="field_confirm_password">Confirmer le mot de passe</string>
+    <string name="err_mismatch">Les mots de passe ne correspondent pas</string>
+    <string name="err_generic">Erreur : %1$s</string>
+    <string name="onb_create">Créer le coffre</string>
+
+    <!-- Recovery kit -->
+    <string name="kit_title">🔑 Votre kit de secours</string>
+    <string name="kit_subtitle">Ce code est la SEULE façon de récupérer votre coffre si vous oubliez votre mot de passe maître. Notez-le ou imprimez-le, et gardez-le en lieu sûr.</string>
+    <string name="kit_copy">📋 Copier le code</string>
+    <string name="kit_warning">⚠️ Sans ce code ET votre mot de passe, vos données seront définitivement perdues. Personne ne peut les récupérer.</string>
+    <string name="kit_checkbox">J\'ai noté mon code de secours en lieu sûr</string>
+    <string name="kit_enter">Entrer dans mon coffre</string>
+
+    <!-- Unlock -->
+    <string name="unlock_locked">Votre coffre est verrouillé</string>
+    <string name="unlock_button">Déverrouiller</string>
+    <string name="unlock_wrong">Mot de passe incorrect</string>
+    <string name="unlock_forgot">Mot de passe oublié ? Utiliser le code de secours</string>
+    <string name="offline_badge">🔒 100%% hors-ligne</string>
+
+    <!-- Recovery -->
+    <string name="rec_title">Récupération</string>
+    <string name="rec_subtitle">Entrez votre code de secours, puis choisissez un nouveau mot de passe maître.</string>
+    <string name="field_recovery_code">Code de secours</string>
+    <string name="field_new_master">Nouveau mot de passe maître</string>
+    <string name="field_confirm">Confirmer</string>
+    <string name="rec_button">Récupérer mon coffre</string>
+    <string name="rec_invalid">Code de secours invalide</string>
+    <string name="action_cancel">Annuler</string>
+
+    <!-- Vault -->
+    <string name="vault_lock">🔒 Verrouiller</string>
+    <string name="vault_secure_badge">🔒 100%% hors-ligne · Chiffré AES-256 · Argon2id</string>
+    <string name="chip_all">Tout</string>
+    <string name="vault_empty_title">Votre coffre est vide</string>
+    <string name="vault_empty_sub">Ajoutez votre première entrée avec le bouton ci-dessous.</string>
+    <string name="vault_add">+ Ajouter une entrée</string>
+
+    <!-- Language -->
+    <string name="lang_title">Langue</string>
+    <string name="lang_system">Système (par défaut)</string>
+</resources>

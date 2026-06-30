@@ -1,9 +1,11 @@
 package com.shieldkey.vault
 
+import android.content.Context
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.shieldkey.vault.i18n.LocaleHelper
 import com.shieldkey.vault.sound.SoundFx
 import com.shieldkey.vault.ui.ShieldKeyApp
 import com.shieldkey.vault.ui.theme.ShieldKeyTheme
@@ -29,5 +31,11 @@ class MainActivity : ComponentActivity() {
         super.onPause()
         // Son de fermeture quand on quitte réellement l'app.
         if (isFinishing) SoundFx.close()
+    }
+
+    // Applique la langue : celle choisie par l'utilisateur, ou celle du téléphone
+    // (détection automatique) si le mode "Système" est actif.
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleHelper.wrap(newBase))
     }
 }

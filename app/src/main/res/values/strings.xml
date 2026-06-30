@@ -1,3 +1,50 @@
 <resources>
     <string name="app_name">ShieldKey</string>
+
+    <!-- Onboarding -->
+    <string name="onb_title">Create your vault</string>
+    <string name="onb_subtitle">Choose a master password. It is the only key to your vault — make it strong and memorable.</string>
+    <string name="field_master_password">Master password</string>
+    <string name="err_min8">At least 8 characters</string>
+    <string name="field_confirm_password">Confirm password</string>
+    <string name="err_mismatch">Passwords do not match</string>
+    <string name="err_generic">Error: %1$s</string>
+    <string name="onb_create">Create vault</string>
+
+    <!-- Recovery kit -->
+    <string name="kit_title">🔑 Your recovery kit</string>
+    <string name="kit_subtitle">This code is the ONLY way to recover your vault if you forget your master password. Write it down or print it, and keep it somewhere safe.</string>
+    <string name="kit_copy">📋 Copy the code</string>
+    <string name="kit_warning">⚠️ Without this code AND your password, your data will be lost forever. Nobody can recover it.</string>
+    <string name="kit_checkbox">I have saved my recovery code in a safe place</string>
+    <string name="kit_enter">Enter my vault</string>
+
+    <!-- Unlock -->
+    <string name="unlock_locked">Your vault is locked</string>
+    <string name="unlock_button">Unlock</string>
+    <string name="unlock_wrong">Wrong password</string>
+    <string name="unlock_forgot">Forgot your password? Use the recovery code</string>
+    <string name="offline_badge">🔒 100%% offline</string>
+
+    <!-- Recovery -->
+    <string name="rec_title">Recovery</string>
+    <string name="rec_subtitle">Enter your recovery code, then choose a new master password.</string>
+    <string name="field_recovery_code">Recovery code</string>
+    <string name="field_new_master">New master password</string>
+    <string name="field_confirm">Confirm</string>
+    <string name="rec_button">Recover my vault</string>
+    <string name="rec_invalid">Invalid recovery code</string>
+    <string name="action_cancel">Cancel</string>
+
+    <!-- Vault -->
+    <string name="vault_lock">🔒 Lock</string>
+    <string name="vault_secure_badge">🔒 100%% offline · AES-256 encrypted · Argon2id</string>
+    <string name="chip_all">All</string>
+    <string name="vault_empty_title">Your vault is empty</string>
+    <string name="vault_empty_sub">Add your first entry with the button below.</string>
+    <string name="vault_add">+ Add an entry</string>
+
+    <!-- Language -->
+    <string name="lang_title">Language</string>
+    <string name="lang_system">System (default)</string>
 </resources>

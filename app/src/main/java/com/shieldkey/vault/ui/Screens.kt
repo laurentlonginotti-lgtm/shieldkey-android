@@ -30,11 +30,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.shieldkey.vault.R
 import com.shieldkey.vault.sound.SoundFx
 import com.shieldkey.vault.ui.theme.SkEmerald
 import com.shieldkey.vault.ui.theme.SkEmerald2
@@ -53,7 +55,7 @@ fun OnboardingScreen(onCreate: suspend (String) -> Unit) {
     var pwd by remember { mutableStateOf("") }
     var confirm by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) }
-    var msg by remember { mutableStateOf<String?>(null) }
+    var errMsg by remember { mutableStateOf<String?>(null) }
 
     val tooShort = pwd.isNotEmpty() && pwd.length < 8
     val mismatch = confirm.isNotEmpty() && confirm != pwd
@@ -62,32 +64,31 @@ fun OnboardingScreen(onCreate: suspend (String) -> Unit) {
     CenteredColumn {
         SkLogo()
         Spacer(Modifier.height(14.dp))
-        Text("Créez votre coffre", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Text(stringResource(R.string.onb_title), color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(6.dp))
-        Text(
-            "Choisissez un mot de passe maître. C'est la seule clé de votre coffre : choisissez-le fort et mémorisable.",
-            color = SkMuted, fontSize = 13.sp, textAlign = TextAlign.Center
-        )
+        Text(stringResource(R.string.onb_subtitle), color = SkMuted, fontSize = 13.sp, textAlign = TextAlign.Center)
         Spacer(Modifier.height(20.dp))
-        SkPasswordField(pwd, { pwd = it; msg = null }, "Mot de passe maître")
-        if (tooShort) HintText("Au moins 8 caractères", warn = true)
+        SkPasswordField(pwd, { pwd = it; errMsg = null }, stringResource(R.string.field_master_password))
+        if (tooShort) HintText(stringResource(R.string.err_min8), warn = true)
         Spacer(Modifier.height(10.dp))
-        SkPasswordField(confirm, { confirm = it; msg = null }, "Confirmer le mot de passe")
-        if (mismatch) HintText("Les mots de passe ne correspondent pas", warn = true)
-        msg?.let { HintText(it, warn = true) }
+        SkPasswordField(confirm, { confirm = it; errMsg = null }, stringResource(R.string.field_confirm_password))
+        if (mismatch) HintText(stringResource(R.string.err_mismatch), warn = true)
+        errMsg?.let { HintText(stringResource(R.string.err_generic, it), warn = true) }
         Spacer(Modifier.height(24.dp))
-        SkPrimaryButton("Créer le coffre", enabled = canSubmit, loading = loading) {
+        SkPrimaryButton(stringResource(R.string.onb_create), enabled = canSubmit, loading = loading) {
             scope.launch {
                 loading = true
                 try {
                     onCreate(pwd)
                 } catch (e: Exception) {
-                    msg = "Erreur : ${e.message}"
+                    errMsg = e.message ?: "?"
                     SoundFx.error()
                 }
                 loading = false
             }
         }
+        Spacer(Modifier.height(10.dp))
+        LanguageButton()
     }
 }
 
@@ -100,12 +101,9 @@ fun RecoveryKitScreen(code: String, onDone: () -> Unit) {
     var saved by remember { mutableStateOf(false) }
 
     CenteredColumn {
-        Text("🔑 Votre kit de secours", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Text(stringResource(R.string.kit_title), color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))
-        Text(
-            "Ce code est la SEULE façon de récupérer votre coffre si vous oubliez votre mot de passe maître. Notez-le ou imprimez-le, et gardez-le en lieu sûr.",
-            color = SkMuted, fontSize = 13.sp, textAlign = TextAlign.Center
-        )
+        Text(stringResource(R.string.kit_subtitle), color = SkMuted, fontSize = 13.sp, textAlign = TextAlign.Center)
         Spacer(Modifier.height(20.dp))
         Box(
             Modifier
@@ -126,7 +124,7 @@ fun RecoveryKitScreen(code: String, onDone: () -> Unit) {
         }
         Spacer(Modifier.height(10.dp))
         TextButton(onClick = { clipboard.setText(AnnotatedString(code)) }) {
-            Text("📋 Copier le code", color = SkEmerald2)
+            Text(stringResource(R.string.kit_copy), color = SkEmerald2)
         }
         Spacer(Modifier.height(6.dp))
         Box(
@@ -136,10 +134,7 @@ fun RecoveryKitScreen(code: String, onDone: () -> Unit) {
                 .background(Color(0x1AFF6B6B))
                 .padding(12.dp)
         ) {
-            Text(
-                "⚠️ Sans ce code ET sans votre mot de passe, vos données seront définitivement perdues. Personne ne peut les récupérer.",
-                color = Color(0xFFFFB4A2), fontSize = 12.sp
-            )
+            Text(stringResource(R.string.kit_warning), color = Color(0xFFFFB4A2), fontSize = 12.sp)
         }
         Spacer(Modifier.height(18.dp))
         Row(
@@ -151,10 +146,10 @@ fun RecoveryKitScreen(code: String, onDone: () -> Unit) {
                 onCheckedChange = { saved = it },
                 colors = CheckboxDefaults.colors(checkedColor = SkEmerald)
             )
-            Text("J'ai noté mon code de secours en lieu sûr", color = SkText, fontSize = 13.sp)
+            Text(stringResource(R.string.kit_checkbox), color = SkText, fontSize = 13.sp)
         }
         Spacer(Modifier.height(14.dp))
-        SkPrimaryButton("Entrer dans mon coffre", enabled = saved) { onDone() }
+        SkPrimaryButton(stringResource(R.string.kit_enter), enabled = saved) { onDone() }
     }
 }
 
@@ -173,12 +168,12 @@ fun UnlockScreen(onUnlock: suspend (String) -> Boolean, onForgot: () -> Unit) {
         Spacer(Modifier.height(14.dp))
         Text("ShieldKey", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(4.dp))
-        Text("Votre coffre est verrouillé", color = SkMuted, fontSize = 13.sp)
+        Text(stringResource(R.string.unlock_locked), color = SkMuted, fontSize = 13.sp)
         Spacer(Modifier.height(22.dp))
-        SkPasswordField(pwd, { pwd = it; error = false }, "Mot de passe maître")
-        if (error) HintText("Mot de passe incorrect", warn = true)
+        SkPasswordField(pwd, { pwd = it; error = false }, stringResource(R.string.field_master_password))
+        if (error) HintText(stringResource(R.string.unlock_wrong), warn = true)
         Spacer(Modifier.height(20.dp))
-        SkPrimaryButton("Déverrouiller", enabled = pwd.isNotEmpty(), loading = loading) {
+        SkPrimaryButton(stringResource(R.string.unlock_button), enabled = pwd.isNotEmpty(), loading = loading) {
             scope.launch {
                 loading = true
                 val ok = onUnlock(pwd)
@@ -191,10 +186,12 @@ fun UnlockScreen(onUnlock: suspend (String) -> Boolean, onForgot: () -> Unit) {
         }
         Spacer(Modifier.height(6.dp))
         TextButton(onClick = onForgot) {
-            Text("Mot de passe oublié ? Utiliser le code de secours", color = SkMuted, fontSize = 12.sp)
+            Text(stringResource(R.string.unlock_forgot), color = SkMuted, fontSize = 12.sp)
         }
-        Spacer(Modifier.height(24.dp))
-        Text("🔒 100 % hors-ligne", color = SkMuted, fontSize = 11.sp)
+        Spacer(Modifier.height(20.dp))
+        Text(stringResource(R.string.offline_badge), color = SkMuted, fontSize = 11.sp)
+        Spacer(Modifier.height(8.dp))
+        LanguageButton()
     }
 }
 
@@ -208,41 +205,38 @@ fun RecoveryScreen(onRecover: suspend (String, String) -> Boolean, onCancel: () 
     var pwd by remember { mutableStateOf("") }
     var confirm by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) }
-    var error by remember { mutableStateOf<String?>(null) }
+    var invalid by remember { mutableStateOf(false) }
 
     val canSubmit = code.isNotBlank() && pwd.length >= 8 && pwd == confirm && !loading
 
     CenteredColumn {
-        Text("Récupération", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Text(stringResource(R.string.rec_title), color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(6.dp))
-        Text(
-            "Entrez votre code de secours, puis choisissez un nouveau mot de passe maître.",
-            color = SkMuted, fontSize = 13.sp, textAlign = TextAlign.Center
-        )
+        Text(stringResource(R.string.rec_subtitle), color = SkMuted, fontSize = 13.sp, textAlign = TextAlign.Center)
         Spacer(Modifier.height(18.dp))
         OutlinedTextField(
             value = code,
-            onValueChange = { code = it; error = null },
-            label = { Text("Code de secours") },
+            onValueChange = { code = it; invalid = false },
+            label = { Text(stringResource(R.string.field_recovery_code)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             colors = skFieldColors()
         )
         Spacer(Modifier.height(12.dp))
-        SkPasswordField(pwd, { pwd = it; error = null }, "Nouveau mot de passe maître")
+        SkPasswordField(pwd, { pwd = it }, stringResource(R.string.field_new_master))
         Spacer(Modifier.height(10.dp))
-        SkPasswordField(confirm, { confirm = it; error = null }, "Confirmer")
-        error?.let { HintText(it, warn = true) }
+        SkPasswordField(confirm, { confirm = it }, stringResource(R.string.field_confirm))
+        if (invalid) HintText(stringResource(R.string.rec_invalid), warn = true)
         Spacer(Modifier.height(20.dp))
-        SkPrimaryButton("Récupérer mon coffre", enabled = canSubmit, loading = loading) {
+        SkPrimaryButton(stringResource(R.string.rec_button), enabled = canSubmit, loading = loading) {
             scope.launch {
                 loading = true
                 val ok = onRecover(code, pwd)
-                if (!ok) error = "Code de secours invalide"
+                if (!ok) invalid = true
                 loading = false
             }
         }
-        TextButton(onClick = onCancel) { Text("Annuler", color = SkMuted) }
+        TextButton(onClick = onCancel) { Text(stringResource(R.string.action_cancel), color = SkMuted) }
     }
 }
 
@@ -260,17 +254,17 @@ fun VaultScreen(onLock: () -> Unit) {
             Spacer(Modifier.width(10.dp))
             Text("ShieldKey", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.weight(1f))
-            TextButton(onClick = onLock) { Text("🔒 Verrouiller", color = SkEmerald2, fontSize = 13.sp) }
+            TextButton(onClick = onLock) { Text(stringResource(R.string.vault_lock), color = SkEmerald2, fontSize = 13.sp) }
         }
         Spacer(Modifier.height(10.dp))
         Box(
             Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Color(0x14FFFFFF)).padding(12.dp)
         ) {
-            Text("🔒 100 % hors-ligne · Chiffré AES-256 · Argon2id", color = SkMuted, fontSize = 12.sp)
+            Text(stringResource(R.string.vault_secure_badge), color = SkMuted, fontSize = 12.sp)
         }
         Spacer(Modifier.height(16.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            CategoryChip("Tout", true)
+            CategoryChip(stringResource(R.string.chip_all), true)
             CategoryChip("🔑", false)
             CategoryChip("💳", false)
             CategoryChip("₿", false)
@@ -280,15 +274,12 @@ fun VaultScreen(onLock: () -> Unit) {
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             Text("🗄️", fontSize = 46.sp)
             Spacer(Modifier.height(8.dp))
-            Text("Votre coffre est vide", color = SkText, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.vault_empty_title), color = SkText, fontSize = 16.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(4.dp))
-            Text(
-                "Ajoutez votre première entrée avec le bouton ci-dessous.",
-                color = SkMuted, fontSize = 13.sp, textAlign = TextAlign.Center
-            )
+            Text(stringResource(R.string.vault_empty_sub), color = SkMuted, fontSize = 13.sp, textAlign = TextAlign.Center)
         }
         Spacer(Modifier.weight(1f))
-        SkPrimaryButton("+  Ajouter une entrée", enabled = true) { /* étape 4 */ }
+        SkPrimaryButton(stringResource(R.string.vault_add), enabled = true) { /* étape 4 */ }
     }
 }
 
