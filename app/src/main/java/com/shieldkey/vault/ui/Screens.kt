@@ -280,6 +280,7 @@ fun VaultScreen(
     onLock: () -> Unit,
     biometricAvailable: Boolean = false,
     biometricEnabled: Boolean = false,
+    biometricHint: String? = null,
     onToggleBiometric: (Boolean) -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -347,28 +348,38 @@ fun VaultScreen(
         ) {
             Text(stringResource(R.string.vault_secure_badge), color = SkMuted, fontSize = 12.sp)
         }
-        if (biometricAvailable) {
-            Spacer(Modifier.height(10.dp))
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color(0x14FFFFFF))
-                    .clickable { onToggleBiometric(!biometricEnabled) }
-                    .padding(start = 12.dp, end = 4.dp, top = 2.dp, bottom = 2.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+        Spacer(Modifier.height(10.dp))
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .background(Color(0x14FFFFFF))
+                .then(if (biometricAvailable) Modifier.clickable { onToggleBiometric(!biometricEnabled) } else Modifier)
+                .padding(start = 12.dp, end = 4.dp, top = 2.dp, bottom = if (biometricHint != null) 10.dp else 2.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     stringResource(if (biometricEnabled) R.string.bio_enabled else R.string.bio_enable),
-                    color = SkText, fontSize = 13.sp, modifier = Modifier.weight(1f)
+                    color = if (biometricAvailable) SkText else SkMuted,
+                    fontSize = 13.sp,
+                    modifier = Modifier.weight(1f)
                 )
                 Switch(
                     checked = biometricEnabled,
+                    enabled = biometricAvailable,
                     onCheckedChange = { onToggleBiometric(it) },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = SkOnPrimary,
                         checkedTrackColor = SkEmerald
                     )
+                )
+            }
+            if (biometricHint != null) {
+                Text(
+                    biometricHint,
+                    color = SkMuted,
+                    fontSize = 11.sp,
+                    modifier = Modifier.padding(top = 2.dp)
                 )
             }
         }

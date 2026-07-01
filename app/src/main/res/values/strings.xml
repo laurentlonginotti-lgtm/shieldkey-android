@@ -50,13 +50,14 @@
     <string name="doc_add">+ Add a document</string>
     <string name="doc_delete">Delete</string>
 
-    <!-- Biometric unlock -->
+    <!-- Quick unlock (biometrics or device credential) -->
     <string name="bio_prompt_title">Unlock ShieldKey</string>
-    <string name="bio_prompt_sub_unlock">Confirm your identity to open your vault</string>
-    <string name="bio_prompt_sub_enable">Confirm your identity to enable quick unlock</string>
-    <string name="bio_unlock_button">👆 Unlock with biometrics</string>
-    <string name="bio_enable">👆 Enable biometric unlock</string>
-    <string name="bio_enabled">👆 Biometric unlock enabled</string>
+    <string name="bio_prompt_sub_unlock">Confirm with your fingerprint or phone code</string>
+    <string name="bio_prompt_sub_enable">Confirm with your fingerprint or phone code to enable</string>
+    <string name="bio_unlock_button">👆 Quick unlock</string>
+    <string name="bio_enable">👆 Enable quick unlock</string>
+    <string name="bio_enabled">👆 Quick unlock enabled</string>
+    <string name="bio_hint_no_lock">Set up a screen lock (fingerprint or PIN) in Android to use this.</string>
 
     <!-- Language -->
     <string name="lang_title">Language</string>

@@ -37,7 +37,11 @@ import android.content.ContextWrapper
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -77,13 +81,31 @@ fun ShieldKeyApp() {
     var dek by remember { mutableStateOf<ByteArray?>(null) }   // clé du coffre déchiffrée, gardée en mémoire
     var recoveryToShow by remember { mutableStateOf("") }
 
-    // Déverrouillage biométrique (facultatif, adossé au Keystore matériel) — voir BiometricGate.
-    val bioAvailable = activity != null && BiometricGate.isAvailable(context)
+    // Déverrouillage rapide (empreinte OU code de l'écran, facultatif) — voir BiometricGate.
+    val bioStatus = BiometricGate.status(context)
+    val bioAvailable = activity != null && bioStatus == BiometricGate.BioStatus.READY
     var bioEnabled by remember { mutableStateOf(BiometricGate.isEnabled(context)) }
+    val hintNoLock = stringResource(R.string.bio_hint_no_lock)
+    val bioHint = if (bioStatus == BiometricGate.BioStatus.READY) null else hintNoLock
     val bioTitle = stringResource(R.string.bio_prompt_title)
     val bioSubUnlock = stringResource(R.string.bio_prompt_sub_unlock)
     val bioSubEnable = stringResource(R.string.bio_prompt_sub_enable)
-    val bioCancel = stringResource(R.string.action_cancel)
+
+    // Verrouillage AUTOMATIQUE : dès que l'app quitte l'écran (veille/bouton power, Accueil,
+    // multitâche), on efface la DEK et on repasse en écran verrouillé. Suspendu pendant une
+    // demande d'auth (le prompt empreinte/code peut lui aussi mettre l'activité en pause).
+    var authInProgress by remember { mutableStateOf(false) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP && !authInProgress && dek != null) {
+                dek = null
+                screen = Screen.Unlock
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
 
     Box(
         Modifier
@@ -118,7 +140,9 @@ fun ShieldKeyApp() {
                 onBiometric = {
                     val act = activity
                     if (act != null) {
-                        BiometricGate.unlock(act, bioTitle, bioSubUnlock, bioCancel) { k ->
+                        authInProgress = true
+                        BiometricGate.unlock(act, bioTitle, bioSubUnlock) { k ->
+                            authInProgress = false
                             if (k != null) { dek = k; SoundFx.success(); screen = Screen.Vault }
                             else SoundFx.error()
                         }
@@ -149,11 +173,14 @@ fun ShieldKeyApp() {
                     },
                     biometricAvailable = bioAvailable,
                     biometricEnabled = bioEnabled,
+                    biometricHint = bioHint,
                     onToggleBiometric = { turnOn ->
                         val act = activity
                         if (turnOn) {
                             if (act != null) {
-                                BiometricGate.enable(act, currentDek, bioTitle, bioSubEnable, bioCancel) { ok ->
+                                authInProgress = true
+                                BiometricGate.enable(act, currentDek, bioTitle, bioSubEnable) { ok ->
+                                    authInProgress = false
                                     if (ok) { bioEnabled = true; SoundFx.success() } else SoundFx.error()
                                 }
                             }

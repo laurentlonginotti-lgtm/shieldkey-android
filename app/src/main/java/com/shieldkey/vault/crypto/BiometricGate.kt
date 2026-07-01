@@ -1,5 +1,6 @@
 package com.shieldkey.vault.crypto
 
+import android.app.KeyguardManager
 import android.content.Context
 import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
@@ -17,20 +18,21 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
 /**
- * Déverrouillage biométrique (empreinte / visage) SANS affaiblir le zero-knowledge.
+ * Déverrouillage RAPIDE (empreinte / visage OU code de l'écran) SANS affaiblir le zero-knowledge.
  *
  * Principe (chiffrement à enveloppe, comme la DEK) :
  *  - Une clé AES-256 est générée DANS l'enclave matérielle (Android Keystore / StrongBox),
- *    configurée pour n'être utilisable qu'après une authentification biométrique FORTE
- *    (setUserAuthenticationRequired). Cette clé ne quitte JAMAIS le matériel.
- *  - Cette clé emballe la DEK du coffre ; seul le blob chiffré (iv || ciphertext) est écrit
- *    sur le disque interne privé (bio.skv). Sans le capteur + le matériel de CE téléphone,
- *    le blob est inutile.
+ *    utilisable uniquement APRÈS une authentification de l'appareil (biométrie forte OU
+ *    code de verrouillage : PIN / schéma / mot de passe). Cette clé ne quitte jamais le matériel.
+ *  - Elle emballe la DEK du coffre ; seul le blob chiffré (iv || ciphertext) est écrit sur le
+ *    disque interne privé (bio.skv). Sans le matériel de CE téléphone + l'auth, le blob est inutile.
  *
- * Sécurité :
- *  - Si l'utilisateur enrôle une NOUVELLE empreinte, la clé est invalidée
- *    (setInvalidatedByBiometricEnrollment) → réactivation obligatoire au mot de passe maître.
- *  - Le mot de passe maître reste le rempart ultime : la biométrie n'est qu'un raccourci local.
+ * Authentification liée à la durée (setUserAuthenticationValidityDurationSeconds / Parameters) :
+ * après une auth réussie via BiometricPrompt (empreinte OU code), la clé est utilisable
+ * quelques secondes → on chiffre/déchiffre immédiatement. Compatible dès Android 8 (API 26),
+ * y compris pour les téléphones SANS capteur biométrique (ils utilisent le code de l'écran).
+ *
+ * Le mot de passe maître reste le rempart ultime ; ceci n'est qu'un raccourci local.
  */
 object BiometricGate {
 
@@ -39,16 +41,30 @@ object BiometricGate {
     private const val TRANSFORMATION = "AES/GCM/NoPadding"
     private const val GCM_TAG_BITS = 128
     private const val IV_LEN = 12
+    private const val AUTH_VALIDITY_SECONDS = 10
+
+    private val ALLOWED = BiometricManager.Authenticators.BIOMETRIC_STRONG or
+        BiometricManager.Authenticators.DEVICE_CREDENTIAL
 
     private fun blobFile(context: Context) = File(context.filesDir, "bio.skv")
 
-    /** Le matériel biométrique est présent ET au moins un doigt / visage est enrôlé. */
-    fun isAvailable(context: Context): Boolean =
-        BiometricManager.from(context)
-            .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) ==
-            BiometricManager.BIOMETRIC_SUCCESS
+    /** État du déverrouillage rapide : READY si une auth d'appareil existe (biométrie OU code). */
+    enum class BioStatus { READY, NO_LOCK }
 
-    /** L'utilisateur a activé le déverrouillage biométrique (le blob emballé existe). */
+    fun status(context: Context): BioStatus {
+        val bm = BiometricManager.from(context)
+        val strongBiometric =
+            bm.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) ==
+                BiometricManager.BIOMETRIC_SUCCESS
+        val deviceSecure =
+            context.getSystemService(KeyguardManager::class.java)?.isDeviceSecure == true
+        return if (strongBiometric || deviceSecure) BioStatus.READY else BioStatus.NO_LOCK
+    }
+
+    /** Une auth d'appareil (empreinte OU code de l'écran) est disponible. */
+    fun isAvailable(context: Context): Boolean = status(context) == BioStatus.READY
+
+    /** L'utilisateur a activé le déverrouillage rapide (le blob emballé existe). */
     fun isEnabled(context: Context): Boolean = blobFile(context).exists()
 
     /** Désactive : efface le blob emballé + la clé matérielle. */
@@ -76,7 +92,17 @@ object BiometricGate {
             .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
             .setKeySize(256)
             .setUserAuthenticationRequired(true)
-            .setInvalidatedByBiometricEnrollment(true)
+
+        // Auth valable quelques secondes → autorise biométrie ET code de l'écran (PIN/schéma/mdp).
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            builder.setUserAuthenticationParameters(
+                AUTH_VALIDITY_SECONDS,
+                KeyProperties.AUTH_BIOMETRIC or KeyProperties.AUTH_DEVICE_CREDENTIAL
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            builder.setUserAuthenticationValidityDurationSeconds(AUTH_VALIDITY_SECONDS)
+        }
         if (strongBox && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             builder.setIsStrongBoxBacked(true)
         }
@@ -85,7 +111,6 @@ object BiometricGate {
                 init(builder.build()); generateKey()
             }
         } catch (e: Exception) {
-            // StrongBox indisponible sur cet appareil → repli sur le TEE logiciel.
             if (strongBox) createKey(strongBox = false) else throw e
         }
     }
@@ -93,7 +118,7 @@ object BiometricGate {
     // --- Activation ----------------------------------------------------------
 
     /**
-     * Active la biométrie : demande l'empreinte, puis emballe [dek] avec la clé matérielle.
+     * Active le déverrouillage rapide : demande l'auth, puis emballe [dek] avec la clé matérielle.
      * [onResult] = true si activé, false si annulé / échec.
      */
     fun enable(
@@ -101,46 +126,37 @@ object BiometricGate {
         dek: ByteArray,
         title: String,
         subtitle: String,
-        cancel: String,
         onResult: (Boolean) -> Unit
     ) {
-        val cipher = Cipher.getInstance(TRANSFORMATION)
         val key = try {
-            (existingKey() ?: createKey(strongBox = true)).also {
-                cipher.init(Cipher.ENCRYPT_MODE, it)
-            }
-        } catch (e: KeyPermanentlyInvalidatedException) {
-            // Clé périmée (nouvelle empreinte enrôlée) → on repart d'une clé fraîche.
-            disable(activity)
-            try {
-                createKey(strongBox = true).also { cipher.init(Cipher.ENCRYPT_MODE, it) }
-            } catch (ex: Exception) { onResult(false); return }
+            existingKey() ?: createKey(strongBox = true)
         } catch (e: Exception) {
             onResult(false); return
         }
-        if (key == null) { onResult(false); return }
-
-        prompt(activity, title, subtitle, cancel, cipher) { authed ->
-            if (authed == null) { onResult(false); return@prompt }
+        prompt(activity, title, subtitle) { authed ->
+            if (!authed) { onResult(false); return@prompt }
             try {
-                val ct = authed.doFinal(dek)
-                blobFile(activity).writeBytes(authed.iv + ct)
+                val cipher = Cipher.getInstance(TRANSFORMATION)
+                cipher.init(Cipher.ENCRYPT_MODE, key)
+                val ct = cipher.doFinal(dek)
+                blobFile(activity).writeBytes(cipher.iv + ct)
                 onResult(true)
-            } catch (e: Exception) { onResult(false) }
+            } catch (e: Exception) {
+                onResult(false)
+            }
         }
     }
 
     // --- Déverrouillage ------------------------------------------------------
 
     /**
-     * Déverrouille via biométrie : demande l'empreinte, puis renvoie la DEK déchiffrée.
+     * Déverrouille via l'auth d'appareil : demande empreinte/code, puis renvoie la DEK déchiffrée.
      * [onResult] = la DEK, ou null si annulé / échec.
      */
     fun unlock(
         activity: FragmentActivity,
         title: String,
         subtitle: String,
-        cancel: String,
         onResult: (ByteArray?) -> Unit
     ) {
         val blob = try { blobFile(activity).readBytes() } catch (e: Exception) { onResult(null); return }
@@ -151,21 +167,18 @@ object BiometricGate {
         val key = existingKey()
         if (key == null) { onResult(null); return }
 
-        val cipher = Cipher.getInstance(TRANSFORMATION)
-        try {
-            cipher.init(Cipher.DECRYPT_MODE, key, GCMParameterSpec(GCM_TAG_BITS, iv))
-        } catch (e: KeyPermanentlyInvalidatedException) {
-            // Empreinte changée depuis l'activation : on invalide, retour au mot de passe.
-            disable(activity); onResult(null); return
-        } catch (e: Exception) {
-            onResult(null); return
-        }
-
-        prompt(activity, title, subtitle, cancel, cipher) { authed ->
-            if (authed == null) { onResult(null); return@prompt }
+        prompt(activity, title, subtitle) { authed ->
+            if (!authed) { onResult(null); return@prompt }
             try {
-                onResult(authed.doFinal(ct))
-            } catch (e: Exception) { onResult(null) }
+                val cipher = Cipher.getInstance(TRANSFORMATION)
+                cipher.init(Cipher.DECRYPT_MODE, key, GCMParameterSpec(GCM_TAG_BITS, iv))
+                onResult(cipher.doFinal(ct))
+            } catch (e: KeyPermanentlyInvalidatedException) {
+                // Verrouillage d'écran retiré depuis l'activation → on invalide, retour au mot de passe.
+                disable(activity); onResult(null)
+            } catch (e: Exception) {
+                onResult(null)
+            }
         }
     }
 
@@ -175,24 +188,20 @@ object BiometricGate {
         activity: FragmentActivity,
         title: String,
         subtitle: String,
-        cancel: String,
-        cipher: Cipher,
-        onCipher: (Cipher?) -> Unit
+        onResult: (Boolean) -> Unit
     ) {
         val callback = object : BiometricPrompt.AuthenticationCallback() {
-            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) = onCipher(null)
+            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) = onResult(false)
             override fun onAuthenticationFailed() { /* mauvaise empreinte : le système laisse réessayer */ }
-            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) =
-                onCipher(result.cryptoObject?.cipher)
+            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) = onResult(true)
         }
+        // DEVICE_CREDENTIAL autorisé → PAS de bouton négatif (le système fournit « Utiliser le code »).
         val info = BiometricPrompt.PromptInfo.Builder()
             .setTitle(title)
             .setSubtitle(subtitle)
-            .setNegativeButtonText(cancel)
-            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
-            .setConfirmationRequired(false)
+            .setAllowedAuthenticators(ALLOWED)
             .build()
         BiometricPrompt(activity, ContextCompat.getMainExecutor(activity), callback)
-            .authenticate(info, BiometricPrompt.CryptoObject(cipher))
+            .authenticate(info)
     }
 }

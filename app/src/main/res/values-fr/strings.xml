@@ -50,13 +50,14 @@
     <string name="doc_add">+ Ajouter un document</string>
     <string name="doc_delete">Supprimer</string>
 
-    <!-- Déverrouillage biométrique -->
+    <!-- Déverrouillage rapide (biométrie ou code de l'écran) -->
     <string name="bio_prompt_title">Déverrouiller ShieldKey</string>
-    <string name="bio_prompt_sub_unlock">Confirmez votre identité pour ouvrir votre coffre</string>
-    <string name="bio_prompt_sub_enable">Confirmez votre identité pour activer le déverrouillage rapide</string>
-    <string name="bio_unlock_button">👆 Déverrouiller par biométrie</string>
-    <string name="bio_enable">👆 Activer le déverrouillage biométrique</string>
-    <string name="bio_enabled">👆 Déverrouillage biométrique activé</string>
+    <string name="bio_prompt_sub_unlock">Confirmez avec votre empreinte ou le code du téléphone</string>
+    <string name="bio_prompt_sub_enable">Confirmez avec votre empreinte ou le code du téléphone pour activer</string>
+    <string name="bio_unlock_button">👆 Déverrouillage rapide</string>
+    <string name="bio_enable">👆 Activer le déverrouillage rapide</string>
+    <string name="bio_enabled">👆 Déverrouillage rapide activé</string>
+    <string name="bio_hint_no_lock">Configurez un verrouillage d\'écran (empreinte ou code) dans Android pour l\'utiliser.</string>
 
     <!-- Language -->
     <string name="lang_title">Langue</string>
