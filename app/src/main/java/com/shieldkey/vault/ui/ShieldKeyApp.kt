@@ -32,8 +32,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.fragment.app.FragmentActivity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -42,6 +46,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shieldkey.vault.R
+import com.shieldkey.vault.crypto.BiometricGate
 import com.shieldkey.vault.data.VaultStore
 import com.shieldkey.vault.sound.SoundFx
 import com.shieldkey.vault.ui.theme.SkBg
@@ -63,13 +68,22 @@ private enum class Screen { Onboarding, RecoveryKit, Unlock, Recovery, Vault }
  */
 @Composable
 fun ShieldKeyApp() {
-    val context = LocalContext.current.applicationContext
+    val ctx = LocalContext.current
+    val context = ctx.applicationContext
+    val activity = remember(ctx) { ctx.findFragmentActivity() }
     val store = remember { VaultStore(context) }
 
     var screen by remember { mutableStateOf(if (store.isInitialized()) Screen.Unlock else Screen.Onboarding) }
-    @Suppress("UNUSED_VARIABLE")
-    var dek by remember { mutableStateOf<ByteArray?>(null) }   // clé du coffre (étape 4 l'utilisera)
+    var dek by remember { mutableStateOf<ByteArray?>(null) }   // clé du coffre déchiffrée, gardée en mémoire
     var recoveryToShow by remember { mutableStateOf("") }
+
+    // Déverrouillage biométrique (facultatif, adossé au Keystore matériel) — voir BiometricGate.
+    val bioAvailable = activity != null && BiometricGate.isAvailable(context)
+    var bioEnabled by remember { mutableStateOf(BiometricGate.isEnabled(context)) }
+    val bioTitle = stringResource(R.string.bio_prompt_title)
+    val bioSubUnlock = stringResource(R.string.bio_prompt_sub_unlock)
+    val bioSubEnable = stringResource(R.string.bio_prompt_sub_enable)
+    val bioCancel = stringResource(R.string.action_cancel)
 
     Box(
         Modifier
@@ -99,7 +113,17 @@ fun ShieldKeyApp() {
                         SoundFx.error(); false
                     }
                 },
-                onForgot = { screen = Screen.Recovery }
+                onForgot = { screen = Screen.Recovery },
+                biometricEnabled = bioAvailable && bioEnabled,
+                onBiometric = {
+                    val act = activity
+                    if (act != null) {
+                        BiometricGate.unlock(act, bioTitle, bioSubUnlock, bioCancel) { k ->
+                            if (k != null) { dek = k; SoundFx.success(); screen = Screen.Vault }
+                            else SoundFx.error()
+                        }
+                    }
+                }
             )
 
             Screen.Recovery -> RecoveryScreen(
@@ -115,11 +139,28 @@ fun ShieldKeyApp() {
                 onCancel = { screen = Screen.Unlock }
             )
 
-            Screen.Vault -> VaultScreen(onLock = {
-                dek = null
-                SoundFx.close()
-                screen = Screen.Unlock
-            })
+            Screen.Vault -> VaultScreen(
+                onLock = {
+                    dek = null
+                    SoundFx.close()
+                    screen = Screen.Unlock
+                },
+                biometricAvailable = bioAvailable,
+                biometricEnabled = bioEnabled,
+                onToggleBiometric = { turnOn ->
+                    val act = activity
+                    if (turnOn) {
+                        val d = dek
+                        if (act != null && d != null) {
+                            BiometricGate.enable(act, d, bioTitle, bioSubEnable, bioCancel) { ok ->
+                                if (ok) { bioEnabled = true; SoundFx.success() } else SoundFx.error()
+                            }
+                        }
+                    } else {
+                        BiometricGate.disable(context); bioEnabled = false
+                    }
+                }
+            )
         }
     }
 }
@@ -218,4 +259,14 @@ fun HintText(text: String, warn: Boolean = false) {
         fontSize = 12.sp,
         modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
     )
+}
+
+/** Remonte la chaîne des Context pour retrouver la FragmentActivity (requise par BiometricPrompt). */
+private fun Context.findFragmentActivity(): FragmentActivity? {
+    var c: Context? = this
+    while (c is ContextWrapper) {
+        if (c is FragmentActivity) return c
+        c = c.baseContext
+    }
+    return null
 }

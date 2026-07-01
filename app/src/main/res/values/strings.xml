@@ -44,6 +44,14 @@
     <string name="vault_empty_sub">Add your first entry with the button below.</string>
     <string name="vault_add">+ Add an entry</string>
 
+    <!-- Biometric unlock -->
+    <string name="bio_prompt_title">Unlock ShieldKey</string>
+    <string name="bio_prompt_sub_unlock">Confirm your identity to open your vault</string>
+    <string name="bio_prompt_sub_enable">Confirm your identity to enable quick unlock</string>
+    <string name="bio_unlock_button">👆 Unlock with biometrics</string>
+    <string name="bio_enable">👆 Enable biometric unlock</string>
+    <string name="bio_enabled">👆 Biometric unlock enabled</string>
+
     <!-- Language -->
     <string name="lang_title">Language</string>
     <string name="lang_system">System (default)</string>

@@ -17,9 +17,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -157,11 +160,19 @@ fun RecoveryKitScreen(code: String, onDone: () -> Unit) {
 //  Déverrouillage
 // ---------------------------------------------------------------------------
 @Composable
-fun UnlockScreen(onUnlock: suspend (String) -> Boolean, onForgot: () -> Unit) {
+fun UnlockScreen(
+    onUnlock: suspend (String) -> Boolean,
+    onForgot: () -> Unit,
+    biometricEnabled: Boolean = false,
+    onBiometric: () -> Unit = {}
+) {
     val scope = rememberCoroutineScope()
     var pwd by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf(false) }
+
+    // Si la biométrie est active, on propose l'empreinte dès l'ouverture de l'écran.
+    LaunchedEffect(Unit) { if (biometricEnabled) onBiometric() }
 
     CenteredColumn {
         SkLogo()
@@ -182,6 +193,12 @@ fun UnlockScreen(onUnlock: suspend (String) -> Boolean, onForgot: () -> Unit) {
                     pwd = ""
                 }
                 loading = false
+            }
+        }
+        if (biometricEnabled) {
+            Spacer(Modifier.height(8.dp))
+            TextButton(onClick = onBiometric) {
+                Text(stringResource(R.string.bio_unlock_button), color = SkEmerald2, fontSize = 14.sp)
             }
         }
         Spacer(Modifier.height(6.dp))
@@ -244,7 +261,12 @@ fun RecoveryScreen(onRecover: suspend (String, String) -> Boolean, onCancel: () 
 //  Coffre (vide pour l'instant — l'ajout d'entrées arrive à l'étape 4)
 // ---------------------------------------------------------------------------
 @Composable
-fun VaultScreen(onLock: () -> Unit) {
+fun VaultScreen(
+    onLock: () -> Unit,
+    biometricAvailable: Boolean = false,
+    biometricEnabled: Boolean = false,
+    onToggleBiometric: (Boolean) -> Unit = {}
+) {
     Column(Modifier.fillMaxSize().padding(20.dp)) {
         Row(
             Modifier.fillMaxWidth().padding(top = 24.dp),
@@ -261,6 +283,31 @@ fun VaultScreen(onLock: () -> Unit) {
             Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Color(0x14FFFFFF)).padding(12.dp)
         ) {
             Text(stringResource(R.string.vault_secure_badge), color = SkMuted, fontSize = 12.sp)
+        }
+        if (biometricAvailable) {
+            Spacer(Modifier.height(10.dp))
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color(0x14FFFFFF))
+                    .clickable { onToggleBiometric(!biometricEnabled) }
+                    .padding(start = 12.dp, end = 4.dp, top = 2.dp, bottom = 2.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    stringResource(if (biometricEnabled) R.string.bio_enabled else R.string.bio_enable),
+                    color = SkText, fontSize = 13.sp, modifier = Modifier.weight(1f)
+                )
+                Switch(
+                    checked = biometricEnabled,
+                    onCheckedChange = { onToggleBiometric(it) },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = SkOnPrimary,
+                        checkedTrackColor = SkEmerald
+                    )
+                )
+            }
         }
         Spacer(Modifier.height(16.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

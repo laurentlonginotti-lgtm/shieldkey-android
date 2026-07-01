@@ -4,6 +4,10 @@
     <!-- AUCUNE permission réseau : le coffre est 100 % hors-ligne.
          C'est volontaire (argument de confiance + 0 surface de fuite). -->
 
+    <!-- Biométrie : accès au capteur d'empreinte / visage. Permission LOCALE au matériel,
+         ce n'est PAS une permission Internet — l'argument "100 % hors-ligne" reste vrai. -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+
     <application
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher"

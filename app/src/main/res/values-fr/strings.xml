@@ -44,6 +44,14 @@
     <string name="vault_empty_sub">Ajoutez votre première entrée avec le bouton ci-dessous.</string>
     <string name="vault_add">+ Ajouter une entrée</string>
 
+    <!-- Déverrouillage biométrique -->
+    <string name="bio_prompt_title">Déverrouiller ShieldKey</string>
+    <string name="bio_prompt_sub_unlock">Confirmez votre identité pour ouvrir votre coffre</string>
+    <string name="bio_prompt_sub_enable">Confirmez votre identité pour activer le déverrouillage rapide</string>
+    <string name="bio_unlock_button">👆 Déverrouiller par biométrie</string>
+    <string name="bio_enable">👆 Activer le déverrouillage biométrique</string>
+    <string name="bio_enabled">👆 Déverrouillage biométrique activé</string>
+
     <!-- Language -->
     <string name="lang_title">Langue</string>
     <string name="lang_system">Système (par défaut)</string>

@@ -3,14 +3,15 @@ package com.shieldkey.vault
 import android.content.Context
 import android.os.Bundle
 import android.view.WindowManager
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.fragment.app.FragmentActivity
 import com.shieldkey.vault.i18n.LocaleHelper
 import com.shieldkey.vault.sound.SoundFx
 import com.shieldkey.vault.ui.ShieldKeyApp
 import com.shieldkey.vault.ui.theme.ShieldKeyTheme
 
-class MainActivity : ComponentActivity() {
+// FragmentActivity (et non ComponentActivity) : requis par androidx BiometricPrompt.
+class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Son d'ouverture (au 1er lancement de l'activité, pas lors des rotations).
