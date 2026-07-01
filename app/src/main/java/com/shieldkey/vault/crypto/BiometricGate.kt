@@ -93,16 +93,12 @@ object BiometricGate {
             .setKeySize(256)
             .setUserAuthenticationRequired(true)
 
-        // Auth valable quelques secondes → autorise biométrie ET code de l'écran (PIN/schéma/mdp).
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            builder.setUserAuthenticationParameters(
-                AUTH_VALIDITY_SECONDS,
-                KeyProperties.AUTH_BIOMETRIC or KeyProperties.AUTH_DEVICE_CREDENTIAL
-            )
-        } else {
-            @Suppress("DEPRECATION")
-            builder.setUserAuthenticationValidityDurationSeconds(AUTH_VALIDITY_SECONDS)
-        }
+        // Auth valable quelques secondes après un déverrouillage de l'appareil (biométrie OU code
+        // de l'écran). setUserAuthenticationValidityDurationSeconds marche dès Android 6 (API 23) et
+        // autorise les DEUX modes ; on l'utilise partout (déprécié en API 30 mais toujours
+        // fonctionnel) pour éviter les constantes KeyProperties.AUTH_* introuvables à la compilation.
+        @Suppress("DEPRECATION")
+        builder.setUserAuthenticationValidityDurationSeconds(AUTH_VALIDITY_SECONDS)
         if (strongBox && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             builder.setIsStrongBoxBacked(true)
         }
@@ -164,8 +160,7 @@ object BiometricGate {
         val iv = blob.copyOfRange(0, IV_LEN)
         val ct = blob.copyOfRange(IV_LEN, blob.size)
 
-        val key = existingKey()
-        if (key == null) { onResult(null); return }
+        val key = existingKey() ?: run { onResult(null); return }
 
         prompt(activity, title, subtitle) { authed ->
             if (!authed) { onResult(null); return@prompt }

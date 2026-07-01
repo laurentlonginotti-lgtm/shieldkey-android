@@ -57,7 +57,15 @@ jobs:
           echo "release_ready=true" >> "$GITHUB_OUTPUT"
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --no-daemon --stacktrace --info
+        run: |
+          set +e
+          ./gradlew assembleDebug --no-daemon --console=plain 2>&1 | tee build.log
+          STATUS=${PIPESTATUS[0]}
+          echo ""
+          echo "==================== ERREURS KOTLIN (copier ci-dessous) ===================="
+          grep -nE "^e: |error:|warning:.*unresolved" build.log
+          echo "==========================================================================="
+          exit $STATUS
 
       - name: Build Release APK
         if: ${{ steps.decode_keystore.outputs.release_ready == 'true' }}
