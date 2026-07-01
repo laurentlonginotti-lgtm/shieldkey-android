@@ -57,7 +57,7 @@ jobs:
           echo "release_ready=true" >> "$GITHUB_OUTPUT"
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --no-daemon
+        run: ./gradlew assembleDebug --no-daemon --stacktrace --info
 
       - name: Build Release APK
         if: ${{ steps.decode_keystore.outputs.release_ready == 'true' }}
