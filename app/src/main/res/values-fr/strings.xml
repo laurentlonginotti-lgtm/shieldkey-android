@@ -44,6 +44,12 @@
     <string name="vault_empty_sub">Ajoutez votre première entrée avec le bouton ci-dessous.</string>
     <string name="vault_add">+ Ajouter une entrée</string>
 
+    <!-- Documents -->
+    <string name="doc_empty_title">Aucun document</string>
+    <string name="doc_empty_sub">Rangez vos fichiers importants — pièce d\'identité, contrats, clés. Chiffrés, hors-ligne, toujours accessibles même sans connexion.</string>
+    <string name="doc_add">+ Ajouter un document</string>
+    <string name="doc_delete">Supprimer</string>
+
     <!-- Déverrouillage biométrique -->
     <string name="bio_prompt_title">Déverrouiller ShieldKey</string>
     <string name="bio_prompt_sub_unlock">Confirmez votre identité pour ouvrir votre coffre</string>

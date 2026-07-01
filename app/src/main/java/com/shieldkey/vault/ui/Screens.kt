@@ -47,7 +47,21 @@ import com.shieldkey.vault.ui.theme.SkGold
 import com.shieldkey.vault.ui.theme.SkMuted
 import com.shieldkey.vault.ui.theme.SkOnPrimary
 import com.shieldkey.vault.ui.theme.SkText
+import android.provider.OpenableColumns
+import android.text.format.Formatter
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
+import com.shieldkey.vault.data.DocumentMeta
+import com.shieldkey.vault.data.DocumentStore
+import com.shieldkey.vault.data.VaultRepository
+import com.shieldkey.vault.data.VaultStore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 // ---------------------------------------------------------------------------
 //  Création du coffre
@@ -262,11 +276,60 @@ fun RecoveryScreen(onRecover: suspend (String, String) -> Boolean, onCancel: () 
 // ---------------------------------------------------------------------------
 @Composable
 fun VaultScreen(
+    dek: ByteArray,
     onLock: () -> Unit,
     biometricAvailable: Boolean = false,
     biometricEnabled: Boolean = false,
     onToggleBiometric: (Boolean) -> Unit = {}
 ) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val store = remember { VaultStore(context) }
+    val docStore = remember { DocumentStore(context) }
+
+    var docs by remember { mutableStateOf<List<DocumentMeta>>(emptyList()) }
+    var reload by remember { mutableStateOf(0) }
+    var busy by remember { mutableStateOf(false) }
+
+    LaunchedEffect(reload) {
+        docs = withContext(Dispatchers.IO) { VaultRepository.listDocuments(store, dek) }
+    }
+
+    // Sélecteur de fichier système (SAF) : aucune permission de stockage requise.
+    val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) {
+            scope.launch {
+                busy = true
+                val ok = withContext(Dispatchers.IO) {
+                    try {
+                        val cr = context.contentResolver
+                        val bytes = cr.openInputStream(uri)?.use { it.readBytes() } ?: return@withContext false
+                        var name = "document"
+                        var size = bytes.size.toLong()
+                        cr.query(uri, null, null, null, null)?.use { c ->
+                            val ni = c.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                            val si = c.getColumnIndex(OpenableColumns.SIZE)
+                            if (c.moveToFirst()) {
+                                if (ni >= 0) c.getString(ni)?.let { name = it }
+                                if (si >= 0 && !c.isNull(si)) size = c.getLong(si)
+                            }
+                        }
+                        val mime = cr.getType(uri) ?: "application/octet-stream"
+                        val id = docStore.save(dek, bytes)
+                        VaultRepository.addDocument(
+                            store, dek, DocumentMeta(id, name, mime, size, System.currentTimeMillis())
+                        )
+                        true
+                    } catch (e: Exception) {
+                        false
+                    }
+                }
+                busy = false
+                if (ok) { reload++; SoundFx.success() } else SoundFx.error()
+            }
+        }
+    }
+
     Column(Modifier.fillMaxSize().padding(20.dp)) {
         Row(
             Modifier.fillMaxWidth().padding(top = 24.dp),
@@ -315,18 +378,76 @@ fun VaultScreen(
             CategoryChip("🔑", false)
             CategoryChip("💳", false)
             CategoryChip("₿", false)
-            CategoryChip("📝", false)
+            CategoryChip("📄", false)
         }
-        Spacer(Modifier.weight(1f))
-        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("🗄️", fontSize = 46.sp)
-            Spacer(Modifier.height(8.dp))
-            Text(stringResource(R.string.vault_empty_title), color = SkText, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.height(4.dp))
-            Text(stringResource(R.string.vault_empty_sub), color = SkMuted, fontSize = 13.sp, textAlign = TextAlign.Center)
+        Spacer(Modifier.height(12.dp))
+        Column(
+            Modifier.fillMaxWidth().weight(1f).verticalScroll(rememberScrollState())
+        ) {
+            if (docs.isEmpty()) {
+                Spacer(Modifier.height(48.dp))
+                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("📄", fontSize = 46.sp)
+                    Spacer(Modifier.height(8.dp))
+                    Text(stringResource(R.string.doc_empty_title), color = SkText, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.height(4.dp))
+                    Text(stringResource(R.string.doc_empty_sub), color = SkMuted, fontSize = 13.sp, textAlign = TextAlign.Center)
+                }
+            } else {
+                docs.forEach { meta ->
+                    DocumentRow(
+                        meta = meta,
+                        onDelete = {
+                            scope.launch {
+                                withContext(Dispatchers.IO) {
+                                    docStore.delete(meta.id)
+                                    VaultRepository.removeDocument(store, dek, meta.id)
+                                }
+                                reload++
+                                SoundFx.close()
+                            }
+                        }
+                    )
+                    Spacer(Modifier.height(8.dp))
+                }
+            }
         }
-        Spacer(Modifier.weight(1f))
-        SkPrimaryButton(stringResource(R.string.vault_add), enabled = true) { /* étape 4 */ }
+        Spacer(Modifier.height(12.dp))
+        SkPrimaryButton(stringResource(R.string.doc_add), enabled = !busy, loading = busy) {
+            picker.launch(arrayOf("*/*"))
+        }
+    }
+}
+
+@Composable
+private fun DocumentRow(meta: DocumentMeta, onDelete: () -> Unit) {
+    val context = LocalContext.current
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(Color(0x14FFFFFF))
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text("📄", fontSize = 22.sp)
+        Spacer(Modifier.width(10.dp))
+        Column(Modifier.weight(1f)) {
+            Text(
+                meta.name,
+                color = SkText,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(Formatter.formatShortFileSize(context, meta.size), color = SkMuted, fontSize = 11.sp)
+        }
+        Text(
+            "🗑",
+            fontSize = 18.sp,
+            modifier = Modifier.clickable { onDelete() }.padding(6.dp)
+        )
     }
 }
 

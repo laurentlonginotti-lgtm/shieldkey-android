@@ -44,6 +44,12 @@
     <string name="vault_empty_sub">Add your first entry with the button below.</string>
     <string name="vault_add">+ Add an entry</string>
 
+    <!-- Documents -->
+    <string name="doc_empty_title">No documents yet</string>
+    <string name="doc_empty_sub">Store your important files — ID, contracts, keys. Encrypted, offline, always available even with no connection.</string>
+    <string name="doc_add">+ Add a document</string>
+    <string name="doc_delete">Delete</string>
+
     <!-- Biometric unlock -->
     <string name="bio_prompt_title">Unlock ShieldKey</string>
     <string name="bio_prompt_sub_unlock">Confirm your identity to open your vault</string>

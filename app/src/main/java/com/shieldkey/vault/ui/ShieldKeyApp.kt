@@ -139,28 +139,30 @@ fun ShieldKeyApp() {
                 onCancel = { screen = Screen.Unlock }
             )
 
-            Screen.Vault -> VaultScreen(
-                onLock = {
-                    dek = null
-                    SoundFx.close()
-                    screen = Screen.Unlock
-                },
-                biometricAvailable = bioAvailable,
-                biometricEnabled = bioEnabled,
-                onToggleBiometric = { turnOn ->
-                    val act = activity
-                    if (turnOn) {
-                        val d = dek
-                        if (act != null && d != null) {
-                            BiometricGate.enable(act, d, bioTitle, bioSubEnable, bioCancel) { ok ->
-                                if (ok) { bioEnabled = true; SoundFx.success() } else SoundFx.error()
+            Screen.Vault -> dek?.let { currentDek ->
+                VaultScreen(
+                    dek = currentDek,
+                    onLock = {
+                        dek = null
+                        SoundFx.close()
+                        screen = Screen.Unlock
+                    },
+                    biometricAvailable = bioAvailable,
+                    biometricEnabled = bioEnabled,
+                    onToggleBiometric = { turnOn ->
+                        val act = activity
+                        if (turnOn) {
+                            if (act != null) {
+                                BiometricGate.enable(act, currentDek, bioTitle, bioSubEnable, bioCancel) { ok ->
+                                    if (ok) { bioEnabled = true; SoundFx.success() } else SoundFx.error()
+                                }
                             }
+                        } else {
+                            BiometricGate.disable(context); bioEnabled = false
                         }
-                    } else {
-                        BiometricGate.disable(context); bioEnabled = false
                     }
-                }
-            )
+                )
+            }
         }
     }
 }
