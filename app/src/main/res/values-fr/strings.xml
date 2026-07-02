@@ -67,6 +67,20 @@
     <string name="field_wallet">Wallet / plateforme</string>
     <string name="field_note_body">Contenu</string>
 
+    <!-- Genres de carte + champs de paiement -->
+    <string name="card_kind_physical">Physique</string>
+    <string name="card_kind_ecard">E-carte</string>
+    <string name="card_kind_ctp">Click to Pay</string>
+    <string name="card_kind_iban">IBAN / compte</string>
+    <string name="field_card_limit">Plafond</string>
+    <string name="field_card_validity">Valable jusqu\'au</string>
+    <string name="field_card_source">Carte source</string>
+    <string name="field_ctp_email">E-mail d\'enrôlement</string>
+    <string name="field_ctp_cards">Cartes enrôlées</string>
+    <string name="field_ctp_network">Réseau (Visa, Mastercard…)</string>
+    <string name="field_bic">BIC / SWIFT</string>
+    <string name="field_bank">Banque</string>
+
     <string name="action_save">Enregistrer</string>
     <string name="action_back">‹ Retour</string>
     <string name="action_edit">✏️ Modifier</string>

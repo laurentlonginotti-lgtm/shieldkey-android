@@ -3,6 +3,8 @@ package com.shieldkey.vault.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -85,14 +88,7 @@ fun fieldsFor(type: EntryType): List<FieldSpec> = when (type) {
         FieldSpec("url", R.string.field_url, keyboard = KeyboardType.Uri),
         FieldSpec("notes", R.string.field_notes, multiline = true)
     )
-    EntryType.CARD -> listOf(
-        FieldSpec("holder", R.string.field_holder),
-        FieldSpec("number", R.string.field_card_number, sensitive = true, keyboard = KeyboardType.Number),
-        FieldSpec("expiry", R.string.field_expiry, keyboard = KeyboardType.Number),
-        FieldSpec("cvv", R.string.field_cvv, sensitive = true, keyboard = KeyboardType.Number),
-        FieldSpec("iban", R.string.field_iban, sensitive = true),
-        FieldSpec("notes", R.string.field_notes, multiline = true)
-    )
+    EntryType.CARD -> cardFields(CardKind.PHYSICAL)   // défaut ; le vrai genre est choisi à l'édition
     EntryType.CRYPTO -> listOf(
         FieldSpec("seed", R.string.field_seed, sensitive = true, multiline = true),
         FieldSpec("privateKey", R.string.field_private_key, sensitive = true, multiline = true),
@@ -101,6 +97,55 @@ fun fieldsFor(type: EntryType): List<FieldSpec> = when (type) {
     )
     EntryType.NOTE -> listOf(
         FieldSpec("body", R.string.field_note_body, multiline = true)
+    )
+}
+
+/**
+ * Genre d'une entrée 💳 — le champ réservé "kind" du coffre le stocke, et il fait varier les
+ * champs affichés. Une carte physique, une e-carte jetable, un enrôlement Click to Pay et un
+ * IBAN/RIB ne portent pas les mêmes informations.
+ */
+enum class CardKind(val id: String, val labelRes: Int) {
+    PHYSICAL("physical", R.string.card_kind_physical),
+    ECARD("ecard", R.string.card_kind_ecard),
+    CLICK_TO_PAY("clicktopay", R.string.card_kind_ctp),
+    IBAN("iban", R.string.card_kind_iban);
+
+    companion object {
+        fun from(id: String?): CardKind = values().firstOrNull { it.id == id } ?: PHYSICAL
+    }
+}
+
+fun cardFields(kind: CardKind): List<FieldSpec> = when (kind) {
+    CardKind.PHYSICAL -> listOf(
+        FieldSpec("holder", R.string.field_holder),
+        FieldSpec("number", R.string.field_card_number, sensitive = true, keyboard = KeyboardType.Number),
+        FieldSpec("expiry", R.string.field_expiry, keyboard = KeyboardType.Number),
+        FieldSpec("cvv", R.string.field_cvv, sensitive = true, keyboard = KeyboardType.Number),
+        FieldSpec("notes", R.string.field_notes, multiline = true)
+    )
+    CardKind.ECARD -> listOf(
+        FieldSpec("holder", R.string.field_holder),
+        FieldSpec("number", R.string.field_card_number, sensitive = true, keyboard = KeyboardType.Number),
+        FieldSpec("expiry", R.string.field_expiry, keyboard = KeyboardType.Number),
+        FieldSpec("cvv", R.string.field_cvv, sensitive = true, keyboard = KeyboardType.Number),
+        FieldSpec("limit", R.string.field_card_limit, keyboard = KeyboardType.Number),
+        FieldSpec("validity", R.string.field_card_validity),
+        FieldSpec("source", R.string.field_card_source),
+        FieldSpec("notes", R.string.field_notes, multiline = true)
+    )
+    CardKind.CLICK_TO_PAY -> listOf(
+        FieldSpec("email", R.string.field_ctp_email, keyboard = KeyboardType.Email),
+        FieldSpec("cards", R.string.field_ctp_cards, multiline = true),
+        FieldSpec("network", R.string.field_ctp_network),
+        FieldSpec("notes", R.string.field_notes, multiline = true)
+    )
+    CardKind.IBAN -> listOf(
+        FieldSpec("holder", R.string.field_holder),
+        FieldSpec("iban", R.string.field_iban, sensitive = true),
+        FieldSpec("bic", R.string.field_bic),
+        FieldSpec("bank", R.string.field_bank),
+        FieldSpec("notes", R.string.field_notes, multiline = true)
     )
 }
 
@@ -113,7 +158,11 @@ fun typeLabelRes(type: EntryType): Int = when (type) {
 
 private fun entrySubtitle(e: VaultEntry): String = when (e.type) {
     EntryType.LOGIN -> e.fields["username"].orEmpty()
-    EntryType.CARD -> maskCard(e.fields["number"].orEmpty())
+    EntryType.CARD -> when (CardKind.from(e.fields["kind"])) {
+        CardKind.CLICK_TO_PAY -> e.fields["email"].orEmpty()
+        CardKind.IBAN -> maskCard(e.fields["iban"].orEmpty())
+        else -> maskCard(e.fields["number"].orEmpty())
+    }
     EntryType.CRYPTO -> e.fields["wallet"].orEmpty()
     EntryType.NOTE -> e.fields["body"].orEmpty().lineSequence().firstOrNull()?.take(48).orEmpty()
 }
@@ -215,7 +264,9 @@ fun EntryEditorScreen(
     onSave: (VaultEntry) -> Unit
 ) {
     var title by remember { mutableStateOf(existing?.title ?: "") }
-    val specs = fieldsFor(type)
+    // Pour une carte, le genre (physique / e-carte / Click to Pay / IBAN) fait varier les champs.
+    var cardKind by remember { mutableStateOf(CardKind.from(existing?.fields?.get("kind"))) }
+    val specs = if (type == EntryType.CARD) cardFields(cardKind) else fieldsFor(type)
     val values = remember {
         mutableStateMapOf<String, String>().apply { existing?.fields?.forEach { (k, v) -> put(k, v) } }
     }
@@ -224,6 +275,18 @@ fun EntryEditorScreen(
     CenteredColumn {
         Text("${type.icon}  ${stringResource(typeLabelRes(type))}", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(18.dp))
+
+        if (type == EntryType.CARD) {
+            Row(
+                Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                CardKind.values().forEach { k ->
+                    CategoryChip(stringResource(k.labelRes), cardKind == k) { cardKind = k }
+                }
+            }
+            Spacer(Modifier.height(14.dp))
+        }
 
         OutlinedTextField(
             value = title,
@@ -257,6 +320,7 @@ fun EntryEditorScreen(
         Spacer(Modifier.height(10.dp))
         SkPrimaryButton(stringResource(R.string.action_save), enabled = canSave) {
             val fields = LinkedHashMap<String, String>()
+            if (type == EntryType.CARD) fields["kind"] = cardKind.id   // champ réservé (genre de carte)
             specs.forEach { s -> values[s.key]?.trim()?.let { if (it.isNotEmpty()) fields[s.key] = it } }
             onSave(
                 VaultEntry(
@@ -325,11 +389,15 @@ fun EntryDetailScreen(
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
-            Text(stringResource(typeLabelRes(entry.type)), color = SkMuted, fontSize = 13.sp)
+            val cardKind = if (entry.type == EntryType.CARD) CardKind.from(entry.fields["kind"]) else null
+            val subtitle = stringResource(typeLabelRes(entry.type)) +
+                (cardKind?.let { " · " + stringResource(it.labelRes) } ?: "")
+            Text(subtitle, color = SkMuted, fontSize = 13.sp)
             Spacer(Modifier.height(18.dp))
 
+            val specs = if (cardKind != null) cardFields(cardKind) else fieldsFor(entry.type)
             var shown = 0
-            fieldsFor(entry.type).forEach { spec ->
+            specs.forEach { spec ->
                 val v = entry.fields[spec.key].orEmpty()
                 if (v.isNotBlank()) {
                     shown++
