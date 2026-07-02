@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shieldkey.vault.R
 import com.shieldkey.vault.crypto.BiometricGate
+import com.shieldkey.vault.data.BackupManager
 import com.shieldkey.vault.data.VaultStore
 import com.shieldkey.vault.sound.SoundFx
 import com.shieldkey.vault.util.SecureClipboard
@@ -64,7 +65,7 @@ import com.shieldkey.vault.ui.theme.SkText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-private enum class Screen { Onboarding, RecoveryKit, Unlock, Recovery, Vault }
+private enum class Screen { Onboarding, RecoveryKit, Unlock, Recovery, Vault, Restore }
 
 /**
  * Hôte de l'application : machine à états entre les écrans.
@@ -123,7 +124,8 @@ fun ShieldKeyApp() {
                     SoundFx.success()
                     screen = Screen.RecoveryKit
                 },
-                onSecurity = { showSecurity = true }
+                onSecurity = { showSecurity = true },
+                onRestore = { screen = Screen.Restore }
             )
 
             Screen.RecoveryKit -> RecoveryKitScreen(code = recoveryToShow, onDone = {
@@ -142,6 +144,7 @@ fun ShieldKeyApp() {
                 },
                 onForgot = { screen = Screen.Recovery },
                 onSecurity = { showSecurity = true },
+                onRestore = { screen = Screen.Restore },
                 biometricEnabled = bioAvailable && bioEnabled,
                 onBiometric = {
                     val act = activity
@@ -167,6 +170,22 @@ fun ShieldKeyApp() {
                     }
                 },
                 onCancel = { screen = Screen.Unlock }
+            )
+
+            Screen.Restore -> RestoreScreen(
+                onSuspendAutoLock = { authInProgress = it },
+                onSubmit = { bytes, pwd ->
+                    val restored = withContext(Dispatchers.Default) { BackupManager.import(context, bytes, pwd) }
+                    var ok = false
+                    if (restored) {
+                        BiometricGate.disable(context)   // le déverrouillage rapide de l'ancien tél ne vaut plus
+                        bioEnabled = false
+                        val k = withContext(Dispatchers.Default) { store.unlock(pwd) }
+                        if (k != null) { dek = k; SoundFx.success(); screen = Screen.Vault; ok = true }
+                    }
+                    ok
+                },
+                onCancel = { screen = if (store.isInitialized()) Screen.Unlock else Screen.Onboarding }
             )
 
             Screen.Vault -> dek?.let { currentDek ->

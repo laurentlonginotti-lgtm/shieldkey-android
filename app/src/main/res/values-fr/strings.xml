@@ -135,6 +135,21 @@
     <string name="sec_phish_body">ShieldKey ne t\'enverra jamais d\'e-mail ou de SMS pour demander ton mot de passe ou tes données. Si quelqu\'un le fait, ce n\'est pas nous.</string>
     <string name="sec_footer">AES-256-GCM · Argon2id · 0 Internet</string>
 
+    <!-- Sauvegarde / restauration -->
+    <string name="backup_open">💾 Sauvegarder le coffre</string>
+    <string name="backup_title">Sauvegarder le coffre</string>
+    <string name="backup_prompt">Entre ton mot de passe maître pour chiffrer le fichier de sauvegarde.</string>
+    <string name="backup_action">Créer la sauvegarde</string>
+    <string name="backup_hint">Un fichier .skb chiffré. Garde-le en lieu sûr (Drive, ordinateur…) pour restaurer sur un nouveau téléphone.</string>
+    <string name="restore_open">🗄️ Restaurer une sauvegarde</string>
+    <string name="restore_title">Restaurer une sauvegarde</string>
+    <string name="restore_pick">Choisir le fichier de sauvegarde (.skb)</string>
+    <string name="restore_file_ok">✓ Fichier sélectionné</string>
+    <string name="restore_prompt">Entre le mot de passe maître de cette sauvegarde.</string>
+    <string name="restore_action">Restaurer</string>
+    <string name="restore_warning">⚠️ Ceci remplace le coffre présent sur ce téléphone.</string>
+    <string name="restore_error">Mot de passe incorrect ou fichier invalide.</string>
+
     <!-- Language -->
     <string name="lang_title">Langue</string>
     <string name="lang_system">Système (par défaut)</string>

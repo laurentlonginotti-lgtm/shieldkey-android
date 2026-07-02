@@ -135,6 +135,21 @@
     <string name="sec_phish_body">ShieldKey will never email or text you to ask for your password or data. If someone does, it is not us.</string>
     <string name="sec_footer">AES-256-GCM · Argon2id · 0 Internet</string>
 
+    <!-- Backup / restore -->
+    <string name="backup_open">💾 Back up the vault</string>
+    <string name="backup_title">Back up the vault</string>
+    <string name="backup_prompt">Enter your master password to encrypt the backup file.</string>
+    <string name="backup_action">Create backup</string>
+    <string name="backup_hint">One encrypted .skb file. Keep it somewhere safe (Drive, computer…) to restore on a new phone.</string>
+    <string name="restore_open">🗄️ Restore a backup</string>
+    <string name="restore_title">Restore a backup</string>
+    <string name="restore_pick">Choose the backup file (.skb)</string>
+    <string name="restore_file_ok">✓ File selected</string>
+    <string name="restore_prompt">Enter the master password of that backup.</string>
+    <string name="restore_action">Restore</string>
+    <string name="restore_warning">⚠️ This replaces any vault currently on this phone.</string>
+    <string name="restore_error">Wrong password or invalid file.</string>
+
     <!-- Language -->
     <string name="lang_title">Language</string>
     <string name="lang_system">System (default)</string>

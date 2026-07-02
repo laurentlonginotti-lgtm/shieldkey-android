@@ -60,12 +60,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.FileProvider
 import java.io.File
 import androidx.compose.ui.text.style.TextOverflow
+import com.shieldkey.vault.data.BackupManager
 import com.shieldkey.vault.data.DocumentMeta
 import com.shieldkey.vault.data.DocumentStore
 import com.shieldkey.vault.data.EntryType
 import com.shieldkey.vault.data.VaultEntry
 import com.shieldkey.vault.data.VaultRepository
 import com.shieldkey.vault.data.VaultStore
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -74,7 +78,11 @@ import kotlinx.coroutines.withContext
 //  Création du coffre
 // ---------------------------------------------------------------------------
 @Composable
-fun OnboardingScreen(onCreate: suspend (String) -> Unit, onSecurity: () -> Unit = {}) {
+fun OnboardingScreen(
+    onCreate: suspend (String) -> Unit,
+    onSecurity: () -> Unit = {},
+    onRestore: () -> Unit = {}
+) {
     val scope = rememberCoroutineScope()
     var pwd by remember { mutableStateOf("") }
     var confirm by remember { mutableStateOf("") }
@@ -113,6 +121,7 @@ fun OnboardingScreen(onCreate: suspend (String) -> Unit, onSecurity: () -> Unit 
         }
         Spacer(Modifier.height(10.dp))
         TextButton(onClick = onSecurity) { Text(stringResource(R.string.sec_open), color = SkEmerald2, fontSize = 13.sp) }
+        TextButton(onClick = onRestore) { Text(stringResource(R.string.restore_open), color = SkEmerald2, fontSize = 13.sp) }
         LanguageButton()
     }
 }
@@ -186,6 +195,7 @@ fun UnlockScreen(
     onUnlock: suspend (String) -> Boolean,
     onForgot: () -> Unit,
     onSecurity: () -> Unit = {},
+    onRestore: () -> Unit = {},
     biometricEnabled: Boolean = false,
     onBiometric: () -> Unit = {}
 ) {
@@ -230,6 +240,7 @@ fun UnlockScreen(
         }
         Spacer(Modifier.height(20.dp))
         TextButton(onClick = onSecurity) { Text(stringResource(R.string.sec_open), color = SkEmerald2, fontSize = 13.sp) }
+        TextButton(onClick = onRestore) { Text(stringResource(R.string.restore_open), color = SkEmerald2, fontSize = 13.sp) }
         Text(stringResource(R.string.offline_badge), color = SkMuted, fontSize = 11.sp)
         Spacer(Modifier.height(8.dp))
         LanguageButton()
@@ -306,6 +317,10 @@ fun VaultScreen(
     var busy by remember { mutableStateOf(false) }
     var cat by remember { mutableStateOf<CatFilter>(CatFilter.All) }
     var sub by remember { mutableStateOf<VaultSub>(VaultSub.List) }
+    var showBackupPrompt by remember { mutableStateOf(false) }
+    var backupError by remember { mutableStateOf<String?>(null) }
+    var pendingBackupPwd by remember { mutableStateOf("") }
+    val wrongPwd = stringResource(R.string.unlock_wrong)
 
     LaunchedEffect(reload) {
         val (e, d) = withContext(Dispatchers.IO) {
@@ -398,6 +413,31 @@ fun VaultScreen(
         }
     }
 
+    // --- Sauvegarde du coffre vers un fichier .skb chiffré (SAF, hors du téléphone) ---
+    val backupSaver = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("application/octet-stream")
+    ) { uri ->
+        onSuspendAutoLock(false)
+        val pwd = pendingBackupPwd
+        pendingBackupPwd = ""
+        if (uri != null && pwd.isNotEmpty()) {
+            scope.launch {
+                busy = true
+                val ok = withContext(Dispatchers.IO) {
+                    try {
+                        val bytes = BackupManager.export(context, pwd)
+                        val out = context.contentResolver.openOutputStream(uri) ?: return@withContext false
+                        out.use { it.write(bytes) }
+                        true
+                    } catch (e: Exception) { false }
+                }
+                busy = false
+                if (ok) SoundFx.success() else SoundFx.error()
+            }
+        }
+    }
+
+    Box(Modifier.fillMaxSize()) {
     when (val s = sub) {
         VaultSub.ChooseType -> ChooseTypeScreen(
             onPick = { t -> sub = VaultSub.Edit(t, null) },
@@ -506,6 +546,18 @@ fun VaultScreen(
                         }
                     }
                 }
+                if (c == CatFilter.All) {
+                    Spacer(Modifier.height(10.dp))
+                    Row(
+                        Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Color(0x14FFFFFF))
+                            .clickable { backupError = null; showBackupPrompt = true }
+                            .padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(stringResource(R.string.backup_open), color = SkText, fontSize = 13.sp, modifier = Modifier.weight(1f))
+                        Text("›", color = SkEmerald2, fontSize = 16.sp)
+                    }
+                }
                 Spacer(Modifier.height(16.dp))
                 Row(
                     Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
@@ -583,6 +635,33 @@ fun VaultScreen(
             }
         }
     }
+
+        if (showBackupPrompt) {
+            PasswordDialog(
+                title = stringResource(R.string.backup_title),
+                message = stringResource(R.string.backup_prompt),
+                confirmLabel = stringResource(R.string.backup_action),
+                error = backupError,
+                loading = busy,
+                onConfirm = { pwd ->
+                    scope.launch {
+                        val ok = withContext(Dispatchers.IO) { store.unlock(pwd) != null }
+                        if (ok) {
+                            backupError = null
+                            showBackupPrompt = false
+                            pendingBackupPwd = pwd
+                            onSuspendAutoLock(true)
+                            backupSaver.launch(
+                                "ShieldKey-sauvegarde-" +
+                                    SimpleDateFormat("yyyyMMdd", Locale.US).format(Date()) + ".skb"
+                            )
+                        } else backupError = wrongPwd
+                    }
+                },
+                onCancel = { showBackupPrompt = false; backupError = null }
+            )
+        }
+    }
 }
 
 @Composable
@@ -633,5 +712,116 @@ fun CategoryChip(label: String, on: Boolean, onClick: () -> Unit = {}) {
             fontSize = 12.sp,
             fontWeight = if (on) FontWeight.Bold else FontWeight.Normal
         )
+    }
+}
+
+// ---------------------------------------------------------------------------
+//  Boîte de dialogue « mot de passe » (surimpression, réutilisable)
+// ---------------------------------------------------------------------------
+@Composable
+fun PasswordDialog(
+    title: String,
+    message: String,
+    confirmLabel: String,
+    error: String?,
+    loading: Boolean,
+    onConfirm: (String) -> Unit,
+    onCancel: () -> Unit
+) {
+    var pwd by remember { mutableStateOf("") }
+    Box(
+        Modifier.fillMaxSize().background(Color(0xCC05090F)),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            Modifier
+                .padding(24.dp)
+                .clip(RoundedCornerShape(18.dp))
+                .background(Color(0xFF10192B))
+                .border(1.dp, Color(0x22FFFFFF), RoundedCornerShape(18.dp))
+                .padding(20.dp)
+        ) {
+            Text(title, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Spacer(Modifier.height(8.dp))
+            Text(message, color = SkMuted, fontSize = 13.sp)
+            Spacer(Modifier.height(14.dp))
+            SkPasswordField(pwd, { pwd = it }, stringResource(R.string.field_master_password))
+            if (error != null) HintText(error, warn = true)
+            Spacer(Modifier.height(16.dp))
+            SkPrimaryButton(confirmLabel, enabled = pwd.isNotBlank(), loading = loading) { onConfirm(pwd) }
+            TextButton(onClick = onCancel) { Text(stringResource(R.string.action_cancel), color = SkMuted) }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+//  Restauration d'une sauvegarde (nouveau téléphone)
+// ---------------------------------------------------------------------------
+@Composable
+fun RestoreScreen(
+    onSuspendAutoLock: (Boolean) -> Unit,
+    onSubmit: suspend (ByteArray, String) -> Boolean,
+    onCancel: () -> Unit
+) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var fileBytes by remember { mutableStateOf<ByteArray?>(null) }
+    var pwd by remember { mutableStateOf("") }
+    var loading by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf(false) }
+
+    val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        onSuspendAutoLock(false)
+        if (uri != null) {
+            scope.launch {
+                fileBytes = withContext(Dispatchers.IO) {
+                    try { context.contentResolver.openInputStream(uri)?.use { it.readBytes() } } catch (e: Exception) { null }
+                }
+                error = false
+            }
+        }
+    }
+
+    CenteredColumn {
+        SkLogo()
+        Spacer(Modifier.height(14.dp))
+        Text(stringResource(R.string.restore_title), color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(6.dp))
+        Text(stringResource(R.string.restore_warning), color = SkMuted, fontSize = 12.sp, textAlign = TextAlign.Center)
+        Spacer(Modifier.height(22.dp))
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .background(Color(0x14FFFFFF))
+                .clickable { onSuspendAutoLock(true); picker.launch(arrayOf("*/*")) }
+                .padding(16.dp)
+        ) {
+            Text(
+                if (fileBytes != null) stringResource(R.string.restore_file_ok) else stringResource(R.string.restore_pick),
+                color = if (fileBytes != null) SkEmerald2 else SkText,
+                fontSize = 14.sp
+            )
+        }
+        Spacer(Modifier.height(16.dp))
+        Text(stringResource(R.string.restore_prompt), color = SkMuted, fontSize = 12.sp)
+        Spacer(Modifier.height(8.dp))
+        SkPasswordField(pwd, { pwd = it; error = false }, stringResource(R.string.field_master_password))
+        if (error) HintText(stringResource(R.string.restore_error), warn = true)
+        Spacer(Modifier.height(20.dp))
+        SkPrimaryButton(
+            stringResource(R.string.restore_action),
+            enabled = fileBytes != null && pwd.isNotBlank(),
+            loading = loading
+        ) {
+            val bytes = fileBytes ?: return@SkPrimaryButton
+            scope.launch {
+                loading = true
+                val ok = onSubmit(bytes, pwd)
+                if (!ok) { error = true; SoundFx.error() }
+                loading = false
+            }
+        }
+        TextButton(onClick = onCancel) { Text(stringResource(R.string.action_cancel), color = SkMuted) }
     }
 }
