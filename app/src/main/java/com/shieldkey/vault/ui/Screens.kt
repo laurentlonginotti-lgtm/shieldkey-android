@@ -47,13 +47,17 @@ import com.shieldkey.vault.ui.theme.SkGold
 import com.shieldkey.vault.ui.theme.SkMuted
 import com.shieldkey.vault.ui.theme.SkOnPrimary
 import com.shieldkey.vault.ui.theme.SkText
+import android.content.Intent
 import android.provider.OpenableColumns
 import android.text.format.Formatter
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.FileProvider
+import java.io.File
 import androidx.compose.ui.text.style.TextOverflow
 import com.shieldkey.vault.data.DocumentMeta
 import com.shieldkey.vault.data.DocumentStore
@@ -333,6 +337,53 @@ fun VaultScreen(
         }
     }
 
+    // --- Ouverture / visualisation d'un document (hors-ligne) ---
+    // On déchiffre vers un fichier TEMPORAIRE en clair (cacheDir/open/), partagé à la
+    // visionneuse via FileProvider, puis on l'efface au retour et à la fermeture du coffre.
+    val openTempDir = remember { File(context.cacheDir, "open") }
+    fun clearOpenTemp() {
+        try { openTempDir.listFiles()?.forEach { it.delete() } } catch (_: Exception) {}
+    }
+    DisposableEffect(Unit) {
+        clearOpenTemp()                 // repart propre (reliquat d'un arrêt brutal éventuel)
+        onDispose { clearOpenTemp() }   // on quitte/verrouille le coffre → efface le clair
+    }
+    // Lancée via un launcher pour être notifié du RETOUR (réactiver le verrouillage + nettoyer).
+    val viewer = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        onSuspendAutoLock(false)
+        clearOpenTemp()
+    }
+    fun openDocument(meta: DocumentMeta) {
+        scope.launch {
+            busy = true
+            val intent = withContext(Dispatchers.IO) {
+                try {
+                    clearOpenTemp()
+                    openTempDir.mkdirs()
+                    val bytes = docStore.read(dek, meta.id)
+                    val safeName = meta.name.replace(Regex("[\\\\/:*?\"<>|]"), "_").ifBlank { "document" }
+                    val f = File(openTempDir, safeName)
+                    f.writeBytes(bytes)
+                    val uri = FileProvider.getUriForFile(context, context.packageName + ".fileprovider", f)
+                    Intent(Intent.ACTION_VIEW).apply {
+                        setDataAndType(uri, meta.mime.ifBlank { "application/octet-stream" })
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+                } catch (e: Exception) { null }
+            }
+            busy = false
+            if (intent == null) { SoundFx.error(); return@launch }
+            onSuspendAutoLock(true)
+            try {
+                viewer.launch(intent)
+            } catch (e: Exception) {    // aucune appli capable d'ouvrir ce type de fichier
+                onSuspendAutoLock(false)
+                clearOpenTemp()
+                SoundFx.error()
+            }
+        }
+    }
+
     Column(Modifier.fillMaxSize().padding(20.dp)) {
         Row(
             Modifier.fillMaxWidth().padding(top = 24.dp),
@@ -410,6 +461,7 @@ fun VaultScreen(
                 docs.forEach { meta ->
                     DocumentRow(
                         meta = meta,
+                        onOpen = { openDocument(meta) },
                         onDelete = {
                             scope.launch {
                                 withContext(Dispatchers.IO) {
@@ -434,13 +486,14 @@ fun VaultScreen(
 }
 
 @Composable
-private fun DocumentRow(meta: DocumentMeta, onDelete: () -> Unit) {
+private fun DocumentRow(meta: DocumentMeta, onOpen: () -> Unit, onDelete: () -> Unit) {
     val context = LocalContext.current
     Row(
         Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(Color(0x14FFFFFF))
+            .clickable { onOpen() }   // toucher la ligne = ouvrir le document
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

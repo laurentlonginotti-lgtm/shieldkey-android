@@ -25,6 +25,19 @@
             </intent-filter>
         </activity>
 
+        <!-- Partage TEMPORAIRE d'un document déchiffré vers une visionneuse externe.
+             exported=false + autorisation d'URI ponctuelle : seule l'appli choisie y accède,
+             le temps de la lecture (le fichier en clair est effacé au retour / au verrouillage). -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
     </application>
 
 </manifest>

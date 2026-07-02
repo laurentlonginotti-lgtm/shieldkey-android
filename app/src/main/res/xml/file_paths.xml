@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Documents déchiffrés TEMPORAIREMENT pour visualisation (cacheDir/open/).
+         Effacés au retour de la visionneuse et à la fermeture/verrouillage du coffre. -->
+    <cache-path name="open" path="open/" />
+</paths>
