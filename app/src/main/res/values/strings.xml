@@ -44,6 +44,38 @@
     <string name="vault_empty_sub">Add your first entry with the button below.</string>
     <string name="vault_add">+ Add an entry</string>
 
+    <!-- Entries (logins, cards, crypto, notes) -->
+    <string name="entry_type_login">Login</string>
+    <string name="entry_type_card">Card / IBAN</string>
+    <string name="entry_type_crypto">Crypto</string>
+    <string name="entry_type_note">Note</string>
+    <string name="choose_type_title">What do you want to add?</string>
+    <string name="choose_type_document">📄 A document (file)</string>
+
+    <string name="field_title">Name</string>
+    <string name="field_username">Username / email</string>
+    <string name="field_password">Password</string>
+    <string name="field_url">Website</string>
+    <string name="field_notes">Notes</string>
+    <string name="field_holder">Cardholder</string>
+    <string name="field_card_number">Card number</string>
+    <string name="field_expiry">Expiry (MM/YY)</string>
+    <string name="field_cvv">Security code (CVV)</string>
+    <string name="field_iban">IBAN</string>
+    <string name="field_seed">Recovery phrase (seed)</string>
+    <string name="field_private_key">Private key</string>
+    <string name="field_wallet">Wallet / platform</string>
+    <string name="field_note_body">Content</string>
+
+    <string name="action_save">Save</string>
+    <string name="action_back">‹ Back</string>
+    <string name="action_edit">✏️ Edit</string>
+    <string name="action_delete">🗑 Delete</string>
+    <string name="err_title_required">Give this entry a name</string>
+    <string name="entry_delete_title">Delete this entry?</string>
+    <string name="entry_delete_msg">It will be permanently erased. This cannot be undone.</string>
+    <string name="reveal_hidden">Tap 👁 to reveal</string>
+
     <!-- Documents -->
     <string name="doc_empty_title">No documents yet</string>
     <string name="doc_empty_sub">Store your important files — ID, contracts, keys. Encrypted, offline, always available even with no connection.</string>

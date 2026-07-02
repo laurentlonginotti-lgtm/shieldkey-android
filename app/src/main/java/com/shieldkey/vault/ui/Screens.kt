@@ -52,6 +52,7 @@ import android.provider.OpenableColumns
 import android.text.format.Formatter
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.DisposableEffect
@@ -61,6 +62,8 @@ import java.io.File
 import androidx.compose.ui.text.style.TextOverflow
 import com.shieldkey.vault.data.DocumentMeta
 import com.shieldkey.vault.data.DocumentStore
+import com.shieldkey.vault.data.EntryType
+import com.shieldkey.vault.data.VaultEntry
 import com.shieldkey.vault.data.VaultRepository
 import com.shieldkey.vault.data.VaultStore
 import kotlinx.coroutines.Dispatchers
@@ -293,12 +296,19 @@ fun VaultScreen(
     val store = remember { VaultStore(context) }
     val docStore = remember { DocumentStore(context) }
 
+    var entries by remember { mutableStateOf<List<VaultEntry>>(emptyList()) }
     var docs by remember { mutableStateOf<List<DocumentMeta>>(emptyList()) }
     var reload by remember { mutableStateOf(0) }
     var busy by remember { mutableStateOf(false) }
+    var cat by remember { mutableStateOf<CatFilter>(CatFilter.All) }
+    var sub by remember { mutableStateOf<VaultSub>(VaultSub.List) }
 
     LaunchedEffect(reload) {
-        docs = withContext(Dispatchers.IO) { VaultRepository.listDocuments(store, dek) }
+        val (e, d) = withContext(Dispatchers.IO) {
+            VaultRepository.listEntries(store, dek) to VaultRepository.listDocuments(store, dek)
+        }
+        entries = e
+        docs = d
     }
 
     // Sélecteur de fichier système (SAF) : aucune permission de stockage requise.
@@ -384,103 +394,185 @@ fun VaultScreen(
         }
     }
 
-    Column(Modifier.fillMaxSize().padding(20.dp)) {
-        Row(
-            Modifier.fillMaxWidth().padding(top = 24.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            SkLogo(36.dp)
-            Spacer(Modifier.width(10.dp))
-            Text("ShieldKey", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.weight(1f))
-            TextButton(onClick = onLock) { Text(stringResource(R.string.vault_lock), color = SkEmerald2, fontSize = 13.sp) }
-        }
-        Spacer(Modifier.height(10.dp))
-        Box(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Color(0x14FFFFFF)).padding(12.dp)
-        ) {
-            Text(stringResource(R.string.vault_secure_badge), color = SkMuted, fontSize = 12.sp)
-        }
-        Spacer(Modifier.height(10.dp))
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
-                .background(Color(0x14FFFFFF))
-                .then(if (biometricAvailable) Modifier.clickable { onToggleBiometric(!biometricEnabled) } else Modifier)
-                .padding(start = 12.dp, end = 4.dp, top = 2.dp, bottom = if (biometricHint != null) 10.dp else 2.dp)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    stringResource(if (biometricEnabled) R.string.bio_enabled else R.string.bio_enable),
-                    color = if (biometricAvailable) SkText else SkMuted,
-                    fontSize = 13.sp,
-                    modifier = Modifier.weight(1f)
-                )
-                Switch(
-                    checked = biometricEnabled,
-                    enabled = biometricAvailable,
-                    onCheckedChange = { onToggleBiometric(it) },
-                    colors = SwitchDefaults.colors(
-                        checkedThumbColor = SkOnPrimary,
-                        checkedTrackColor = SkEmerald
-                    )
-                )
-            }
-            if (biometricHint != null) {
-                Text(
-                    biometricHint,
-                    color = SkMuted,
-                    fontSize = 11.sp,
-                    modifier = Modifier.padding(top = 2.dp)
-                )
-            }
-        }
-        Spacer(Modifier.height(16.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            CategoryChip(stringResource(R.string.chip_all), true)
-            CategoryChip("🔑", false)
-            CategoryChip("💳", false)
-            CategoryChip("₿", false)
-            CategoryChip("📄", false)
-        }
-        Spacer(Modifier.height(12.dp))
-        Column(
-            Modifier.fillMaxWidth().weight(1f).verticalScroll(rememberScrollState())
-        ) {
-            if (docs.isEmpty()) {
-                Spacer(Modifier.height(48.dp))
-                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("📄", fontSize = 46.sp)
-                    Spacer(Modifier.height(8.dp))
-                    Text(stringResource(R.string.doc_empty_title), color = SkText, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                    Spacer(Modifier.height(4.dp))
-                    Text(stringResource(R.string.doc_empty_sub), color = SkMuted, fontSize = 13.sp, textAlign = TextAlign.Center)
+    when (val s = sub) {
+        VaultSub.ChooseType -> ChooseTypeScreen(
+            onPick = { t -> sub = VaultSub.Edit(t, null) },
+            onDocument = {
+                sub = VaultSub.List
+                onSuspendAutoLock(true)   // sélecteur système : ne pas verrouiller
+                picker.launch(arrayOf("*/*"))
+            },
+            onCancel = { sub = VaultSub.List }
+        )
+
+        is VaultSub.Edit -> EntryEditorScreen(
+            type = s.type,
+            existing = s.existing,
+            onCancel = { sub = s.existing?.let { VaultSub.View(it) } ?: VaultSub.List },
+            onSave = { entry ->
+                scope.launch {
+                    withContext(Dispatchers.IO) { VaultRepository.upsertEntry(store, dek, entry) }
+                    reload++
+                    SoundFx.success()
+                    sub = VaultSub.View(entry)
                 }
-            } else {
-                docs.forEach { meta ->
-                    DocumentRow(
-                        meta = meta,
-                        onOpen = { openDocument(meta) },
-                        onDelete = {
-                            scope.launch {
-                                withContext(Dispatchers.IO) {
-                                    docStore.delete(meta.id)
-                                    VaultRepository.removeDocument(store, dek, meta.id)
-                                }
-                                reload++
-                                SoundFx.close()
+            }
+        )
+
+        is VaultSub.View -> EntryDetailScreen(
+            entry = s.entry,
+            onEdit = { sub = VaultSub.Edit(s.entry.type, s.entry) },
+            onDelete = {
+                scope.launch {
+                    withContext(Dispatchers.IO) { VaultRepository.removeEntry(store, dek, s.entry.id) }
+                    reload++
+                    SoundFx.close()
+                    sub = VaultSub.List
+                }
+            },
+            onClose = { sub = VaultSub.List }
+        )
+
+        VaultSub.List -> {
+            val c = cat
+            val filteredEntries = when (c) {
+                CatFilter.All -> entries
+                is CatFilter.Type -> entries.filter { it.type == c.type }
+                CatFilter.Docs -> emptyList()
+            }
+            val showDocs = c == CatFilter.All || c == CatFilter.Docs
+            val isEmpty = filteredEntries.isEmpty() && (!showDocs || docs.isEmpty())
+
+            Column(Modifier.fillMaxSize().padding(20.dp)) {
+                Row(
+                    Modifier.fillMaxWidth().padding(top = 24.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    SkLogo(36.dp)
+                    Spacer(Modifier.width(10.dp))
+                    Text("ShieldKey", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.weight(1f))
+                    TextButton(onClick = onLock) { Text(stringResource(R.string.vault_lock), color = SkEmerald2, fontSize = 13.sp) }
+                }
+                Spacer(Modifier.height(10.dp))
+                Box(
+                    Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Color(0x14FFFFFF)).padding(12.dp)
+                ) {
+                    Text(stringResource(R.string.vault_secure_badge), color = SkMuted, fontSize = 12.sp)
+                }
+                // Réglage déverrouillage rapide : visible seulement dans la vue « Tout » (déclutter).
+                if (c == CatFilter.All) {
+                    Spacer(Modifier.height(10.dp))
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Color(0x14FFFFFF))
+                            .then(if (biometricAvailable) Modifier.clickable { onToggleBiometric(!biometricEnabled) } else Modifier)
+                            .padding(start = 12.dp, end = 4.dp, top = 2.dp, bottom = if (biometricHint != null) 10.dp else 2.dp)
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                stringResource(if (biometricEnabled) R.string.bio_enabled else R.string.bio_enable),
+                                color = if (biometricAvailable) SkText else SkMuted,
+                                fontSize = 13.sp,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Switch(
+                                checked = biometricEnabled,
+                                enabled = biometricAvailable,
+                                onCheckedChange = { onToggleBiometric(it) },
+                                colors = SwitchDefaults.colors(
+                                    checkedThumbColor = SkOnPrimary,
+                                    checkedTrackColor = SkEmerald
+                                )
+                            )
+                        }
+                        if (biometricHint != null) {
+                            Text(
+                                biometricHint,
+                                color = SkMuted,
+                                fontSize = 11.sp,
+                                modifier = Modifier.padding(top = 2.dp)
+                            )
+                        }
+                    }
+                }
+                Spacer(Modifier.height(16.dp))
+                Row(
+                    Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    CategoryChip(stringResource(R.string.chip_all), c == CatFilter.All) { cat = CatFilter.All }
+                    CategoryChip("🔑", c is CatFilter.Type && c.type == EntryType.LOGIN) { cat = CatFilter.Type(EntryType.LOGIN) }
+                    CategoryChip("💳", c is CatFilter.Type && c.type == EntryType.CARD) { cat = CatFilter.Type(EntryType.CARD) }
+                    CategoryChip("₿", c is CatFilter.Type && c.type == EntryType.CRYPTO) { cat = CatFilter.Type(EntryType.CRYPTO) }
+                    CategoryChip("📝", c is CatFilter.Type && c.type == EntryType.NOTE) { cat = CatFilter.Type(EntryType.NOTE) }
+                    CategoryChip("📄", c == CatFilter.Docs) { cat = CatFilter.Docs }
+                }
+                Spacer(Modifier.height(12.dp))
+                Column(
+                    Modifier.fillMaxWidth().weight(1f).verticalScroll(rememberScrollState())
+                ) {
+                    if (isEmpty) {
+                        Spacer(Modifier.height(48.dp))
+                        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                            if (c == CatFilter.Docs) {
+                                Text("📄", fontSize = 46.sp)
+                                Spacer(Modifier.height(8.dp))
+                                Text(stringResource(R.string.doc_empty_title), color = SkText, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                Spacer(Modifier.height(4.dp))
+                                Text(stringResource(R.string.doc_empty_sub), color = SkMuted, fontSize = 13.sp, textAlign = TextAlign.Center)
+                            } else {
+                                Text("🛡️", fontSize = 46.sp)
+                                Spacer(Modifier.height(8.dp))
+                                Text(stringResource(R.string.vault_empty_title), color = SkText, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                Spacer(Modifier.height(4.dp))
+                                Text(stringResource(R.string.vault_empty_sub), color = SkMuted, fontSize = 13.sp, textAlign = TextAlign.Center)
                             }
                         }
-                    )
-                    Spacer(Modifier.height(8.dp))
+                    } else {
+                        filteredEntries.forEach { entry ->
+                            EntryRow(entry = entry, onClick = { sub = VaultSub.View(entry) })
+                            Spacer(Modifier.height(8.dp))
+                        }
+                        if (showDocs) {
+                            docs.forEach { meta ->
+                                DocumentRow(
+                                    meta = meta,
+                                    onOpen = { openDocument(meta) },
+                                    onDelete = {
+                                        scope.launch {
+                                            withContext(Dispatchers.IO) {
+                                                docStore.delete(meta.id)
+                                                VaultRepository.removeDocument(store, dek, meta.id)
+                                            }
+                                            reload++
+                                            SoundFx.close()
+                                        }
+                                    }
+                                )
+                                Spacer(Modifier.height(8.dp))
+                            }
+                        }
+                    }
+                }
+                Spacer(Modifier.height(12.dp))
+                SkPrimaryButton(
+                    stringResource(if (c == CatFilter.Docs) R.string.doc_add else R.string.vault_add),
+                    enabled = !busy,
+                    loading = busy
+                ) {
+                    when (val cc = cat) {
+                        CatFilter.Docs -> {
+                            onSuspendAutoLock(true)   // sélecteur système : ne pas verrouiller
+                            picker.launch(arrayOf("*/*"))
+                        }
+                        is CatFilter.Type -> sub = VaultSub.Edit(cc.type, null)
+                        CatFilter.All -> sub = VaultSub.ChooseType
+                    }
                 }
             }
-        }
-        Spacer(Modifier.height(12.dp))
-        SkPrimaryButton(stringResource(R.string.doc_add), enabled = !busy, loading = busy) {
-            onSuspendAutoLock(true)   // on ouvre le sélecteur système : ne pas verrouiller
-            picker.launch(arrayOf("*/*"))
         }
     }
 }
@@ -519,11 +611,12 @@ private fun DocumentRow(meta: DocumentMeta, onOpen: () -> Unit, onDelete: () -> 
 }
 
 @Composable
-fun CategoryChip(label: String, on: Boolean) {
+fun CategoryChip(label: String, on: Boolean, onClick: () -> Unit = {}) {
     Box(
         Modifier
             .clip(RoundedCornerShape(20.dp))
             .background(if (on) SkEmerald else Color(0x14FFFFFF))
+            .clickable { onClick() }
             .padding(horizontal = 14.dp, vertical = 7.dp)
     ) {
         Text(

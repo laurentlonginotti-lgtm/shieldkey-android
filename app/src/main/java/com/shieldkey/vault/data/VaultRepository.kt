@@ -20,6 +20,63 @@ data class DocumentMeta(
 object VaultRepository {
 
     private const val DOCS = "documents"
+    private const val ENTRIES = "entries"
+
+    // --- Entrées (connexions, cartes/IBAN, crypto, notes) ---
+
+    fun listEntries(store: VaultStore, dek: ByteArray): List<VaultEntry> {
+        val root = JSONObject(store.readVault(dek))
+        val arr = root.optJSONArray(ENTRIES) ?: return emptyList()
+        return (0 until arr.length()).map { i ->
+            val o = arr.getJSONObject(i)
+            val fo = o.optJSONObject("fields") ?: JSONObject()
+            val fields = LinkedHashMap<String, String>()
+            for (k in fo.keys()) fields[k] = fo.optString(k, "")
+            VaultEntry(
+                id = o.getString("id"),
+                type = EntryType.from(o.optString("type")),
+                title = o.optString("title", ""),
+                fields = fields,
+                updatedAt = o.optLong("updatedAt", 0)
+            )
+        }.sortedByDescending { it.updatedAt }
+    }
+
+    /** Ajoute l'entrée, ou remplace celle qui a le même id (édition). */
+    fun upsertEntry(store: VaultStore, dek: ByteArray, entry: VaultEntry) {
+        val root = JSONObject(store.readVault(dek))
+        val arr = root.optJSONArray(ENTRIES) ?: JSONArray().also { root.put(ENTRIES, it) }
+        val fo = JSONObject()
+        entry.fields.forEach { (k, v) -> fo.put(k, v) }
+        val obj = JSONObject()
+            .put("id", entry.id)
+            .put("type", entry.type.id)
+            .put("title", entry.title)
+            .put("updatedAt", entry.updatedAt)
+            .put("fields", fo)
+        var replaced = false
+        for (i in 0 until arr.length()) {
+            if (arr.getJSONObject(i).getString("id") == entry.id) {
+                arr.put(i, obj); replaced = true; break
+            }
+        }
+        if (!replaced) arr.put(obj)
+        store.writeVault(dek, root.toString())
+    }
+
+    fun removeEntry(store: VaultStore, dek: ByteArray, id: String) {
+        val root = JSONObject(store.readVault(dek))
+        val arr = root.optJSONArray(ENTRIES) ?: return
+        val kept = JSONArray()
+        for (i in 0 until arr.length()) {
+            val o = arr.getJSONObject(i)
+            if (o.getString("id") != id) kept.put(o)
+        }
+        root.put(ENTRIES, kept)
+        store.writeVault(dek, root.toString())
+    }
+
+    // --- Documents ---
 
     fun listDocuments(store: VaultStore, dek: ByteArray): List<DocumentMeta> {
         val root = JSONObject(store.readVault(dek))
