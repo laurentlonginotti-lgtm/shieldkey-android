@@ -105,6 +105,36 @@
     <string name="bio_enabled">👆 Quick unlock enabled</string>
     <string name="bio_hint_no_lock">Set up a screen lock (fingerprint or PIN) in Android to use this.</string>
 
+    <!-- Security page -->
+    <string name="sec_open">🛡️ Security</string>
+    <string name="sec_title">Security</string>
+    <string name="sec_tagline">Your trust, explained.</string>
+    <string name="sec_intro">ShieldKey is built so your data stays yours. Here is how — no jargon.</string>
+    <string name="sec_offline_title">🌐 100%% offline</string>
+    <string name="sec_offline_body">No Internet permission. Nothing ever leaves your phone. No account, no server — nothing to hack remotely.</string>
+    <string name="sec_offline_tech">0 network permission · cloud backup disabled</string>
+    <string name="sec_aes_title">🔐 AES-256-GCM encryption</string>
+    <string name="sec_aes_body">Military-grade and authenticated: if a single byte is altered or the key is wrong, opening simply fails.</string>
+    <string name="sec_aes_tech">AES-256 · GCM · 128-bit tag · random IV per item</string>
+    <string name="sec_argon_title">🧗 Argon2id key derivation</string>
+    <string name="sec_argon_body">Your master password is turned into a key by Argon2id — \"memory-hard\", designed to be slow and costly to crack at scale (anti-GPU/ASIC), far tougher than PBKDF2.</string>
+    <string name="sec_argon_tech">Argon2id · %1$d passes · %2$d MB · parallelism %3$d</string>
+    <string name="sec_envelope_title">🕵️ Zero-knowledge</string>
+    <string name="sec_envelope_body">Your master password is stored nowhere. It only unlocks an internal random key. No one — not even the developer — can open your vault without your password.</string>
+    <string name="sec_envelope_tech">Envelope encryption · random 256-bit key</string>
+    <string name="sec_recovery_title">🔑 Recovery kit, no backdoor</string>
+    <string name="sec_recovery_body">If you forget your master password, only YOUR recovery code (the one you wrote down) can restore the vault. No email, no recovery server — no backdoor.</string>
+    <string name="sec_bio_title">👆 Hardware-backed quick unlock</string>
+    <string name="sec_bio_body">Fingerprint or screen code: the unlocking key lives in your phone\'s secure chip and never leaves it. Your master password stays the real safeguard.</string>
+    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
+    <string name="sec_clip_title">📋 Hardened clipboard</string>
+    <string name="sec_clip_body">When you copy a secret, it is flagged \"sensitive\" (hidden from clipboard history) and cleared automatically.</string>
+    <string name="sec_docs_title">📄 Encrypted offline documents</string>
+    <string name="sec_docs_body">Each document is encrypted separately and stays usable even with no connection.</string>
+    <string name="sec_phish_title">🎣 We will never ask for your info</string>
+    <string name="sec_phish_body">ShieldKey will never email or text you to ask for your password or data. If someone does, it is not us.</string>
+    <string name="sec_footer">AES-256-GCM · Argon2id · 0 Internet</string>
+
     <!-- Language -->
     <string name="lang_title">Language</string>
     <string name="lang_system">System (default)</string>

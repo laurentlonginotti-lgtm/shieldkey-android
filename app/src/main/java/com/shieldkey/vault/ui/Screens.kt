@@ -74,7 +74,7 @@ import kotlinx.coroutines.withContext
 //  Création du coffre
 // ---------------------------------------------------------------------------
 @Composable
-fun OnboardingScreen(onCreate: suspend (String) -> Unit) {
+fun OnboardingScreen(onCreate: suspend (String) -> Unit, onSecurity: () -> Unit = {}) {
     val scope = rememberCoroutineScope()
     var pwd by remember { mutableStateOf("") }
     var confirm by remember { mutableStateOf("") }
@@ -112,6 +112,7 @@ fun OnboardingScreen(onCreate: suspend (String) -> Unit) {
             }
         }
         Spacer(Modifier.height(10.dp))
+        TextButton(onClick = onSecurity) { Text(stringResource(R.string.sec_open), color = SkEmerald2, fontSize = 13.sp) }
         LanguageButton()
     }
 }
@@ -184,6 +185,7 @@ fun RecoveryKitScreen(code: String, onDone: () -> Unit) {
 fun UnlockScreen(
     onUnlock: suspend (String) -> Boolean,
     onForgot: () -> Unit,
+    onSecurity: () -> Unit = {},
     biometricEnabled: Boolean = false,
     onBiometric: () -> Unit = {}
 ) {
@@ -227,6 +229,7 @@ fun UnlockScreen(
             Text(stringResource(R.string.unlock_forgot), color = SkMuted, fontSize = 12.sp)
         }
         Spacer(Modifier.height(20.dp))
+        TextButton(onClick = onSecurity) { Text(stringResource(R.string.sec_open), color = SkEmerald2, fontSize = 13.sp) }
         Text(stringResource(R.string.offline_badge), color = SkMuted, fontSize = 11.sp)
         Spacer(Modifier.height(8.dp))
         LanguageButton()
@@ -286,6 +289,7 @@ fun VaultScreen(
     dek: ByteArray,
     onLock: () -> Unit,
     onSuspendAutoLock: (Boolean) -> Unit = {},
+    onSecurity: () -> Unit = {},
     biometricAvailable: Boolean = false,
     biometricEnabled: Boolean = false,
     biometricHint: String? = null,
@@ -456,9 +460,13 @@ fun VaultScreen(
                 }
                 Spacer(Modifier.height(10.dp))
                 Box(
-                    Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Color(0x14FFFFFF)).padding(12.dp)
+                    Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Color(0x14FFFFFF))
+                        .clickable { onSecurity() }.padding(12.dp)
                 ) {
-                    Text(stringResource(R.string.vault_secure_badge), color = SkMuted, fontSize = 12.sp)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(stringResource(R.string.vault_secure_badge), color = SkMuted, fontSize = 12.sp, modifier = Modifier.weight(1f))
+                        Text("›", color = SkEmerald2, fontSize = 16.sp)
+                    }
                 }
                 // Réglage déverrouillage rapide : visible seulement dans la vue « Tout » (déclutter).
                 if (c == CatFilter.All) {

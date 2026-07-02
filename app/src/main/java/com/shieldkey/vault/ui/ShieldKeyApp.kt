@@ -80,6 +80,7 @@ fun ShieldKeyApp() {
     var screen by remember { mutableStateOf(if (store.isInitialized()) Screen.Unlock else Screen.Onboarding) }
     var dek by remember { mutableStateOf<ByteArray?>(null) }   // clé du coffre déchiffrée, gardée en mémoire
     var recoveryToShow by remember { mutableStateOf("") }
+    var showSecurity by remember { mutableStateOf(false) }     // page « Sécurité » en surimpression
 
     // Déverrouillage rapide (empreinte OU code de l'écran, facultatif) — voir BiometricGate.
     val bioStatus = BiometricGate.status(context)
@@ -114,13 +115,16 @@ fun ShieldKeyApp() {
             .background(Brush.verticalGradient(listOf(SkBgTop, SkBg, SkBgDeep)))
     ) {
         when (screen) {
-            Screen.Onboarding -> OnboardingScreen(onCreate = { pwd ->
-                val res = withContext(Dispatchers.Default) { store.create(pwd) }
-                dek = res.dek
-                recoveryToShow = res.recoveryCode
-                SoundFx.success()
-                screen = Screen.RecoveryKit
-            })
+            Screen.Onboarding -> OnboardingScreen(
+                onCreate = { pwd ->
+                    val res = withContext(Dispatchers.Default) { store.create(pwd) }
+                    dek = res.dek
+                    recoveryToShow = res.recoveryCode
+                    SoundFx.success()
+                    screen = Screen.RecoveryKit
+                },
+                onSecurity = { showSecurity = true }
+            )
 
             Screen.RecoveryKit -> RecoveryKitScreen(code = recoveryToShow, onDone = {
                 recoveryToShow = ""
@@ -137,6 +141,7 @@ fun ShieldKeyApp() {
                     }
                 },
                 onForgot = { screen = Screen.Recovery },
+                onSecurity = { showSecurity = true },
                 biometricEnabled = bioAvailable && bioEnabled,
                 onBiometric = {
                     val act = activity
@@ -176,6 +181,7 @@ fun ShieldKeyApp() {
                     // Suspend le verrouillage auto pendant qu'une fenêtre système
                     // (sélecteur de fichier, visionneuse…) passe l'app en ON_STOP.
                     onSuspendAutoLock = { authInProgress = it },
+                    onSecurity = { showSecurity = true },
                     biometricAvailable = bioAvailable,
                     biometricEnabled = bioEnabled,
                     biometricHint = bioHint,
@@ -196,6 +202,9 @@ fun ShieldKeyApp() {
                 )
             }
         }
+
+        // Page « Sécurité » en surimpression (accessible même verrouillé, pour la confiance).
+        if (showSecurity) SecurityScreen(onClose = { showSecurity = false })
     }
 }
 
