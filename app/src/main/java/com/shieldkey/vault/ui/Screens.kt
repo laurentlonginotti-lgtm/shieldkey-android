@@ -278,6 +278,7 @@ fun RecoveryScreen(onRecover: suspend (String, String) -> Boolean, onCancel: () 
 fun VaultScreen(
     dek: ByteArray,
     onLock: () -> Unit,
+    onSuspendAutoLock: (Boolean) -> Unit = {},
     biometricAvailable: Boolean = false,
     biometricEnabled: Boolean = false,
     biometricHint: String? = null,
@@ -298,6 +299,7 @@ fun VaultScreen(
 
     // Sélecteur de fichier système (SAF) : aucune permission de stockage requise.
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        onSuspendAutoLock(false)   // de retour du sélecteur : le verrouillage auto reprend
         if (uri != null) {
             scope.launch {
                 busy = true
@@ -425,6 +427,7 @@ fun VaultScreen(
         }
         Spacer(Modifier.height(12.dp))
         SkPrimaryButton(stringResource(R.string.doc_add), enabled = !busy, loading = busy) {
+            onSuspendAutoLock(true)   // on ouvre le sélecteur système : ne pas verrouiller
             picker.launch(arrayOf("*/*"))
         }
     }

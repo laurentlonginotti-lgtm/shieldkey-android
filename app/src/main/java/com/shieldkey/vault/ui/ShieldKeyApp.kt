@@ -170,6 +170,9 @@ fun ShieldKeyApp() {
                         SoundFx.close()
                         screen = Screen.Unlock
                     },
+                    // Suspend le verrouillage auto pendant qu'une fenêtre système
+                    // (sélecteur de fichier, visionneuse…) passe l'app en ON_STOP.
+                    onSuspendAutoLock = { authInProgress = it },
                     biometricAvailable = bioAvailable,
                     biometricEnabled = bioEnabled,
                     biometricHint = bioHint,
