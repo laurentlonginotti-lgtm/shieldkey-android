@@ -109,6 +109,7 @@ enum class CardKind(val id: String, val labelRes: Int) {
     PHYSICAL("physical", R.string.card_kind_physical),
     ECARD("ecard", R.string.card_kind_ecard),
     CLICK_TO_PAY("clicktopay", R.string.card_kind_ctp),
+    MOBILE("mobile", R.string.card_kind_mobile),
     IBAN("iban", R.string.card_kind_iban);
 
     companion object {
@@ -140,6 +141,12 @@ fun cardFields(kind: CardKind): List<FieldSpec> = when (kind) {
         FieldSpec("network", R.string.field_ctp_network),
         FieldSpec("notes", R.string.field_notes, multiline = true)
     )
+    CardKind.MOBILE -> listOf(
+        FieldSpec("wallet", R.string.field_wallet_app),
+        FieldSpec("cards", R.string.field_ctp_cards, multiline = true),
+        FieldSpec("account", R.string.field_wallet_account),
+        FieldSpec("notes", R.string.field_notes, multiline = true)
+    )
     CardKind.IBAN -> listOf(
         FieldSpec("holder", R.string.field_holder),
         FieldSpec("iban", R.string.field_iban, sensitive = true),
@@ -160,6 +167,7 @@ private fun entrySubtitle(e: VaultEntry): String = when (e.type) {
     EntryType.LOGIN -> e.fields["username"].orEmpty()
     EntryType.CARD -> when (CardKind.from(e.fields["kind"])) {
         CardKind.CLICK_TO_PAY -> e.fields["email"].orEmpty()
+        CardKind.MOBILE -> e.fields["wallet"].orEmpty()
         CardKind.IBAN -> maskCard(e.fields["iban"].orEmpty())
         else -> maskCard(e.fields["number"].orEmpty())
     }

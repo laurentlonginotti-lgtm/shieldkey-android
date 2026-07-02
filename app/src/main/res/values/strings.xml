@@ -72,6 +72,7 @@
     <string name="card_kind_ecard">Virtual (e-card)</string>
     <string name="card_kind_ctp">Click to Pay</string>
     <string name="card_kind_iban">IBAN / account</string>
+    <string name="card_kind_mobile">Mobile payment</string>
     <string name="field_card_limit">Spending limit</string>
     <string name="field_card_validity">Valid until</string>
     <string name="field_card_source">Linked card</string>
@@ -80,6 +81,8 @@
     <string name="field_ctp_network">Network (Visa, Mastercard…)</string>
     <string name="field_bic">BIC / SWIFT</string>
     <string name="field_bank">Bank</string>
+    <string name="field_wallet_app">Wallet (Apple Pay, Google Pay…)</string>
+    <string name="field_wallet_account">Linked account / device</string>
 
     <string name="action_save">Save</string>
     <string name="action_back">‹ Back</string>
