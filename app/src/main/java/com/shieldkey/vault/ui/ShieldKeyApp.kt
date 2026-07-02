@@ -52,6 +52,7 @@ import com.shieldkey.vault.R
 import com.shieldkey.vault.crypto.BiometricGate
 import com.shieldkey.vault.data.VaultStore
 import com.shieldkey.vault.sound.SoundFx
+import com.shieldkey.vault.util.SecureClipboard
 import com.shieldkey.vault.ui.theme.SkBg
 import com.shieldkey.vault.ui.theme.SkBgDeep
 import com.shieldkey.vault.ui.theme.SkBgTop
@@ -100,6 +101,7 @@ fun ShieldKeyApp() {
             if (event == Lifecycle.Event.ON_STOP && !authInProgress && dek != null) {
                 dek = null
                 screen = Screen.Unlock
+                SecureClipboard.clearIfOurs(context)   // ne pas laisser un secret copié en veille
             }
         }
         lifecycle?.addObserver(observer)
@@ -169,6 +171,7 @@ fun ShieldKeyApp() {
                         dek = null
                         SoundFx.close()
                         screen = Screen.Unlock
+                        SecureClipboard.clearIfOurs(context)   // efface un éventuel secret copié
                     },
                     // Suspend le verrouillage auto pendant qu'une fenêtre système
                     // (sélecteur de fichier, visionneuse…) passe l'app en ON_STOP.

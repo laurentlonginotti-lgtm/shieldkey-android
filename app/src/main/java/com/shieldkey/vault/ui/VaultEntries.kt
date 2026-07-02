@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -44,6 +45,7 @@ import com.shieldkey.vault.R
 import com.shieldkey.vault.data.EntryType
 import com.shieldkey.vault.data.VaultEntry
 import com.shieldkey.vault.sound.SoundFx
+import com.shieldkey.vault.util.SecureClipboard
 import com.shieldkey.vault.ui.theme.SkEmerald2
 import com.shieldkey.vault.ui.theme.SkMuted
 import com.shieldkey.vault.ui.theme.SkText
@@ -310,7 +312,6 @@ fun EntryDetailScreen(
     onDelete: () -> Unit,
     onClose: () -> Unit
 ) {
-    val clipboard = LocalClipboardManager.current
     var confirmDelete by remember { mutableStateOf(false) }
 
     Box(Modifier.fillMaxSize()) {
@@ -335,8 +336,7 @@ fun EntryDetailScreen(
                     FieldView(
                         label = stringResource(spec.labelRes),
                         value = v,
-                        sensitive = spec.sensitive,
-                        onCopy = { clipboard.setText(AnnotatedString(v)); SoundFx.inject() }
+                        sensitive = spec.sensitive
                     )
                     Spacer(Modifier.height(10.dp))
                 }
@@ -395,7 +395,9 @@ fun EntryDetailScreen(
 }
 
 @Composable
-private fun FieldView(label: String, value: String, sensitive: Boolean, onCopy: () -> Unit) {
+private fun FieldView(label: String, value: String, sensitive: Boolean) {
+    val context = LocalContext.current
+    val clipboard = LocalClipboardManager.current
     var revealed by remember { mutableStateOf(!sensitive) }
     Column(
         Modifier
@@ -413,7 +415,18 @@ private fun FieldView(label: String, value: String, sensitive: Boolean, onCopy: 
                     modifier = Modifier.clickable { revealed = !revealed }.padding(horizontal = 6.dp)
                 )
             }
-            Text("📋", fontSize = 16.sp, modifier = Modifier.clickable { onCopy() }.padding(start = 6.dp))
+            Text(
+                "📋",
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .clickable {
+                        // Champ sensible : presse-papier durci (marqué sensible + auto-effacé).
+                        if (sensitive) SecureClipboard.copySensitive(context, value)
+                        else clipboard.setText(AnnotatedString(value))
+                        SoundFx.inject()
+                    }
+                    .padding(start = 6.dp)
+            )
         }
         Spacer(Modifier.height(4.dp))
         Text(
