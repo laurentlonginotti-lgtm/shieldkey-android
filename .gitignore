@@ -15,3 +15,8 @@ captures/
 *.jks.base64
 PASSWORDS.txt
 keystore.properties
+
+# Documents de stratégie INTERNE — NE JAMAIS RENDRE PUBLICS (dépôt open-source)
+ANALYSE-BUSINESS.md
+CONFIANCE-OPEN-SOURCE.md
+REPRENDRE-DEMAIN.md

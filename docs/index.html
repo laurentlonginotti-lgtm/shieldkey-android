@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ShieldKey — Politique de confidentialité</title>
+<meta name="description" content="ShieldKey ne collecte, ne transmet et ne stocke aucune de vos données en ligne.">
+<style>
+  :root{
+    --bg:#04130d; --panel:#0a2018; --panel2:#0e2a1f;
+    --ink:#e8f5ee; --muted:#9fc4b3; --emerald:#2be36b; --gold:#ffc857;
+    --line:#1c3b2e;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:radial-gradient(1200px 600px at 50% -10%, #0a2820, var(--bg));
+    color:var(--ink); font:16px/1.65 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px; margin:0 auto; padding:32px 20px 80px}
+  header{text-align:center; padding:28px 0 8px}
+  .shield{font-size:56px; line-height:1; filter:drop-shadow(0 0 14px rgba(43,227,107,.45))}
+  h1{font-size:1.7rem; margin:.5rem 0 .2rem; letter-spacing:.2px}
+  .tag{color:var(--gold); font-weight:600; margin:0}
+  .lead{
+    background:linear-gradient(180deg,var(--panel2),var(--panel));
+    border:1px solid var(--line); border-left:4px solid var(--emerald);
+    border-radius:14px; padding:18px 20px; margin:26px 0; font-size:1.08rem;
+  }
+  .lead b{color:var(--emerald)}
+  .langbar{display:flex; gap:10px; justify-content:center; margin:18px 0 6px}
+  .langbar a{
+    color:var(--muted); text-decoration:none; border:1px solid var(--line);
+    padding:6px 14px; border-radius:999px; font-size:.9rem;
+  }
+  .langbar a:hover{color:var(--ink); border-color:var(--emerald)}
+  section{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    padding:20px 22px; margin:16px 0;
+  }
+  h2{font-size:1.15rem; margin:.2rem 0 .6rem; color:var(--emerald)}
+  h3{font-size:1rem; margin:1.1rem 0 .3rem; color:var(--gold)}
+  p{margin:.5rem 0}
+  ul{margin:.4rem 0 .4rem 1.1rem; padding:0}
+  li{margin:.3rem 0}
+  code,.mono{background:#06180f; border:1px solid var(--line); border-radius:6px; padding:2px 7px; color:var(--emerald); font-size:.92em}
+  .divider{text-align:center; color:var(--muted); margin:40px 0 8px; font-size:.85rem; letter-spacing:2px}
+  footer{text-align:center; color:var(--muted); font-size:.85rem; margin-top:34px}
+  a{color:var(--emerald)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="shield">🛡️</div>
+    <h1>ShieldKey</h1>
+    <p class="tag">Le coffre-fort qui ne parle à personne</p>
+  </header>
+
+  <div class="langbar">
+    <a href="#fr">🇫🇷 Français</a>
+    <a href="#en">🇬🇧 English</a>
+  </div>
+
+  <div class="lead" id="fr">
+    <b>ShieldKey ne collecte, ne transmet et ne stocke aucune de vos données en ligne.</b> Point.
+  </div>
+
+  <section>
+    <h2>Politique de confidentialité</h2>
+    <p style="color:var(--muted)">Version 1.0 — en vigueur le 3 juillet 2026</p>
+
+    <h3>Qui sommes-nous ?</h3>
+    <p>ShieldKey est une application de coffre-fort personnel éditée par un développeur indépendant.
+    Contact : <code>shieldkey.app@gmail.com</code>.</p>
+
+    <h3>Quelles données collectons-nous ?</h3>
+    <p><b>Aucune.</b> ShieldKey ne collecte, ne transmet, ne vend et ne partage aucune donnée personnelle.</p>
+    <ul>
+      <li>Aucun compte utilisateur.</li>
+      <li>Aucun serveur qui reçoit vos informations.</li>
+      <li>Aucun outil d'analyse, de publicité, de pistage ou de statistiques.</li>
+      <li>Aucun kit tiers (SDK) susceptible de collecter des données.</li>
+    </ul>
+
+    <h3>Où sont vos données ?</h3>
+    <p>Tout ce que vous enregistrez (mots de passe, cartes, IBAN, clés de crypto-monnaies, notes,
+    documents) est <b>chiffré et stocké uniquement sur votre appareil</b>. Ces données ne quittent
+    jamais votre téléphone, ne sont accessibles qu'après déverrouillage avec <b>votre</b> mot de passe
+    maître, et sont chiffrées avec <b>AES-256-GCM</b> et une clé dérivée par <b>Argon2id</b>. Vous seul
+    détenez la clé : nous n'y avons aucun accès et ne pourrions pas la récupérer.</p>
+
+    <h3>Permissions de l'application</h3>
+    <p>ShieldKey ne demande <b>aucune permission d'accès à Internet</b>. Vous pouvez le vérifier dans la
+    liste des autorisations du Play Store ou dans les réglages de votre téléphone. Une application sans
+    accès au réseau ne peut techniquement rien envoyer à l'extérieur. Les seules permissions
+    éventuelles sont locales et facultatives : déverrouillage biométrique / par code (traité par
+    Android, jamais transmis) et sélection ponctuelle d'un fichier que vous choisissez d'importer ou
+    d'exporter (via le sélecteur système, sans permission de stockage permanente).</p>
+
+    <h3>Sauvegardes</h3>
+    <p>Une sauvegarde (fichier <code>.skb</code>) est chiffrée avec votre mot de passe maître et
+    enregistrée à l'emplacement que vous choisissez. ShieldKey ne l'envoie nulle part.</p>
+
+    <h3>Enfants</h3>
+    <p>ShieldKey n'est pas destiné aux enfants et ne collecte aucune donnée les concernant.</p>
+
+    <h3>Modifications futures</h3>
+    <p>Si une version future introduit une fonctionnalité nécessitant une connexion (par exemple la
+    vérification de l'achat via Google Play lors de la première activation de l'édition Pro), cette
+    politique sera mise à jour pour le décrire clairement. Le coffre lui-même restera hors-ligne.</p>
+
+    <h3>Vos droits (RGPD)</h3>
+    <p>Comme nous ne détenons aucune de vos données, il n'y a rien à consulter, corriger ou supprimer
+    de notre côté. Vous gardez le contrôle total : supprimer l'application efface le coffre local
+    (pensez à conserver une sauvegarde <code>.skb</code> et votre kit de secours).</p>
+
+    <h3>Contact</h3>
+    <p>Pour toute question : <code>shieldkey.app@gmail.com</code>.</p>
+  </section>
+
+  <div class="divider" id="en">— — — ENGLISH — — —</div>
+
+  <div class="lead">
+    <b>ShieldKey collects, transmits and stores none of your data online.</b> Full stop.
+  </div>
+
+  <section>
+    <h2>Privacy Policy</h2>
+    <p style="color:var(--muted)">Version 1.0 — effective 3 July 2026</p>
+
+    <h3>Who we are</h3>
+    <p>ShieldKey is a personal vault application published by an independent developer.
+    Contact: <code>shieldkey.app@gmail.com</code>.</p>
+
+    <h3>What data do we collect?</h3>
+    <p><b>None.</b> ShieldKey does not collect, transmit, sell or share any personal data: no account,
+    no server, no analytics/advertising/tracking, no third-party SDKs.</p>
+
+    <h3>Where is your data?</h3>
+    <p>Everything you store (passwords, cards, IBANs, crypto keys, notes, documents) is
+    <b>encrypted and stored only on your device</b>. It never leaves your phone, is only accessible
+    after unlocking with <b>your</b> master password, and is encrypted with <b>AES-256-GCM</b> using a
+    key derived via <b>Argon2id</b>. You alone hold the key; we have no access and could not recover it.</p>
+
+    <h3>App permissions</h3>
+    <p>ShieldKey requests <b>no Internet permission</b> — verifiable on the Play Store page or in your
+    phone settings. Only local, optional permissions may be used: device biometric/PIN unlock (handled
+    by Android, never transmitted) and one-off file selection you choose to import/export via the system
+    picker (no persistent storage permission).</p>
+
+    <h3>Backups</h3>
+    <p>A backup (<code>.skb</code> file) is encrypted with your master password and saved where you
+    choose. ShieldKey does not send it anywhere.</p>
+
+    <h3>Children</h3>
+    <p>ShieldKey is not directed to children and collects no data about them.</p>
+
+    <h3>Future changes</h3>
+    <p>If a future version introduces a feature requiring a connection (e.g. purchase verification via
+    Google Play on first Pro activation), this policy will be updated to describe it. The vault itself
+    will remain offline.</p>
+
+    <h3>Your rights (GDPR)</h3>
+    <p>Since we hold none of your data, there is nothing for us to access, correct or delete. You keep
+    full control: deleting the app erases the local vault (keep a <code>.skb</code> backup and your
+    recovery kit).</p>
+
+    <h3>Contact</h3>
+    <p>Questions: <code>shieldkey.app@gmail.com</code>.</p>
+  </section>
+
+  <footer>
+    🛡️ ShieldKey — Conçu en France · Code vérifiable (GPLv3)
+  </footer>
+</div>
+</body>
+</html>
