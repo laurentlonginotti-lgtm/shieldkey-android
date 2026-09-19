@@ -67,14 +67,17 @@ jobs:
           echo "==========================================================================="
           exit $STATUS
 
-      - name: Build Release APK
+      # Release signée : l'APK sert aux tests directs sur téléphone ; l'AAB (Android App
+      # Bundle) est le SEUL format accepté par la Play Console pour une nouvelle app.
+      # Les deux sont signés avec le même keystore (CN=ShieldKey).
+      - name: Build Release APK + AAB
         if: ${{ steps.decode_keystore.outputs.release_ready == 'true' }}
         env:
           KEYSTORE_FILE: ${{ github.workspace }}/release.jks
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew assembleRelease --no-daemon
+        run: ./gradlew assembleRelease bundleRelease --no-daemon
 
       - name: Cleanup keystore
         if: always()
@@ -93,4 +96,12 @@ jobs:
         with:
           name: ShieldKey-release
           path: app/build/outputs/apk/release/app-release.apk
+          retention-days: 90
+
+      - name: Upload Release AAB (Play Store)
+        if: ${{ hashFiles('app/build/outputs/bundle/release/app-release.aab') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ShieldKey-release-aab
+          path: app/build/outputs/bundle/release/app-release.aab
           retention-days: 90

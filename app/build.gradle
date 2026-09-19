@@ -54,6 +54,16 @@ android {
     buildFeatures {
         compose true
     }
+
+    // Android App Bundle : Play n'installe par défaut QUE la langue du téléphone (« language
+    // split »). Or notre sélecteur de langue intégré (LocaleHelper) force une locale à la volée
+    // et l'app est hors-ligne (aucun téléchargement à la demande possible) : toutes les langues
+    // doivent donc être livrées dans chaque installation.
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
 }
 
 kotlin {
