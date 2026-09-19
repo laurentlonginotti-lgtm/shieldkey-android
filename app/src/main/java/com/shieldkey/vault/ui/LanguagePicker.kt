@@ -25,6 +25,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -39,6 +41,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shieldkey.vault.R
+import com.shieldkey.vault.i18n.Languages
 import com.shieldkey.vault.i18n.LocaleHelper
 import com.shieldkey.vault.ui.theme.SkEmerald2
 import com.shieldkey.vault.ui.theme.SkMuted
@@ -62,11 +65,9 @@ fun LanguageButton() {
     val context = LocalContext.current
     var open by remember { mutableStateOf(false) }
 
-    val label = when (LocaleHelper.getSaved(context)) {
-        "fr" -> "Français"
-        "en" -> "English"
-        else -> stringResource(R.string.lang_system)
-    }
+    // Libellé du bouton : nom natif de la langue forcée, sinon « Système ».
+    val label = Languages.nativeName(LocaleHelper.getSaved(context))
+        ?: stringResource(R.string.lang_system)
 
     TextButton(onClick = { open = true }) {
         Text("🌐 $label", color = SkMuted, fontSize = 12.sp)
@@ -77,10 +78,13 @@ fun LanguageButton() {
             onDismissRequest = { open = false },
             title = { Text(stringResource(R.string.lang_title)) },
             text = {
-                Column {
+                // La liste vient de Languages.all : ajouter une langue = une ligne dans la table.
+                // Défilement : avec une quinzaine de langues, la boîte dépasse l'écran.
+                Column(Modifier.verticalScroll(rememberScrollState())) {
                     LangRow(stringResource(R.string.lang_system)) { choose(context, "") }
-                    LangRow("Français") { choose(context, "fr") }
-                    LangRow("English") { choose(context, "en") }
+                    Languages.all.forEach { lang ->
+                        LangRow(lang.nativeName) { choose(context, lang.tag) }
+                    }
                 }
             },
             confirmButton = {

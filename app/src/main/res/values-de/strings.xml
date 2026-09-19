@@ -1,0 +1,159 @@
+<resources>
+    <string name="app_name">ShieldKey</string>
+
+    <!-- Onboarding -->
+    <string name="onb_title">Tresor erstellen</string>
+    <string name="onb_subtitle">Wählen Sie ein Master-Passwort. Es ist der einzige Schlüssel zu Ihrem Tresor — machen Sie es stark und merkbar.</string>
+    <string name="field_master_password">Master-Passwort</string>
+    <string name="err_min8">Mindestens 8 Zeichen</string>
+    <string name="field_confirm_password">Passwort bestätigen</string>
+    <string name="err_mismatch">Die Passwörter stimmen nicht überein</string>
+    <string name="err_generic">Fehler: %1$s</string>
+    <string name="onb_create">Tresor erstellen</string>
+
+    <!-- Recovery kit -->
+    <string name="kit_title">🔑 Ihr Wiederherstellungs-Kit</string>
+    <string name="kit_subtitle">Dieser Code ist der EINZIGE Weg, Ihren Tresor wiederherzustellen, falls Sie Ihr Master-Passwort vergessen. Schreiben Sie ihn auf oder drucken Sie ihn aus und bewahren Sie ihn sicher auf.</string>
+    <string name="kit_copy">📋 Code kopieren</string>
+    <string name="kit_warning">⚠️ Ohne diesen Code UND Ihr Passwort sind Ihre Daten für immer verloren. Niemand kann sie wiederherstellen.</string>
+    <string name="kit_checkbox">Ich habe meinen Wiederherstellungscode sicher aufbewahrt</string>
+    <string name="kit_enter">Tresor öffnen</string>
+
+    <!-- Unlock -->
+    <string name="unlock_locked">Ihr Tresor ist gesperrt</string>
+    <string name="unlock_button">Entsperren</string>
+    <string name="unlock_wrong">Falsches Passwort</string>
+    <string name="unlock_forgot">Passwort vergessen? Wiederherstellungscode verwenden</string>
+    <string name="offline_badge">🔒 100%% offline</string>
+
+    <!-- Recovery -->
+    <string name="rec_title">Wiederherstellung</string>
+    <string name="rec_subtitle">Geben Sie Ihren Wiederherstellungscode ein und wählen Sie dann ein neues Master-Passwort.</string>
+    <string name="field_recovery_code">Wiederherstellungscode</string>
+    <string name="field_new_master">Neues Master-Passwort</string>
+    <string name="field_confirm">Bestätigen</string>
+    <string name="rec_button">Meinen Tresor wiederherstellen</string>
+    <string name="rec_invalid">Ungültiger Wiederherstellungscode</string>
+    <string name="action_cancel">Abbrechen</string>
+
+    <!-- Vault -->
+    <string name="vault_lock">🔒 Sperren</string>
+    <string name="vault_secure_badge">🔒 100%% offline · AES-256-verschlüsselt · Argon2id</string>
+    <string name="chip_all">Alle</string>
+    <string name="vault_empty_title">Ihr Tresor ist leer</string>
+    <string name="vault_empty_sub">Fügen Sie Ihren ersten Eintrag über die Schaltfläche unten hinzu.</string>
+    <string name="vault_add">+ Eintrag hinzufügen</string>
+
+    <!-- Entries (logins, cards, crypto, notes) -->
+    <string name="entry_type_login">Zugangsdaten</string>
+    <string name="entry_type_card">Karte / IBAN</string>
+    <string name="entry_type_crypto">Krypto</string>
+    <string name="entry_type_note">Notiz</string>
+    <string name="choose_type_title">Was möchten Sie hinzufügen?</string>
+    <string name="choose_type_document">📄 Ein Dokument (Datei)</string>
+
+    <string name="field_title">Name</string>
+    <string name="field_username">Benutzername / E-Mail</string>
+    <string name="field_password">Passwort</string>
+    <string name="field_url">Website</string>
+    <string name="field_notes">Notizen</string>
+    <string name="field_holder">Karteninhaber</string>
+    <string name="field_card_number">Kartennummer</string>
+    <string name="field_expiry">Gültig bis (MM/JJ)</string>
+    <string name="field_cvv">Prüfnummer (CVV)</string>
+    <string name="field_iban">IBAN</string>
+    <string name="field_seed">Wiederherstellungsphrase (Seed)</string>
+    <string name="field_private_key">Privater Schlüssel</string>
+    <string name="field_wallet">Wallet / Plattform</string>
+    <string name="field_note_body">Inhalt</string>
+
+    <!-- Card kinds + payment fields -->
+    <string name="card_kind_physical">Physisch</string>
+    <string name="card_kind_ecard">Virtuell (E-Karte)</string>
+    <string name="card_kind_ctp">Click to Pay</string>
+    <string name="card_kind_iban">IBAN / Konto</string>
+    <string name="card_kind_mobile">Mobiles Bezahlen</string>
+    <string name="field_card_limit">Ausgabenlimit</string>
+    <string name="field_card_validity">Gültig bis</string>
+    <string name="field_card_source">Verknüpfte Karte</string>
+    <string name="field_ctp_email">Registrierungs-E-Mail</string>
+    <string name="field_ctp_cards">Registrierte Karten</string>
+    <string name="field_ctp_network">Netzwerk (Visa, Mastercard…)</string>
+    <string name="field_bic">BIC / SWIFT</string>
+    <string name="field_bank">Bank</string>
+    <string name="field_wallet_app">Wallet (Apple Pay, Google Pay…)</string>
+    <string name="field_wallet_account">Verknüpftes Konto / Gerät</string>
+
+    <string name="action_save">Speichern</string>
+    <string name="action_back">‹ Zurück</string>
+    <string name="action_edit">✏️ Bearbeiten</string>
+    <string name="action_delete">🗑 Löschen</string>
+    <string name="err_title_required">Geben Sie diesem Eintrag einen Namen</string>
+    <string name="entry_delete_title">Diesen Eintrag löschen?</string>
+    <string name="entry_delete_msg">Er wird unwiderruflich gelöscht. Dies kann nicht rückgängig gemacht werden.</string>
+    <string name="reveal_hidden">Tippen Sie auf 👁 zum Anzeigen</string>
+
+    <!-- Documents -->
+    <string name="doc_empty_title">Noch keine Dokumente</string>
+    <string name="doc_empty_sub">Bewahren Sie Ihre wichtigen Dateien auf — Ausweis, Verträge, Schlüssel. Verschlüsselt, offline, jederzeit verfügbar, auch ohne Verbindung.</string>
+    <string name="doc_add">+ Dokument hinzufügen</string>
+    <string name="doc_delete">Löschen</string>
+
+    <!-- Quick unlock (biometrics or device credential) -->
+    <string name="bio_prompt_title">ShieldKey entsperren</string>
+    <string name="bio_prompt_sub_unlock">Mit Fingerabdruck oder Gerätecode bestätigen</string>
+    <string name="bio_prompt_sub_enable">Zum Aktivieren mit Fingerabdruck oder Gerätecode bestätigen</string>
+    <string name="bio_unlock_button">👆 Schnellentsperrung</string>
+    <string name="bio_enable">👆 Schnellentsperrung aktivieren</string>
+    <string name="bio_enabled">👆 Schnellentsperrung aktiv</string>
+    <string name="bio_hint_no_lock">Richten Sie in Android eine Displaysperre (Fingerabdruck oder PIN) ein, um dies zu nutzen.</string>
+
+    <!-- Security page -->
+    <string name="sec_open">🛡️ Sicherheit</string>
+    <string name="sec_title">Sicherheit</string>
+    <string name="sec_tagline">Ihr Vertrauen, erklärt.</string>
+    <string name="sec_intro">ShieldKey ist so gebaut, dass Ihre Daten Ihre bleiben. So funktioniert es — ohne Fachjargon.</string>
+    <string name="sec_offline_title">🌐 100%% offline</string>
+    <string name="sec_offline_body">Keine Internet-Berechtigung. Nichts verlässt jemals Ihr Telefon. Kein Konto, kein Server — nichts, das aus der Ferne gehackt werden könnte.</string>
+    <string name="sec_offline_tech">0 Netzwerk-Berechtigungen · Cloud-Backup deaktiviert</string>
+    <string name="sec_aes_title">🔐 AES-256-GCM-Verschlüsselung</string>
+    <string name="sec_aes_body">Militärischer Standard und authentifiziert: Wird ein einziges Byte verändert oder ist der Schlüssel falsch, schlägt das Öffnen einfach fehl.</string>
+    <string name="sec_aes_tech">AES-256 · GCM · 128-Bit-Tag · zufälliger IV pro Element</string>
+    <string name="sec_argon_title">🧗 Argon2id-Schlüsselableitung</string>
+    <string name="sec_argon_body">Ihr Master-Passwort wird durch Argon2id in einen Schlüssel umgewandelt — \"memory-hard\", entworfen, um massenhaftes Knacken langsam und teuer zu machen (anti-GPU/ASIC), weit robuster als PBKDF2.</string>
+    <string name="sec_argon_tech">Argon2id · %1$d Durchläufe · %2$d MB · Parallelität %3$d</string>
+    <string name="sec_envelope_title">🕵️ Zero-Knowledge</string>
+    <string name="sec_envelope_body">Ihr Master-Passwort wird nirgends gespeichert. Es entsperrt nur einen internen Zufallsschlüssel. Niemand — nicht einmal der Entwickler — kann Ihren Tresor ohne Ihr Passwort öffnen.</string>
+    <string name="sec_envelope_tech">Envelope-Verschlüsselung · zufälliger 256-Bit-Schlüssel</string>
+    <string name="sec_recovery_title">🔑 Wiederherstellungs-Kit, keine Hintertür</string>
+    <string name="sec_recovery_body">Wenn Sie Ihr Master-Passwort vergessen, kann nur IHR Wiederherstellungscode (den Sie notiert haben) den Tresor wiederherstellen. Keine E-Mail, kein Wiederherstellungsserver — keine Hintertür.</string>
+    <string name="sec_bio_title">👆 Hardwaregestützte Schnellentsperrung</string>
+    <string name="sec_bio_body">Fingerabdruck oder Gerätecode: Der Entsperrschlüssel liegt im Sicherheitschip Ihres Telefons und verlässt ihn nie. Ihr Master-Passwort bleibt der eigentliche Schutz.</string>
+    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
+    <string name="sec_clip_title">📋 Gehärtete Zwischenablage</string>
+    <string name="sec_clip_body">Wenn Sie ein Geheimnis kopieren, wird es als \"sensibel\" markiert (aus dem Zwischenablageverlauf ausgeblendet) und automatisch gelöscht.</string>
+    <string name="sec_docs_title">📄 Verschlüsselte Offline-Dokumente</string>
+    <string name="sec_docs_body">Jedes Dokument wird einzeln verschlüsselt und bleibt auch ohne Verbindung nutzbar.</string>
+    <string name="sec_phish_title">🎣 Wir fragen nie nach Ihren Daten</string>
+    <string name="sec_phish_body">ShieldKey wird Ihnen niemals eine E-Mail oder SMS schicken, um nach Ihrem Passwort oder Ihren Daten zu fragen. Tut es jemand, sind wir es nicht.</string>
+    <string name="sec_footer">AES-256-GCM · Argon2id · 0 Internet</string>
+
+    <!-- Backup / restore -->
+    <string name="backup_open">💾 Tresor sichern</string>
+    <string name="backup_title">Tresor sichern</string>
+    <string name="backup_prompt">Geben Sie Ihr Master-Passwort ein, um die Sicherungsdatei zu verschlüsseln.</string>
+    <string name="backup_action">Sicherung erstellen</string>
+    <string name="backup_hint">Eine verschlüsselte .skb-Datei. Bewahren Sie sie sicher auf (Drive, Computer…), um sie auf einem neuen Telefon wiederherzustellen.</string>
+    <string name="restore_open">🗄️ Sicherung wiederherstellen</string>
+    <string name="restore_title">Sicherung wiederherstellen</string>
+    <string name="restore_pick">Sicherungsdatei auswählen (.skb)</string>
+    <string name="restore_file_ok">✓ Datei ausgewählt</string>
+    <string name="restore_prompt">Geben Sie das Master-Passwort dieser Sicherung ein.</string>
+    <string name="restore_action">Wiederherstellen</string>
+    <string name="restore_warning">⚠️ Dies ersetzt jeden Tresor, der sich derzeit auf diesem Telefon befindet.</string>
+    <string name="restore_error">Falsches Passwort oder ungültige Datei.</string>
+
+    <!-- Language -->
+    <string name="lang_title">Sprache</string>
+    <string name="lang_system">System (Standard)</string>
+</resources>

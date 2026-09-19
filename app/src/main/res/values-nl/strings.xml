@@ -1,0 +1,159 @@
+<resources>
+    <string name="app_name">ShieldKey</string>
+
+    <!-- Onboarding -->
+    <string name="onb_title">Maak je kluis</string>
+    <string name="onb_subtitle">Kies een hoofdwachtwoord. Het is de enige sleutel tot je kluis: maak het sterk en makkelijk te onthouden.</string>
+    <string name="field_master_password">Hoofdwachtwoord</string>
+    <string name="err_min8">Minimaal 8 tekens</string>
+    <string name="field_confirm_password">Wachtwoord bevestigen</string>
+    <string name="err_mismatch">De wachtwoorden komen niet overeen</string>
+    <string name="err_generic">Fout: %1$s</string>
+    <string name="onb_create">Kluis maken</string>
+
+    <!-- Recovery kit -->
+    <string name="kit_title">🔑 Je herstelkit</string>
+    <string name="kit_subtitle">Deze code is de ENIGE manier om je kluis te herstellen als je je hoofdwachtwoord vergeet. Schrijf hem op of druk hem af en bewaar hem op een veilige plek.</string>
+    <string name="kit_copy">📋 Code kopiëren</string>
+    <string name="kit_warning">⚠️ Zonder deze code ÉN je wachtwoord zijn je gegevens voor altijd verloren. Niemand kan ze terughalen.</string>
+    <string name="kit_checkbox">Ik heb mijn herstelcode op een veilige plek bewaard</string>
+    <string name="kit_enter">Mijn kluis openen</string>
+
+    <!-- Unlock -->
+    <string name="unlock_locked">Je kluis is vergrendeld</string>
+    <string name="unlock_button">Ontgrendelen</string>
+    <string name="unlock_wrong">Onjuist wachtwoord</string>
+    <string name="unlock_forgot">Wachtwoord vergeten? Gebruik de herstelcode</string>
+    <string name="offline_badge">🔒 100%% offline</string>
+
+    <!-- Recovery -->
+    <string name="rec_title">Herstel</string>
+    <string name="rec_subtitle">Voer je herstelcode in en kies daarna een nieuw hoofdwachtwoord.</string>
+    <string name="field_recovery_code">Herstelcode</string>
+    <string name="field_new_master">Nieuw hoofdwachtwoord</string>
+    <string name="field_confirm">Bevestigen</string>
+    <string name="rec_button">Mijn kluis herstellen</string>
+    <string name="rec_invalid">Ongeldige herstelcode</string>
+    <string name="action_cancel">Annuleren</string>
+
+    <!-- Vault -->
+    <string name="vault_lock">🔒 Vergrendelen</string>
+    <string name="vault_secure_badge">🔒 100%% offline · AES-256-versleuteld · Argon2id</string>
+    <string name="chip_all">Alles</string>
+    <string name="vault_empty_title">Je kluis is leeg</string>
+    <string name="vault_empty_sub">Voeg je eerste item toe met de knop hieronder.</string>
+    <string name="vault_add">+ Item toevoegen</string>
+
+    <!-- Entries (logins, cards, crypto, notes) -->
+    <string name="entry_type_login">Inloggegevens</string>
+    <string name="entry_type_card">Kaart / IBAN</string>
+    <string name="entry_type_crypto">Crypto</string>
+    <string name="entry_type_note">Notitie</string>
+    <string name="choose_type_title">Wat wil je toevoegen?</string>
+    <string name="choose_type_document">📄 Een document (bestand)</string>
+
+    <string name="field_title">Naam</string>
+    <string name="field_username">Gebruikersnaam / e-mail</string>
+    <string name="field_password">Wachtwoord</string>
+    <string name="field_url">Website</string>
+    <string name="field_notes">Notities</string>
+    <string name="field_holder">Kaarthouder</string>
+    <string name="field_card_number">Kaartnummer</string>
+    <string name="field_expiry">Vervaldatum (MM/JJ)</string>
+    <string name="field_cvv">Beveiligingscode (CVV)</string>
+    <string name="field_iban">IBAN</string>
+    <string name="field_seed">Herstelzin (seed)</string>
+    <string name="field_private_key">Privésleutel</string>
+    <string name="field_wallet">Wallet / platform</string>
+    <string name="field_note_body">Inhoud</string>
+
+    <!-- Card kinds + payment fields -->
+    <string name="card_kind_physical">Fysiek</string>
+    <string name="card_kind_ecard">Virtueel (e-kaart)</string>
+    <string name="card_kind_ctp">Click to Pay</string>
+    <string name="card_kind_iban">IBAN / rekening</string>
+    <string name="card_kind_mobile">Mobiel betalen</string>
+    <string name="field_card_limit">Bestedingslimiet</string>
+    <string name="field_card_validity">Geldig tot</string>
+    <string name="field_card_source">Gekoppelde kaart</string>
+    <string name="field_ctp_email">E-mail van inschrijving</string>
+    <string name="field_ctp_cards">Ingeschreven kaarten</string>
+    <string name="field_ctp_network">Netwerk (Visa, Mastercard…)</string>
+    <string name="field_bic">BIC / SWIFT</string>
+    <string name="field_bank">Bank</string>
+    <string name="field_wallet_app">Wallet (Apple Pay, Google Pay…)</string>
+    <string name="field_wallet_account">Gekoppeld account / apparaat</string>
+
+    <string name="action_save">Opslaan</string>
+    <string name="action_back">‹ Terug</string>
+    <string name="action_edit">✏️ Bewerken</string>
+    <string name="action_delete">🗑 Verwijderen</string>
+    <string name="err_title_required">Geef dit item een naam</string>
+    <string name="entry_delete_title">Dit item verwijderen?</string>
+    <string name="entry_delete_msg">Het wordt permanent gewist. Dit kan niet ongedaan worden gemaakt.</string>
+    <string name="reveal_hidden">Tik op 👁 om te tonen</string>
+
+    <!-- Documents -->
+    <string name="doc_empty_title">Nog geen documenten</string>
+    <string name="doc_empty_sub">Bewaar je belangrijke bestanden: identiteitsbewijs, contracten, sleutels. Versleuteld, offline, altijd beschikbaar, ook zonder verbinding.</string>
+    <string name="doc_add">+ Document toevoegen</string>
+    <string name="doc_delete">Verwijderen</string>
+
+    <!-- Quick unlock (biometrics or device credential) -->
+    <string name="bio_prompt_title">ShieldKey ontgrendelen</string>
+    <string name="bio_prompt_sub_unlock">Bevestig met je vingerafdruk of telefooncode</string>
+    <string name="bio_prompt_sub_enable">Bevestig met je vingerafdruk of telefooncode om in te schakelen</string>
+    <string name="bio_unlock_button">👆 Snel ontgrendelen</string>
+    <string name="bio_enable">👆 Snel ontgrendelen inschakelen</string>
+    <string name="bio_enabled">👆 Snel ontgrendelen ingeschakeld</string>
+    <string name="bio_hint_no_lock">Stel een schermvergrendeling (vingerafdruk of pincode) in op Android om dit te gebruiken.</string>
+
+    <!-- Security page -->
+    <string name="sec_open">🛡️ Beveiliging</string>
+    <string name="sec_title">Beveiliging</string>
+    <string name="sec_tagline">Jouw vertrouwen, uitgelegd.</string>
+    <string name="sec_intro">ShieldKey is zo gebouwd dat je gegevens van jou blijven. Zo werkt het, zonder jargon.</string>
+    <string name="sec_offline_title">🌐 100%% offline</string>
+    <string name="sec_offline_body">Geen internetmachtiging. Niets verlaat ooit je telefoon. Geen account, geen server: niets om op afstand te hacken.</string>
+    <string name="sec_offline_tech">0 netwerkmachtigingen · cloudback-up uitgeschakeld</string>
+    <string name="sec_aes_title">🔐 AES-256-GCM-versleuteling</string>
+    <string name="sec_aes_body">Militair niveau en geauthenticeerd: als er één byte is gewijzigd of de sleutel klopt niet, mislukt het openen gewoon.</string>
+    <string name="sec_aes_tech">AES-256 · GCM · 128-bits tag · willekeurige IV per item</string>
+    <string name="sec_argon_title">🧗 Argon2id-sleutelafleiding</string>
+    <string name="sec_argon_body">Je hoofdwachtwoord wordt door Argon2id omgezet in een sleutel — \"memory-hard\", ontworpen om grootschalig kraken traag en duur te maken (anti-GPU/ASIC), veel robuuster dan PBKDF2.</string>
+    <string name="sec_argon_tech">Argon2id · %1$d rondes · %2$d MB · parallellisme %3$d</string>
+    <string name="sec_envelope_title">🕵️ Zero-knowledge</string>
+    <string name="sec_envelope_body">Je hoofdwachtwoord wordt nergens opgeslagen. Het ontgrendelt alleen een interne willekeurige sleutel. Niemand, zelfs de ontwikkelaar niet, kan je kluis openen zonder je wachtwoord.</string>
+    <string name="sec_envelope_tech">Envelope-versleuteling · willekeurige 256-bits sleutel</string>
+    <string name="sec_recovery_title">🔑 Herstelkit, geen achterdeur</string>
+    <string name="sec_recovery_body">Als je je hoofdwachtwoord vergeet, kan alleen JOUW herstelcode (die je hebt opgeschreven) de kluis herstellen. Geen e-mail, geen herstelserver: geen achterdeur.</string>
+    <string name="sec_bio_title">👆 Snel ontgrendelen met hardwarebeveiliging</string>
+    <string name="sec_bio_body">Vingerafdruk of schermcode: de ontgrendelsleutel zit in de beveiligde chip van je telefoon en verlaat die nooit. Je hoofdwachtwoord blijft de echte bescherming.</string>
+    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
+    <string name="sec_clip_title">📋 Beveiligd klembord</string>
+    <string name="sec_clip_body">Wanneer je een geheim kopieert, wordt het gemarkeerd als \"gevoelig\" (verborgen in de klembordgeschiedenis) en automatisch gewist.</string>
+    <string name="sec_docs_title">📄 Versleutelde offline documenten</string>
+    <string name="sec_docs_body">Elk document wordt apart versleuteld en blijft bruikbaar, ook zonder verbinding.</string>
+    <string name="sec_phish_title">🎣 We vragen nooit om je gegevens</string>
+    <string name="sec_phish_body">ShieldKey zal je nooit e-mailen of sms\'en om je wachtwoord of gegevens te vragen. Doet iemand dat wel, dan zijn wij het niet.</string>
+    <string name="sec_footer">AES-256-GCM · Argon2id · 0 internet</string>
+
+    <!-- Backup / restore -->
+    <string name="backup_open">💾 Back-up van de kluis maken</string>
+    <string name="backup_title">Back-up van de kluis</string>
+    <string name="backup_prompt">Voer je hoofdwachtwoord in om het back-upbestand te versleutelen.</string>
+    <string name="backup_action">Back-up maken</string>
+    <string name="backup_hint">Eén versleuteld .skb-bestand. Bewaar het op een veilige plek (Drive, computer…) om het op een nieuwe telefoon te herstellen.</string>
+    <string name="restore_open">🗄️ Back-up herstellen</string>
+    <string name="restore_title">Back-up herstellen</string>
+    <string name="restore_pick">Kies het back-upbestand (.skb)</string>
+    <string name="restore_file_ok">✓ Bestand geselecteerd</string>
+    <string name="restore_prompt">Voer het hoofdwachtwoord van die back-up in.</string>
+    <string name="restore_action">Herstellen</string>
+    <string name="restore_warning">⚠️ Dit vervangt elke kluis die nu op deze telefoon staat.</string>
+    <string name="restore_error">Onjuist wachtwoord of ongeldig bestand.</string>
+
+    <!-- Language -->
+    <string name="lang_title">Taal</string>
+    <string name="lang_system">Systeem (standaard)</string>
+</resources>

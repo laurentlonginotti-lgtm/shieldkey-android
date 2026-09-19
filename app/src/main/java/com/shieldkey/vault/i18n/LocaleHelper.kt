@@ -25,7 +25,7 @@ import java.util.Locale
 /**
  * Gestion de la langue de l'app.
  *  - "" (vide)  = suit la langue du téléphone (par défaut)
- *  - "fr" / "en" = force cette langue
+ *  - une étiquette BCP 47 de [Languages] ("fr", "de", "pt-BR"…) = force cette langue
  *
  * La préférence est appliquée dans Activity.attachBaseContext (voir MainActivity)
  * en enveloppant le contexte avec la locale choisie. Hors-ligne, aucune permission.
@@ -46,7 +46,9 @@ object LocaleHelper {
     fun wrap(context: Context): Context {
         val lang = getSaved(context)
         if (lang.isEmpty()) return context
-        val locale = Locale(lang)
+        // forLanguageTag gère les étiquettes régionales (« pt-BR » → langue pt, pays BR),
+        // là où Locale(lang) ne comprendrait que le code de langue seul.
+        val locale = Locale.forLanguageTag(lang)
         Locale.setDefault(locale)
         val config = Configuration(context.resources.configuration)
         config.setLocale(locale)

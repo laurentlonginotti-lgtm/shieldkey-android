@@ -1,0 +1,159 @@
+<resources>
+    <string name="app_name">ShieldKey</string>
+
+    <!-- Onboarding -->
+    <string name="onb_title">Utwórz swój sejf</string>
+    <string name="onb_subtitle">Wybierz hasło główne. To jedyny klucz do Twojego sejfu — niech będzie silne i łatwe do zapamiętania.</string>
+    <string name="field_master_password">Hasło główne</string>
+    <string name="err_min8">Co najmniej 8 znaków</string>
+    <string name="field_confirm_password">Potwierdź hasło</string>
+    <string name="err_mismatch">Hasła nie są zgodne</string>
+    <string name="err_generic">Błąd: %1$s</string>
+    <string name="onb_create">Utwórz sejf</string>
+
+    <!-- Recovery kit -->
+    <string name="kit_title">🔑 Twój zestaw odzyskiwania</string>
+    <string name="kit_subtitle">Ten kod to JEDYNY sposób na odzyskanie sejfu, jeśli zapomnisz hasła głównego. Zapisz go lub wydrukuj i przechowuj w bezpiecznym miejscu.</string>
+    <string name="kit_copy">📋 Kopiuj kod</string>
+    <string name="kit_warning">⚠️ Bez tego kodu I hasła Twoje dane zostaną utracone na zawsze. Nikt nie będzie mógł ich odzyskać.</string>
+    <string name="kit_checkbox">Zapisałem(-am) kod odzyskiwania w bezpiecznym miejscu</string>
+    <string name="kit_enter">Wejdź do sejfu</string>
+
+    <!-- Unlock -->
+    <string name="unlock_locked">Twój sejf jest zablokowany</string>
+    <string name="unlock_button">Odblokuj</string>
+    <string name="unlock_wrong">Błędne hasło</string>
+    <string name="unlock_forgot">Nie pamiętasz hasła? Użyj kodu odzyskiwania</string>
+    <string name="offline_badge">🔒 100%% offline</string>
+
+    <!-- Recovery -->
+    <string name="rec_title">Odzyskiwanie</string>
+    <string name="rec_subtitle">Wpisz kod odzyskiwania, a następnie wybierz nowe hasło główne.</string>
+    <string name="field_recovery_code">Kod odzyskiwania</string>
+    <string name="field_new_master">Nowe hasło główne</string>
+    <string name="field_confirm">Potwierdź</string>
+    <string name="rec_button">Odzyskaj mój sejf</string>
+    <string name="rec_invalid">Nieprawidłowy kod odzyskiwania</string>
+    <string name="action_cancel">Anuluj</string>
+
+    <!-- Vault -->
+    <string name="vault_lock">🔒 Zablokuj</string>
+    <string name="vault_secure_badge">🔒 100%% offline · szyfrowanie AES-256 · Argon2id</string>
+    <string name="chip_all">Wszystko</string>
+    <string name="vault_empty_title">Twój sejf jest pusty</string>
+    <string name="vault_empty_sub">Dodaj pierwszy wpis przyciskiem poniżej.</string>
+    <string name="vault_add">+ Dodaj wpis</string>
+
+    <!-- Entries (logins, cards, crypto, notes) -->
+    <string name="entry_type_login">Dane logowania</string>
+    <string name="entry_type_card">Karta / IBAN</string>
+    <string name="entry_type_crypto">Krypto</string>
+    <string name="entry_type_note">Notatka</string>
+    <string name="choose_type_title">Co chcesz dodać?</string>
+    <string name="choose_type_document">📄 Dokument (plik)</string>
+
+    <string name="field_title">Nazwa</string>
+    <string name="field_username">Nazwa użytkownika / e-mail</string>
+    <string name="field_password">Hasło</string>
+    <string name="field_url">Strona internetowa</string>
+    <string name="field_notes">Notatki</string>
+    <string name="field_holder">Właściciel karty</string>
+    <string name="field_card_number">Numer karty</string>
+    <string name="field_expiry">Ważna do (MM/RR)</string>
+    <string name="field_cvv">Kod zabezpieczający (CVV)</string>
+    <string name="field_iban">IBAN</string>
+    <string name="field_seed">Fraza odzyskiwania (seed)</string>
+    <string name="field_private_key">Klucz prywatny</string>
+    <string name="field_wallet">Portfel / platforma</string>
+    <string name="field_note_body">Treść</string>
+
+    <!-- Card kinds + payment fields -->
+    <string name="card_kind_physical">Fizyczna</string>
+    <string name="card_kind_ecard">Wirtualna (e-karta)</string>
+    <string name="card_kind_ctp">Click to Pay</string>
+    <string name="card_kind_iban">IBAN / konto</string>
+    <string name="card_kind_mobile">Płatność mobilna</string>
+    <string name="field_card_limit">Limit wydatków</string>
+    <string name="field_card_validity">Ważna do</string>
+    <string name="field_card_source">Powiązana karta</string>
+    <string name="field_ctp_email">E-mail rejestracji</string>
+    <string name="field_ctp_cards">Zarejestrowane karty</string>
+    <string name="field_ctp_network">Sieć (Visa, Mastercard…)</string>
+    <string name="field_bic">BIC / SWIFT</string>
+    <string name="field_bank">Bank</string>
+    <string name="field_wallet_app">Portfel (Apple Pay, Google Pay…)</string>
+    <string name="field_wallet_account">Powiązane konto / urządzenie</string>
+
+    <string name="action_save">Zapisz</string>
+    <string name="action_back">‹ Wstecz</string>
+    <string name="action_edit">✏️ Edytuj</string>
+    <string name="action_delete">🗑 Usuń</string>
+    <string name="err_title_required">Nadaj temu wpisowi nazwę</string>
+    <string name="entry_delete_title">Usunąć ten wpis?</string>
+    <string name="entry_delete_msg">Zostanie trwale usunięty. Tej operacji nie można cofnąć.</string>
+    <string name="reveal_hidden">Dotknij 👁, aby pokazać</string>
+
+    <!-- Documents -->
+    <string name="doc_empty_title">Brak dokumentów</string>
+    <string name="doc_empty_sub">Przechowuj ważne pliki — dowód, umowy, klucze. Zaszyfrowane, offline, zawsze dostępne nawet bez połączenia.</string>
+    <string name="doc_add">+ Dodaj dokument</string>
+    <string name="doc_delete">Usuń</string>
+
+    <!-- Quick unlock (biometrics or device credential) -->
+    <string name="bio_prompt_title">Odblokuj ShieldKey</string>
+    <string name="bio_prompt_sub_unlock">Potwierdź odciskiem palca lub kodem telefonu</string>
+    <string name="bio_prompt_sub_enable">Potwierdź odciskiem palca lub kodem telefonu, aby włączyć</string>
+    <string name="bio_unlock_button">👆 Szybkie odblokowanie</string>
+    <string name="bio_enable">👆 Włącz szybkie odblokowanie</string>
+    <string name="bio_enabled">👆 Szybkie odblokowanie włączone</string>
+    <string name="bio_hint_no_lock">Aby z tego korzystać, ustaw blokadę ekranu (odcisk palca lub PIN) w Androidzie.</string>
+
+    <!-- Security page -->
+    <string name="sec_open">🛡️ Bezpieczeństwo</string>
+    <string name="sec_title">Bezpieczeństwo</string>
+    <string name="sec_tagline">Twoje zaufanie, wyjaśnione.</string>
+    <string name="sec_intro">ShieldKey jest zbudowany tak, aby Twoje dane pozostały Twoje. Oto jak — bez żargonu.</string>
+    <string name="sec_offline_title">🌐 100%% offline</string>
+    <string name="sec_offline_body">Brak uprawnienia do Internetu. Nic nigdy nie opuszcza Twojego telefonu. Bez konta, bez serwera — nie ma czego zhakować zdalnie.</string>
+    <string name="sec_offline_tech">0 uprawnień sieciowych · kopia w chmurze wyłączona</string>
+    <string name="sec_aes_title">🔐 Szyfrowanie AES-256-GCM</string>
+    <string name="sec_aes_body">Klasy wojskowej i uwierzytelnione: jeśli zmieni się choć jeden bajt lub klucz jest błędny, otwarcie po prostu się nie powiedzie.</string>
+    <string name="sec_aes_tech">AES-256 · GCM · tag 128-bitowy · losowy IV dla każdego elementu</string>
+    <string name="sec_argon_title">🧗 Wyprowadzanie klucza Argon2id</string>
+    <string name="sec_argon_body">Twoje hasło główne jest zamieniane w klucz przez Argon2id — \"memory-hard\", zaprojektowany tak, aby łamanie na masową skalę było wolne i kosztowne (anty-GPU/ASIC), znacznie odporniejszy niż PBKDF2.</string>
+    <string name="sec_argon_tech">Argon2id · %1$d przebiegi · %2$d MB · równoległość %3$d</string>
+    <string name="sec_envelope_title">🕵️ Zero-knowledge</string>
+    <string name="sec_envelope_body">Twoje hasło główne nie jest nigdzie zapisywane. Odblokowuje jedynie wewnętrzny losowy klucz. Nikt — nawet twórca aplikacji — nie otworzy Twojego sejfu bez Twojego hasła.</string>
+    <string name="sec_envelope_tech">Szyfrowanie kopertowe · losowy klucz 256-bitowy</string>
+    <string name="sec_recovery_title">🔑 Zestaw odzyskiwania, bez tylnych drzwi</string>
+    <string name="sec_recovery_body">Jeśli zapomnisz hasła głównego, tylko TWÓJ kod odzyskiwania (ten, który zapisałeś) może przywrócić sejf. Bez e-maila, bez serwera odzyskiwania — bez tylnych drzwi.</string>
+    <string name="sec_bio_title">👆 Szybkie odblokowanie chronione sprzętowo</string>
+    <string name="sec_bio_body">Odcisk palca lub kod ekranu: klucz odblokowujący znajduje się w bezpiecznym układzie telefonu i nigdy go nie opuszcza. Hasło główne pozostaje prawdziwym zabezpieczeniem.</string>
+    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
+    <string name="sec_clip_title">📋 Wzmocniony schowek</string>
+    <string name="sec_clip_body">Gdy kopiujesz sekret, jest oznaczany jako \"poufny\" (ukryty w historii schowka) i automatycznie usuwany.</string>
+    <string name="sec_docs_title">📄 Zaszyfrowane dokumenty offline</string>
+    <string name="sec_docs_body">Każdy dokument jest szyfrowany osobno i pozostaje dostępny nawet bez połączenia.</string>
+    <string name="sec_phish_title">🎣 Nigdy nie poprosimy o Twoje dane</string>
+    <string name="sec_phish_body">ShieldKey nigdy nie wyśle Ci e-maila ani SMS-a z prośbą o hasło lub dane. Jeśli ktoś to zrobi, to nie my.</string>
+    <string name="sec_footer">AES-256-GCM · Argon2id · 0 Internetu</string>
+
+    <!-- Backup / restore -->
+    <string name="backup_open">💾 Utwórz kopię sejfu</string>
+    <string name="backup_title">Kopia zapasowa sejfu</string>
+    <string name="backup_prompt">Wpisz hasło główne, aby zaszyfrować plik kopii zapasowej.</string>
+    <string name="backup_action">Utwórz kopię</string>
+    <string name="backup_hint">Jeden zaszyfrowany plik .skb. Przechowuj go w bezpiecznym miejscu (Dysk, komputer…), aby przywrócić na nowym telefonie.</string>
+    <string name="restore_open">🗄️ Przywróć kopię zapasową</string>
+    <string name="restore_title">Przywróć kopię zapasową</string>
+    <string name="restore_pick">Wybierz plik kopii zapasowej (.skb)</string>
+    <string name="restore_file_ok">✓ Plik wybrany</string>
+    <string name="restore_prompt">Wpisz hasło główne tej kopii zapasowej.</string>
+    <string name="restore_action">Przywróć</string>
+    <string name="restore_warning">⚠️ Zastąpi to każdy sejf znajdujący się obecnie na tym telefonie.</string>
+    <string name="restore_error">Błędne hasło lub nieprawidłowy plik.</string>
+
+    <!-- Language -->
+    <string name="lang_title">Język</string>
+    <string name="lang_system">Systemowy (domyślny)</string>
+</resources>

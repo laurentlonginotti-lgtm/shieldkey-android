@@ -1,0 +1,159 @@
+<resources>
+    <string name="app_name">ShieldKey</string>
+
+    <!-- Onboarding -->
+    <string name="onb_title">Crea tu caja fuerte</string>
+    <string name="onb_subtitle">Elige una contraseña maestra. Es la única llave de tu caja fuerte: hazla fuerte y fácil de recordar.</string>
+    <string name="field_master_password">Contraseña maestra</string>
+    <string name="err_min8">Al menos 8 caracteres</string>
+    <string name="field_confirm_password">Confirmar contraseña</string>
+    <string name="err_mismatch">Las contraseñas no coinciden</string>
+    <string name="err_generic">Error: %1$s</string>
+    <string name="onb_create">Crear caja fuerte</string>
+
+    <!-- Recovery kit -->
+    <string name="kit_title">🔑 Tu kit de recuperación</string>
+    <string name="kit_subtitle">Este código es la ÚNICA forma de recuperar tu caja fuerte si olvidas la contraseña maestra. Anótalo o imprímelo y guárdalo en un lugar seguro.</string>
+    <string name="kit_copy">📋 Copiar el código</string>
+    <string name="kit_warning">⚠️ Sin este código Y tu contraseña, tus datos se perderán para siempre. Nadie podrá recuperarlos.</string>
+    <string name="kit_checkbox">He guardado mi código de recuperación en un lugar seguro</string>
+    <string name="kit_enter">Entrar en mi caja fuerte</string>
+
+    <!-- Unlock -->
+    <string name="unlock_locked">Tu caja fuerte está bloqueada</string>
+    <string name="unlock_button">Desbloquear</string>
+    <string name="unlock_wrong">Contraseña incorrecta</string>
+    <string name="unlock_forgot">¿Olvidaste la contraseña? Usa el código de recuperación</string>
+    <string name="offline_badge">🔒 100%% sin conexión</string>
+
+    <!-- Recovery -->
+    <string name="rec_title">Recuperación</string>
+    <string name="rec_subtitle">Introduce tu código de recuperación y elige una nueva contraseña maestra.</string>
+    <string name="field_recovery_code">Código de recuperación</string>
+    <string name="field_new_master">Nueva contraseña maestra</string>
+    <string name="field_confirm">Confirmar</string>
+    <string name="rec_button">Recuperar mi caja fuerte</string>
+    <string name="rec_invalid">Código de recuperación no válido</string>
+    <string name="action_cancel">Cancelar</string>
+
+    <!-- Vault -->
+    <string name="vault_lock">🔒 Bloquear</string>
+    <string name="vault_secure_badge">🔒 100%% sin conexión · cifrado AES-256 · Argon2id</string>
+    <string name="chip_all">Todo</string>
+    <string name="vault_empty_title">Tu caja fuerte está vacía</string>
+    <string name="vault_empty_sub">Añade tu primera entrada con el botón de abajo.</string>
+    <string name="vault_add">+ Añadir una entrada</string>
+
+    <!-- Entries (logins, cards, crypto, notes) -->
+    <string name="entry_type_login">Inicio de sesión</string>
+    <string name="entry_type_card">Tarjeta / IBAN</string>
+    <string name="entry_type_crypto">Cripto</string>
+    <string name="entry_type_note">Nota</string>
+    <string name="choose_type_title">¿Qué quieres añadir?</string>
+    <string name="choose_type_document">📄 Un documento (archivo)</string>
+
+    <string name="field_title">Nombre</string>
+    <string name="field_username">Usuario / correo</string>
+    <string name="field_password">Contraseña</string>
+    <string name="field_url">Sitio web</string>
+    <string name="field_notes">Notas</string>
+    <string name="field_holder">Titular</string>
+    <string name="field_card_number">Número de tarjeta</string>
+    <string name="field_expiry">Caducidad (MM/AA)</string>
+    <string name="field_cvv">Código de seguridad (CVV)</string>
+    <string name="field_iban">IBAN</string>
+    <string name="field_seed">Frase de recuperación (seed)</string>
+    <string name="field_private_key">Clave privada</string>
+    <string name="field_wallet">Monedero / plataforma</string>
+    <string name="field_note_body">Contenido</string>
+
+    <!-- Card kinds + payment fields -->
+    <string name="card_kind_physical">Física</string>
+    <string name="card_kind_ecard">Virtual (e-tarjeta)</string>
+    <string name="card_kind_ctp">Click to Pay</string>
+    <string name="card_kind_iban">IBAN / cuenta</string>
+    <string name="card_kind_mobile">Pago móvil</string>
+    <string name="field_card_limit">Límite de gasto</string>
+    <string name="field_card_validity">Válida hasta</string>
+    <string name="field_card_source">Tarjeta vinculada</string>
+    <string name="field_ctp_email">Correo de inscripción</string>
+    <string name="field_ctp_cards">Tarjetas inscritas</string>
+    <string name="field_ctp_network">Red (Visa, Mastercard…)</string>
+    <string name="field_bic">BIC / SWIFT</string>
+    <string name="field_bank">Banco</string>
+    <string name="field_wallet_app">Monedero (Apple Pay, Google Pay…)</string>
+    <string name="field_wallet_account">Cuenta / dispositivo vinculado</string>
+
+    <string name="action_save">Guardar</string>
+    <string name="action_back">‹ Atrás</string>
+    <string name="action_edit">✏️ Editar</string>
+    <string name="action_delete">🗑 Eliminar</string>
+    <string name="err_title_required">Ponle un nombre a esta entrada</string>
+    <string name="entry_delete_title">¿Eliminar esta entrada?</string>
+    <string name="entry_delete_msg">Se borrará de forma permanente. Esta acción no se puede deshacer.</string>
+    <string name="reveal_hidden">Toca 👁 para mostrar</string>
+
+    <!-- Documents -->
+    <string name="doc_empty_title">Aún no hay documentos</string>
+    <string name="doc_empty_sub">Guarda tus archivos importantes: DNI, contratos, claves. Cifrados, sin conexión, siempre disponibles incluso sin red.</string>
+    <string name="doc_add">+ Añadir un documento</string>
+    <string name="doc_delete">Eliminar</string>
+
+    <!-- Quick unlock (biometrics or device credential) -->
+    <string name="bio_prompt_title">Desbloquear ShieldKey</string>
+    <string name="bio_prompt_sub_unlock">Confirma con tu huella o el código del teléfono</string>
+    <string name="bio_prompt_sub_enable">Confirma con tu huella o el código del teléfono para activar</string>
+    <string name="bio_unlock_button">👆 Desbloqueo rápido</string>
+    <string name="bio_enable">👆 Activar el desbloqueo rápido</string>
+    <string name="bio_enabled">👆 Desbloqueo rápido activado</string>
+    <string name="bio_hint_no_lock">Configura un bloqueo de pantalla (huella o PIN) en Android para usar esta función.</string>
+
+    <!-- Security page -->
+    <string name="sec_open">🛡️ Seguridad</string>
+    <string name="sec_title">Seguridad</string>
+    <string name="sec_tagline">Tu confianza, explicada.</string>
+    <string name="sec_intro">ShieldKey está diseñada para que tus datos sigan siendo tuyos. Así funciona, sin jerga.</string>
+    <string name="sec_offline_title">🌐 100%% sin conexión</string>
+    <string name="sec_offline_body">Sin permiso de Internet. Nada sale nunca de tu teléfono. Sin cuenta, sin servidor: nada que hackear a distancia.</string>
+    <string name="sec_offline_tech">0 permisos de red · copia en la nube desactivada</string>
+    <string name="sec_aes_title">🔐 Cifrado AES-256-GCM</string>
+    <string name="sec_aes_body">De grado militar y autenticado: si se altera un solo byte o la clave es incorrecta, la apertura simplemente falla.</string>
+    <string name="sec_aes_tech">AES-256 · GCM · etiqueta de 128 bits · IV aleatorio por elemento</string>
+    <string name="sec_argon_title">🧗 Derivación de clave Argon2id</string>
+    <string name="sec_argon_body">Tu contraseña maestra se convierte en clave mediante Argon2id, \"memory-hard\", diseñado para que descifrarla a gran escala sea lento y costoso (anti-GPU/ASIC), mucho más robusto que PBKDF2.</string>
+    <string name="sec_argon_tech">Argon2id · %1$d pasadas · %2$d MB · paralelismo %3$d</string>
+    <string name="sec_envelope_title">🕵️ Conocimiento cero</string>
+    <string name="sec_envelope_body">Tu contraseña maestra no se guarda en ningún sitio. Solo desbloquea una clave interna aleatoria. Nadie, ni siquiera el desarrollador, puede abrir tu caja fuerte sin tu contraseña.</string>
+    <string name="sec_envelope_tech">Cifrado de sobre · clave aleatoria de 256 bits</string>
+    <string name="sec_recovery_title">🔑 Kit de recuperación, sin puerta trasera</string>
+    <string name="sec_recovery_body">Si olvidas tu contraseña maestra, solo TU código de recuperación (el que anotaste) puede restaurar la caja fuerte. Sin correo, sin servidor de recuperación: sin puerta trasera.</string>
+    <string name="sec_bio_title">👆 Desbloqueo rápido respaldado por hardware</string>
+    <string name="sec_bio_body">Huella o código de pantalla: la clave de desbloqueo vive en el chip seguro de tu teléfono y nunca sale de él. Tu contraseña maestra sigue siendo la verdadera protección.</string>
+    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
+    <string name="sec_clip_title">📋 Portapapeles reforzado</string>
+    <string name="sec_clip_body">Cuando copias un secreto, se marca como \"sensible\" (oculto del historial del portapapeles) y se borra automáticamente.</string>
+    <string name="sec_docs_title">📄 Documentos cifrados sin conexión</string>
+    <string name="sec_docs_body">Cada documento se cifra por separado y sigue siendo utilizable incluso sin red.</string>
+    <string name="sec_phish_title">🎣 Nunca te pediremos tus datos</string>
+    <string name="sec_phish_body">ShieldKey nunca te enviará un correo o SMS para pedirte tu contraseña o tus datos. Si alguien lo hace, no somos nosotros.</string>
+    <string name="sec_footer">AES-256-GCM · Argon2id · 0 Internet</string>
+
+    <!-- Backup / restore -->
+    <string name="backup_open">💾 Hacer copia de la caja fuerte</string>
+    <string name="backup_title">Copia de la caja fuerte</string>
+    <string name="backup_prompt">Introduce tu contraseña maestra para cifrar el archivo de copia.</string>
+    <string name="backup_action">Crear copia</string>
+    <string name="backup_hint">Un único archivo .skb cifrado. Guárdalo en un lugar seguro (Drive, ordenador…) para restaurarlo en un teléfono nuevo.</string>
+    <string name="restore_open">🗄️ Restaurar una copia</string>
+    <string name="restore_title">Restaurar una copia</string>
+    <string name="restore_pick">Elige el archivo de copia (.skb)</string>
+    <string name="restore_file_ok">✓ Archivo seleccionado</string>
+    <string name="restore_prompt">Introduce la contraseña maestra de esa copia.</string>
+    <string name="restore_action">Restaurar</string>
+    <string name="restore_warning">⚠️ Esto sustituye cualquier caja fuerte que haya en este teléfono.</string>
+    <string name="restore_error">Contraseña incorrecta o archivo no válido.</string>
+
+    <!-- Language -->
+    <string name="lang_title">Idioma</string>
+    <string name="lang_system">Sistema (predeterminado)</string>
+</resources>

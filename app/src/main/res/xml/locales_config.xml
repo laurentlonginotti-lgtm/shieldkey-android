@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Langues livrées par ShieldKey. Android 13+ lit cette liste pour proposer l'app dans
+     Paramètres → Langues par appli. Doit rester alignée sur Languages.kt et les dossiers
+     res/values-xx/. L'anglais (res/values/) est la langue par défaut. -->
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <locale android:name="en" />
+    <locale android:name="fr" />
+    <locale android:name="de" />
+    <locale android:name="es" />
+    <locale android:name="it" />
+    <locale android:name="pt-BR" />
+    <locale android:name="nl" />
+    <locale android:name="pl" />
+</locale-config>

@@ -1,0 +1,159 @@
+<resources>
+    <string name="app_name">ShieldKey</string>
+
+    <!-- Onboarding -->
+    <string name="onb_title">Crie seu cofre</string>
+    <string name="onb_subtitle">Escolha uma senha mestra. Ela é a única chave do seu cofre: faça uma senha forte e fácil de lembrar.</string>
+    <string name="field_master_password">Senha mestra</string>
+    <string name="err_min8">Pelo menos 8 caracteres</string>
+    <string name="field_confirm_password">Confirmar senha</string>
+    <string name="err_mismatch">As senhas não coincidem</string>
+    <string name="err_generic">Erro: %1$s</string>
+    <string name="onb_create">Criar cofre</string>
+
+    <!-- Recovery kit -->
+    <string name="kit_title">🔑 Seu kit de recuperação</string>
+    <string name="kit_subtitle">Este código é a ÚNICA forma de recuperar seu cofre se você esquecer a senha mestra. Anote ou imprima e guarde em um lugar seguro.</string>
+    <string name="kit_copy">📋 Copiar o código</string>
+    <string name="kit_warning">⚠️ Sem este código E sua senha, seus dados serão perdidos para sempre. Ninguém poderá recuperá-los.</string>
+    <string name="kit_checkbox">Guardei meu código de recuperação em um lugar seguro</string>
+    <string name="kit_enter">Entrar no meu cofre</string>
+
+    <!-- Unlock -->
+    <string name="unlock_locked">Seu cofre está bloqueado</string>
+    <string name="unlock_button">Desbloquear</string>
+    <string name="unlock_wrong">Senha incorreta</string>
+    <string name="unlock_forgot">Esqueceu a senha? Use o código de recuperação</string>
+    <string name="offline_badge">🔒 100%% offline</string>
+
+    <!-- Recovery -->
+    <string name="rec_title">Recuperação</string>
+    <string name="rec_subtitle">Digite seu código de recuperação e escolha uma nova senha mestra.</string>
+    <string name="field_recovery_code">Código de recuperação</string>
+    <string name="field_new_master">Nova senha mestra</string>
+    <string name="field_confirm">Confirmar</string>
+    <string name="rec_button">Recuperar meu cofre</string>
+    <string name="rec_invalid">Código de recuperação inválido</string>
+    <string name="action_cancel">Cancelar</string>
+
+    <!-- Vault -->
+    <string name="vault_lock">🔒 Bloquear</string>
+    <string name="vault_secure_badge">🔒 100%% offline · criptografia AES-256 · Argon2id</string>
+    <string name="chip_all">Tudo</string>
+    <string name="vault_empty_title">Seu cofre está vazio</string>
+    <string name="vault_empty_sub">Adicione seu primeiro item com o botão abaixo.</string>
+    <string name="vault_add">+ Adicionar um item</string>
+
+    <!-- Entries (logins, cards, crypto, notes) -->
+    <string name="entry_type_login">Login</string>
+    <string name="entry_type_card">Cartão / IBAN</string>
+    <string name="entry_type_crypto">Cripto</string>
+    <string name="entry_type_note">Nota</string>
+    <string name="choose_type_title">O que você quer adicionar?</string>
+    <string name="choose_type_document">📄 Um documento (arquivo)</string>
+
+    <string name="field_title">Nome</string>
+    <string name="field_username">Usuário / e-mail</string>
+    <string name="field_password">Senha</string>
+    <string name="field_url">Site</string>
+    <string name="field_notes">Observações</string>
+    <string name="field_holder">Titular</string>
+    <string name="field_card_number">Número do cartão</string>
+    <string name="field_expiry">Validade (MM/AA)</string>
+    <string name="field_cvv">Código de segurança (CVV)</string>
+    <string name="field_iban">IBAN</string>
+    <string name="field_seed">Frase de recuperação (seed)</string>
+    <string name="field_private_key">Chave privada</string>
+    <string name="field_wallet">Carteira / plataforma</string>
+    <string name="field_note_body">Conteúdo</string>
+
+    <!-- Card kinds + payment fields -->
+    <string name="card_kind_physical">Físico</string>
+    <string name="card_kind_ecard">Virtual (cartão digital)</string>
+    <string name="card_kind_ctp">Click to Pay</string>
+    <string name="card_kind_iban">IBAN / conta</string>
+    <string name="card_kind_mobile">Pagamento por celular</string>
+    <string name="field_card_limit">Limite de gastos</string>
+    <string name="field_card_validity">Válido até</string>
+    <string name="field_card_source">Cartão vinculado</string>
+    <string name="field_ctp_email">E-mail de cadastro</string>
+    <string name="field_ctp_cards">Cartões cadastrados</string>
+    <string name="field_ctp_network">Bandeira (Visa, Mastercard…)</string>
+    <string name="field_bic">BIC / SWIFT</string>
+    <string name="field_bank">Banco</string>
+    <string name="field_wallet_app">Carteira (Apple Pay, Google Pay…)</string>
+    <string name="field_wallet_account">Conta / dispositivo vinculado</string>
+
+    <string name="action_save">Salvar</string>
+    <string name="action_back">‹ Voltar</string>
+    <string name="action_edit">✏️ Editar</string>
+    <string name="action_delete">🗑 Excluir</string>
+    <string name="err_title_required">Dê um nome a este item</string>
+    <string name="entry_delete_title">Excluir este item?</string>
+    <string name="entry_delete_msg">Ele será apagado permanentemente. Esta ação não pode ser desfeita.</string>
+    <string name="reveal_hidden">Toque em 👁 para mostrar</string>
+
+    <!-- Documents -->
+    <string name="doc_empty_title">Nenhum documento ainda</string>
+    <string name="doc_empty_sub">Guarde seus arquivos importantes: documentos de identidade, contratos, chaves. Criptografados, offline, sempre disponíveis mesmo sem conexão.</string>
+    <string name="doc_add">+ Adicionar um documento</string>
+    <string name="doc_delete">Excluir</string>
+
+    <!-- Quick unlock (biometrics or device credential) -->
+    <string name="bio_prompt_title">Desbloquear o ShieldKey</string>
+    <string name="bio_prompt_sub_unlock">Confirme com sua digital ou o código do celular</string>
+    <string name="bio_prompt_sub_enable">Confirme com sua digital ou o código do celular para ativar</string>
+    <string name="bio_unlock_button">👆 Desbloqueio rápido</string>
+    <string name="bio_enable">👆 Ativar desbloqueio rápido</string>
+    <string name="bio_enabled">👆 Desbloqueio rápido ativado</string>
+    <string name="bio_hint_no_lock">Configure um bloqueio de tela (digital ou PIN) no Android para usar este recurso.</string>
+
+    <!-- Security page -->
+    <string name="sec_open">🛡️ Segurança</string>
+    <string name="sec_title">Segurança</string>
+    <string name="sec_tagline">Sua confiança, explicada.</string>
+    <string name="sec_intro">O ShieldKey foi feito para que seus dados continuem sendo seus. Veja como, sem jargão.</string>
+    <string name="sec_offline_title">🌐 100%% offline</string>
+    <string name="sec_offline_body">Sem permissão de Internet. Nada sai do seu celular. Sem conta, sem servidor: nada para hackear à distância.</string>
+    <string name="sec_offline_tech">0 permissões de rede · backup na nuvem desativado</string>
+    <string name="sec_aes_title">🔐 Criptografia AES-256-GCM</string>
+    <string name="sec_aes_body">De nível militar e autenticada: se um único byte for alterado ou a chave estiver errada, a abertura simplesmente falha.</string>
+    <string name="sec_aes_tech">AES-256 · GCM · tag de 128 bits · IV aleatório por item</string>
+    <string name="sec_argon_title">🧗 Derivação de chave Argon2id</string>
+    <string name="sec_argon_body">Sua senha mestra é transformada em chave pelo Argon2id, \"memory-hard\", projetado para tornar a quebra em massa lenta e cara (anti-GPU/ASIC), muito mais robusto que o PBKDF2.</string>
+    <string name="sec_argon_tech">Argon2id · %1$d passagens · %2$d MB · paralelismo %3$d</string>
+    <string name="sec_envelope_title">🕵️ Conhecimento zero</string>
+    <string name="sec_envelope_body">Sua senha mestra não é armazenada em lugar nenhum. Ela apenas desbloqueia uma chave interna aleatória. Ninguém, nem mesmo o desenvolvedor, pode abrir seu cofre sem a sua senha.</string>
+    <string name="sec_envelope_tech">Criptografia de envelope · chave aleatória de 256 bits</string>
+    <string name="sec_recovery_title">🔑 Kit de recuperação, sem porta dos fundos</string>
+    <string name="sec_recovery_body">Se você esquecer a senha mestra, somente o SEU código de recuperação (aquele que você anotou) pode restaurar o cofre. Sem e-mail, sem servidor de recuperação: sem porta dos fundos.</string>
+    <string name="sec_bio_title">👆 Desbloqueio rápido protegido por hardware</string>
+    <string name="sec_bio_body">Digital ou código da tela: a chave de desbloqueio fica no chip seguro do seu celular e nunca sai dele. Sua senha mestra continua sendo a verdadeira proteção.</string>
+    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
+    <string name="sec_clip_title">📋 Área de transferência reforçada</string>
+    <string name="sec_clip_body">Quando você copia um segredo, ele é marcado como \"sensível\" (oculto do histórico da área de transferência) e apagado automaticamente.</string>
+    <string name="sec_docs_title">📄 Documentos criptografados offline</string>
+    <string name="sec_docs_body">Cada documento é criptografado separadamente e continua utilizável mesmo sem conexão.</string>
+    <string name="sec_phish_title">🎣 Nunca pediremos seus dados</string>
+    <string name="sec_phish_body">O ShieldKey nunca enviará e-mail ou SMS pedindo sua senha ou seus dados. Se alguém fizer isso, não somos nós.</string>
+    <string name="sec_footer">AES-256-GCM · Argon2id · 0 Internet</string>
+
+    <!-- Backup / restore -->
+    <string name="backup_open">💾 Fazer backup do cofre</string>
+    <string name="backup_title">Backup do cofre</string>
+    <string name="backup_prompt">Digite sua senha mestra para criptografar o arquivo de backup.</string>
+    <string name="backup_action">Criar backup</string>
+    <string name="backup_hint">Um único arquivo .skb criptografado. Guarde-o em um lugar seguro (Drive, computador…) para restaurar em um celular novo.</string>
+    <string name="restore_open">🗄️ Restaurar um backup</string>
+    <string name="restore_title">Restaurar um backup</string>
+    <string name="restore_pick">Escolha o arquivo de backup (.skb)</string>
+    <string name="restore_file_ok">✓ Arquivo selecionado</string>
+    <string name="restore_prompt">Digite a senha mestra desse backup.</string>
+    <string name="restore_action">Restaurar</string>
+    <string name="restore_warning">⚠️ Isso substitui qualquer cofre existente neste celular.</string>
+    <string name="restore_error">Senha incorreta ou arquivo inválido.</string>
+
+    <!-- Language -->
+    <string name="lang_title">Idioma</string>
+    <string name="lang_system">Sistema (padrão)</string>
+</resources>
