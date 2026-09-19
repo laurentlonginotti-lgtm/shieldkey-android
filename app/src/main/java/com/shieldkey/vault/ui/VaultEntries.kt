@@ -344,7 +344,15 @@ fun EntryEditorScreen(
     }
 }
 
-/** Champ sensible (masqué par défaut, œil pour révéler, gère le multiligne pour les seeds). */
+/**
+ * Champ sensible (masqué par défaut, œil pour révéler, gère le multiligne pour les seeds).
+ *
+ * Le clavier reste TOUJOURS en variante « mot de passe » (texte ou numérique), même quand le
+ * champ est révélé : c'est cette variante qui dit au clavier de ne rien apprendre ni suggérer.
+ * Sinon, une seed de 24 mots tapée en clair (ce qu'on fait forcément pour se relire) serait
+ * mémorisée par Gboard et proposée en suggestion… dans n'importe quelle autre appli.
+ * Révéler ne change que l'affichage, jamais le type de clavier.
+ */
 @Composable
 fun SkSecretField(
     value: String,
@@ -354,6 +362,10 @@ fun SkSecretField(
     keyboard: KeyboardType
 ) {
     var visible by remember { mutableStateOf(false) }
+    val secretKeyboard = when (keyboard) {
+        KeyboardType.Number, KeyboardType.NumberPassword -> KeyboardType.NumberPassword
+        else -> KeyboardType.Password
+    }
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
@@ -361,7 +373,7 @@ fun SkSecretField(
         singleLine = !multiline,
         minLines = if (multiline) 2 else 1,
         visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(keyboardType = if (visible) keyboard else KeyboardType.Password),
+        keyboardOptions = KeyboardOptions(keyboardType = secretKeyboard, autoCorrect = false),
         trailingIcon = {
             Text(
                 text = if (visible) "🙈" else "👁",
