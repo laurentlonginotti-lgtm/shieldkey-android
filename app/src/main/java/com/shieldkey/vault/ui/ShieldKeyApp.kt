@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -115,6 +116,9 @@ fun ShieldKeyApp() {
             .fillMaxSize()
             .background(Brush.verticalGradient(listOf(SkBgTop, SkBg, SkBgDeep)))
     ) {
+      // Bord à bord (imposé depuis targetSdk 35) : le dégradé s'étend sous les barres système,
+      // mais le contenu reste dans la zone sûre (barre d'état, barre de navigation, encoche).
+      Box(Modifier.fillMaxSize().safeDrawingPadding()) {
         when (screen) {
             Screen.Onboarding -> OnboardingScreen(
                 onCreate = { pwd ->
@@ -224,6 +228,7 @@ fun ShieldKeyApp() {
 
         // Page « Sécurité » en surimpression (accessible même verrouillé, pour la confiance).
         if (showSecurity) SecurityScreen(onClose = { showSecurity = false })
+      }
     }
 }
 

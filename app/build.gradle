@@ -1,16 +1,18 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.compose'
 }
 
 android {
     namespace 'com.shieldkey.vault'
-    compileSdk 34
+    // API 36 (Android 16) : niveau exigé par Google Play pour les nouvelles apps depuis le 31/08/2026.
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.shieldkey.vault"
         minSdk 26
-        targetSdk 34
+        targetSdk 36
         versionCode 1
         versionName "0.1"
         vectorDrawables { useSupportLibrary true }
@@ -49,32 +51,33 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = '17'
-    }
     buildFeatures {
         compose true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.5.8'
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
 }
 
 dependencies {
-    implementation platform('androidx.compose:compose-bom:2024.02.01')
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.activity:activity-compose:1.8.2'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
+    implementation platform('androidx.compose:compose-bom:2025.10.01')
+    implementation 'androidx.core:core-ktx:1.17.0'
+    implementation 'androidx.activity:activity-compose:1.11.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.9.4'
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.compose.material3:material3'
-    // Argon2id (dérivation du mot de passe maître) — lib native, pas de conflit BouncyCastle
-    implementation 'com.lambdapioneer.argon2kt:argon2kt:1.5.0'
+    // Argon2id (dérivation du mot de passe maître) — lib native, pas de conflit BouncyCastle.
+    // ≥ 1.6.0 obligatoire : support des pages mémoire de 16 Ko, exigé par Google Play (11/2025).
+    implementation 'com.lambdapioneer.argon2kt:argon2kt:1.6.0'
     // Déverrouillage biométrique (empreinte / visage) — API 100 % locale, AUCUN réseau.
     implementation 'androidx.biometric:biometric:1.1.0'
     // BiometricPrompt exige une FragmentActivity. On fixe une version moderne de fragment
-    // (sinon biometric:1.1.0 tirerait fragment 1.2.5, incompatible avec activity-compose 1.8.2).
-    implementation 'androidx.fragment:fragment-ktx:1.6.2'
+    // (sinon biometric:1.1.0 tirerait fragment 1.2.5, incompatible avec activity-compose).
+    implementation 'androidx.fragment:fragment-ktx:1.8.9'
     debugImplementation 'androidx.compose.ui:ui-tooling'
 }

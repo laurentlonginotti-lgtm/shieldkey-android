@@ -373,7 +373,7 @@ fun SkSecretField(
         singleLine = !multiline,
         minLines = if (multiline) 2 else 1,
         visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(keyboardType = secretKeyboard, autoCorrect = false),
+        keyboardOptions = KeyboardOptions(keyboardType = secretKeyboard, autoCorrectEnabled = false),
         trailingIcon = {
             Text(
                 text = if (visible) "🙈" else "👁",
