@@ -9,6 +9,7 @@ import android.security.keystore.KeyProperties
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import com.shieldkey.vault.util.AtomicWrite
 import androidx.fragment.app.FragmentActivity
 import java.io.File
 import java.security.KeyStore
@@ -135,7 +136,7 @@ object BiometricGate {
                 val cipher = Cipher.getInstance(TRANSFORMATION)
                 cipher.init(Cipher.ENCRYPT_MODE, key)
                 val ct = cipher.doFinal(dek)
-                blobFile(activity).writeBytes(cipher.iv + ct)
+                AtomicWrite.write(blobFile(activity), cipher.iv + ct)
                 onResult(true)
             } catch (e: Exception) {
                 onResult(false)

@@ -3,6 +3,7 @@ package com.shieldkey.vault.data
 import android.content.Context
 import android.util.Base64
 import com.shieldkey.vault.crypto.SkCrypto
+import com.shieldkey.vault.util.AtomicWrite
 import org.json.JSONObject
 import java.io.File
 
@@ -47,40 +48,73 @@ object BackupManager {
         return (MAGIC + "\n" + b64(blob)).toByteArray(Charsets.UTF_8)
     }
 
+    /** Nom de blob acceptable : `<uuid>.blob` (pas de séparateur, pas de `..`) — même si le paquet
+     *  est authentifié (GCM), on ne laisse pas un nom piloter un chemin sur le disque. */
+    private val SAFE_BLOB_NAME = Regex("[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*")
+
     /**
      * Restaure une sauvegarde dans `filesDir`. Renvoie true si OK (mot de passe bon + format valide).
      * ⚠️ ÉCRASE le coffre existant de cet appareil → à confirmer côté UI.
+     *
+     * Robustesse : on ne touche PAS au disque avant d'avoir tout décodé et validé en mémoire
+     * (phase 1). Puis on écrit dans un ordre qui ne laisse jamais un état inutilisable (phase 2) :
+     *  1. les documents d'abord (nouveaux fichiers, ids uniques → n'écrasent rien d'utile) ;
+     *  2. le coffre, en une écriture atomique ;
+     *  3. seulement ensuite, les anciens blobs devenus orphelins.
+     * Une interruption à n'importe quelle étape laisse SOIT l'ancien coffre complet, SOIT le
+     * nouveau complet — au pire quelques blobs orphelins qui ne coûtent que de l'espace disque.
      */
     fun import(context: Context, fileBytes: ByteArray, password: String): Boolean {
+        // --- Phase 1 : tout décoder / valider en mémoire, sans rien écrire.
+        val decoded = decode(fileBytes, password) ?: return false
+
+        // --- Phase 2 : écriture ordonnée (documents → coffre → nettoyage).
+        val filesDir = context.filesDir
+        val docsDir = File(filesDir, "docs").apply { mkdirs() }
+        val before = docsDir.list()?.toSet() ?: emptySet()
         return try {
-            val text = String(fileBytes, Charsets.UTF_8).trim()
-            val nl = text.indexOf('\n')
-            if (nl < 0 || text.substring(0, nl).trim() != MAGIC) return false
-            val blob = unb64(text.substring(nl + 1).trim())
-            if (blob.size <= SkCrypto.SALT_LEN) return false
-            val salt = blob.copyOfRange(0, SkCrypto.SALT_LEN)
-            val enc = blob.copyOfRange(SkCrypto.SALT_LEN, blob.size)
-            val key = SkCrypto.deriveKey(password.toByteArray(Charsets.UTF_8), salt)
-            val bundleBytes = SkCrypto.decrypt(enc, key)   // lève si mot de passe faux / fichier altéré
-
-            val bundle = JSONObject(String(bundleBytes, Charsets.UTF_8))
-            val filesDir = context.filesDir
-
-            // coffre
-            File(filesDir, "vault.skv").writeBytes(unb64(bundle.getString("vault")))
-
-            // documents : on remplace complètement le dossier
-            val docsDir = File(filesDir, "docs").apply { mkdirs() }
-            docsDir.listFiles()?.forEach { it.delete() }
-            bundle.optJSONObject("docs")?.let { docsObj ->
-                for (name in docsObj.keys()) {
-                    File(docsDir, name).writeBytes(unb64(docsObj.getString(name)))
-                }
-            }
+            decoded.docs.forEach { (name, bytes) -> AtomicWrite.write(File(docsDir, name), bytes) }
+            AtomicWrite.write(File(filesDir, "vault.skv"), decoded.vault)
+            docsDir.listFiles()?.forEach { if (it.name !in decoded.docs) it.delete() }
             true
         } catch (e: Exception) {
+            // Une exception ici signifie que le coffre n'a PAS été remplacé (écriture atomique) :
+            // on retire les blobs ajoutés par cette tentative et l'ancien état reste intact.
+            decoded.docs.keys.filter { it !in before }.forEach { File(docsDir, it).delete() }
             false
         }
+    }
+
+    /** Contenu d'une sauvegarde entièrement décodée en mémoire. */
+    private class Decoded(val vault: ByteArray, val docs: Map<String, ByteArray>)
+
+    /** Déchiffre et valide le paquet. Renvoie null si mot de passe faux ou format invalide. */
+    private fun decode(fileBytes: ByteArray, password: String): Decoded? = try {
+        val text = String(fileBytes, Charsets.UTF_8).trim()
+        val nl = text.indexOf('\n')
+        if (nl < 0 || text.substring(0, nl).trim() != MAGIC) throw IllegalArgumentException("magic")
+        val blob = unb64(text.substring(nl + 1).trim())
+        if (blob.size <= SkCrypto.SALT_LEN) throw IllegalArgumentException("taille")
+        val salt = blob.copyOfRange(0, SkCrypto.SALT_LEN)
+        val enc = blob.copyOfRange(SkCrypto.SALT_LEN, blob.size)
+        val key = SkCrypto.deriveKey(password.toByteArray(Charsets.UTF_8), salt)
+        val bundleBytes = SkCrypto.decrypt(enc, key)   // lève si mot de passe faux / fichier altéré
+
+        val bundle = JSONObject(String(bundleBytes, Charsets.UTF_8))
+        val vaultBytes = unb64(bundle.getString("vault"))
+        // Le coffre restauré doit lui-même être un vault.skv cohérent (sinon on refuse AVANT d'écraser).
+        JSONObject(String(vaultBytes, Charsets.UTF_8)).getString("masterWrap")
+
+        val docs = LinkedHashMap<String, ByteArray>()
+        bundle.optJSONObject("docs")?.let { docsObj ->
+            for (name in docsObj.keys()) {
+                if (!SAFE_BLOB_NAME.matches(name)) throw IllegalArgumentException("nom de blob")
+                docs[name] = unb64(docsObj.getString(name))
+            }
+        }
+        Decoded(vaultBytes, docs)
+    } catch (e: Exception) {
+        null
     }
 
     private fun b64(b: ByteArray) = Base64.encodeToString(b, Base64.NO_WRAP)

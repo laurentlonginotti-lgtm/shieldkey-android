@@ -2,6 +2,7 @@ package com.shieldkey.vault.data
 
 import android.content.Context
 import com.shieldkey.vault.crypto.SkCrypto
+import com.shieldkey.vault.util.AtomicWrite
 import java.io.File
 import java.util.UUID
 
@@ -23,10 +24,11 @@ class DocumentStore(context: Context) {
 
     private fun blob(id: String) = File(dir, "$id.blob")
 
-    /** Chiffre [bytes] et l'enregistre. Renvoie l'identifiant unique du document. */
+    /** Chiffre [bytes] et l'enregistre (écriture atomique : jamais de blob tronqué référencé
+     *  par le coffre). Renvoie l'identifiant unique du document. */
     fun save(dek: ByteArray, bytes: ByteArray): String {
         val id = UUID.randomUUID().toString()
-        blob(id).writeBytes(SkCrypto.encrypt(bytes, dek))
+        AtomicWrite.write(blob(id), SkCrypto.encrypt(bytes, dek))
         return id
     }
 

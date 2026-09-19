@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Base64
 import com.shieldkey.vault.crypto.RecoveryCode
 import com.shieldkey.vault.crypto.SkCrypto
+import com.shieldkey.vault.util.AtomicWrite
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -20,6 +21,8 @@ import java.io.File
  * stocker le mot de passe maître nulle part = aucune porte dérobée.
  *
  * Fichier : filesDir/vault.skv (stockage interne privé, non sauvegardé sur le cloud).
+ * Toute écriture passe par [AtomicWrite] : un crash ou une coupure en pleine écriture ne peut
+ * pas laisser un fichier tronqué (= coffre irrécupérable).
  */
 class VaultStore(context: Context) {
 
@@ -29,6 +32,10 @@ class VaultStore(context: Context) {
 
     private fun b64(b: ByteArray) = Base64.encodeToString(b, Base64.NO_WRAP)
     private fun unb64(s: String) = Base64.decode(s, Base64.NO_WRAP)
+
+    /** Seul point d'écriture du coffre : atomique + durable. */
+    private fun save(root: JSONObject) =
+        AtomicWrite.write(file, root.toString().toByteArray(Charsets.UTF_8))
 
     data class CreateResult(val dek: ByteArray, val recoveryCode: String)
 
@@ -55,7 +62,7 @@ class VaultStore(context: Context) {
             put("recoveryWrap", b64(SkCrypto.encrypt(dek, recoveryKey)))
             put("vault", b64(SkCrypto.encrypt(emptyVault.toByteArray(Charsets.UTF_8), dek)))
         }
-        file.writeText(root.toString())
+        save(root)
         return CreateResult(dek, recoveryCode)
     }
 
@@ -94,7 +101,7 @@ class VaultStore(context: Context) {
         val masterKey = SkCrypto.deriveKey(newPassword.toByteArray(Charsets.UTF_8), masterSalt)
         root.put("masterSalt", b64(masterSalt))
         root.put("masterWrap", b64(SkCrypto.encrypt(dek, masterKey)))
-        file.writeText(root.toString())
+        save(root)
     }
 
     /** Lit le contenu déchiffré du coffre (JSON) avec la DEK. */
@@ -107,6 +114,6 @@ class VaultStore(context: Context) {
     fun writeVault(dek: ByteArray, vaultJson: String) {
         val root = JSONObject(file.readText())
         root.put("vault", b64(SkCrypto.encrypt(vaultJson.toByteArray(Charsets.UTF_8), dek)))
-        file.writeText(root.toString())
+        save(root)
     }
 }
