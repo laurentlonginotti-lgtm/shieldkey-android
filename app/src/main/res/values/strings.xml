@@ -5,7 +5,12 @@
     <string name="onb_title">Create your vault</string>
     <string name="onb_subtitle">Choose a master password. It is the only key to your vault — make it strong and memorable.</string>
     <string name="field_master_password">Master password</string>
-    <string name="err_min8">At least 8 characters</string>
+    <string name="err_min_len">At least %1$d characters</string>
+    <string name="pwd_weak">Weak password</string>
+    <string name="pwd_fair">Fair password</string>
+    <string name="pwd_good">Good password</string>
+    <string name="pwd_strong">Excellent password</string>
+    <string name="pwd_tip">Tip: four or five unrelated words make a password that is easy to remember and very hard to crack.</string>
     <string name="field_confirm_password">Confirm password</string>
     <string name="err_mismatch">Passwords do not match</string>
     <string name="err_generic">Error: %1$s</string>
@@ -14,6 +19,7 @@
     <!-- Recovery kit -->
     <string name="kit_title">🔑 Your recovery kit</string>
     <string name="kit_subtitle">This code is the ONLY way to recover your vault if you forget your master password. Write it down or print it, and keep it somewhere safe.</string>
+    <string name="kit_renewed">⚠️ This code replaces the previous one. The old code no longer opens your vault — destroy the old sheet.</string>
     <string name="kit_copy">📋 Copy the code</string>
     <string name="kit_warning">⚠️ Without this code AND your password, your data will be lost forever. Nobody can recover it.</string>
     <string name="kit_checkbox">I have saved my recovery code in a safe place</string>
@@ -128,14 +134,27 @@
     <string name="sec_recovery_title">🔑 Recovery kit, no backdoor</string>
     <string name="sec_recovery_body">If you forget your master password, only YOUR recovery code (the one you wrote down) can restore the vault. No email, no recovery server — no backdoor.</string>
     <string name="sec_bio_title">👆 Hardware-backed quick unlock</string>
-    <string name="sec_bio_body">Fingerprint or screen code: the unlocking key lives in your phone\'s secure chip and never leaves it. Your master password stays the real safeguard.</string>
+    <string name="sec_bio_body">Fingerprint or screen code: the unlocking key lives in your phone\'s secure chip and never leaves it. Be aware: once quick unlock is on, anyone who can unlock your phone can open your vault — so your screen lock must be as serious as your master password.</string>
     <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
     <string name="sec_clip_title">📋 Hardened clipboard</string>
-    <string name="sec_clip_body">When you copy a secret, it is flagged \"sensitive\" (hidden from clipboard history) and cleared automatically.</string>
+    <string name="sec_clip_body">When you copy a secret, it is flagged \"sensitive\" (hidden from clipboard history on Android 13+) and cleared when you lock the vault. The 45-second timer only works while ShieldKey is open: Android forbids background apps from touching the clipboard. Locking the vault is what clears it for certain.</string>
+    <string name="sec_screen_title">📵 Screenshots blocked</string>
+    <string name="sec_screen_body">Android refuses to capture ShieldKey, and the app preview stays hidden in the recent-apps list. A screen-recording app captures nothing.</string>
+    <string name="sec_screen_tech">FLAG_SECURE · preview masked in recents</string>
     <string name="sec_docs_title">📄 Encrypted offline documents</string>
     <string name="sec_docs_body">Each document is encrypted separately and stays usable even with no connection.</string>
     <string name="sec_phish_title">🎣 We will never ask for your info</string>
     <string name="sec_phish_body">ShieldKey will never email or text you to ask for your password or data. If someone does, it is not us.</string>
+    <string name="sec_limits_heading">What ShieldKey cannot do</string>
+    <string name="sec_limits_intro">No vault protects against everything. Here is what falls outside — said plainly, so you know where the real risk sits.</string>
+    <string name="sec_limit_phish_title">🎣 Phishing (fake merchant site)</string>
+    <string name="sec_limit_phish_body">If you type your card number into a fake site, you hand it over yourself. ShieldKey has no Internet access: it cannot see web pages and cannot warn you. Best defence: a virtual card with a spending limit — a single-use number is worthless to a thief.</string>
+    <string name="sec_limit_breach_title">🏪 A merchant gets breached</string>
+    <string name="sec_limit_breach_body">Your card is copied from their database, without you doing anything wrong. Nothing on your phone can prevent it. What helps: knowing which cards you gave to whom, so you can react fast.</string>
+    <string name="sec_limit_malware_title">🦠 Malware on the device</string>
+    <string name="sec_limit_malware_body">A keylogger or a rogue accessibility service sees everything you type or display — in any app, ours included. ShieldKey limits the damage (nothing leaves, nothing is captured, nothing lingers in the clipboard) but cannot repair a compromised phone.</string>
+    <string name="sec_limit_3ds_title">📱 3-D Secure hijacked (SIM swap)</string>
+    <string name="sec_limit_3ds_body">If someone takes over your phone line, they intercept the SMS that validates a payment. This plays out between your bank and your operator. Prefer validation through your banking app rather than by SMS.</string>
     <string name="sec_footer">AES-256-GCM · Argon2id · 0 Internet</string>
 
     <!-- Backup / restore -->

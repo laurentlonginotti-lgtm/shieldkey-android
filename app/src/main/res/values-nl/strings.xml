@@ -5,7 +5,12 @@
     <string name="onb_title">Maak je kluis</string>
     <string name="onb_subtitle">Kies een hoofdwachtwoord. Het is de enige sleutel tot je kluis: maak het sterk en makkelijk te onthouden.</string>
     <string name="field_master_password">Hoofdwachtwoord</string>
-    <string name="err_min8">Minimaal 8 tekens</string>
+    <string name="err_min_len">Minimaal %1$d tekens</string>
+    <string name="pwd_weak">Zwak wachtwoord</string>
+    <string name="pwd_fair">Matig wachtwoord</string>
+    <string name="pwd_good">Goed wachtwoord</string>
+    <string name="pwd_strong">Uitstekend wachtwoord</string>
+    <string name="pwd_tip">Tip: vier of vijf willekeurige woorden vormen een wachtwoord dat makkelijk te onthouden en zeer moeilijk te kraken is.</string>
     <string name="field_confirm_password">Wachtwoord bevestigen</string>
     <string name="err_mismatch">De wachtwoorden komen niet overeen</string>
     <string name="err_generic">Fout: %1$s</string>
@@ -14,6 +19,7 @@
     <!-- Recovery kit -->
     <string name="kit_title">🔑 Je herstelkit</string>
     <string name="kit_subtitle">Deze code is de ENIGE manier om je kluis te herstellen als je je hoofdwachtwoord vergeet. Schrijf hem op of druk hem af en bewaar hem op een veilige plek.</string>
+    <string name="kit_renewed">⚠️ Deze code vervangt de vorige. De oude code opent je kluis niet meer — vernietig het oude blad.</string>
     <string name="kit_copy">📋 Code kopiëren</string>
     <string name="kit_warning">⚠️ Zonder deze code ÉN je wachtwoord zijn je gegevens voor altijd verloren. Niemand kan ze terughalen.</string>
     <string name="kit_checkbox">Ik heb mijn herstelcode op een veilige plek bewaard</string>
@@ -128,14 +134,27 @@
     <string name="sec_recovery_title">🔑 Herstelkit, geen achterdeur</string>
     <string name="sec_recovery_body">Als je je hoofdwachtwoord vergeet, kan alleen JOUW herstelcode (die je hebt opgeschreven) de kluis herstellen. Geen e-mail, geen herstelserver: geen achterdeur.</string>
     <string name="sec_bio_title">👆 Snel ontgrendelen met hardwarebeveiliging</string>
-    <string name="sec_bio_body">Vingerafdruk of schermcode: de ontgrendelsleutel zit in de beveiligde chip van je telefoon en verlaat die nooit. Je hoofdwachtwoord blijft de echte bescherming.</string>
+    <string name="sec_bio_body">Vingerafdruk of schermcode: de sleutel die ontgrendelt zit in de beveiligde chip van je telefoon en verlaat die nooit. Let op: zodra snel ontgrendelen aanstaat, kan iedereen die je telefoon kan ontgrendelen ook je kluis openen — je schermvergrendeling moet dus net zo serieus zijn als je hoofdwachtwoord.</string>
     <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
     <string name="sec_clip_title">📋 Beveiligd klembord</string>
-    <string name="sec_clip_body">Wanneer je een geheim kopieert, wordt het gemarkeerd als \"gevoelig\" (verborgen in de klembordgeschiedenis) en automatisch gewist.</string>
+    <string name="sec_clip_body">Wanneer je een geheim kopieert, wordt het als ‘gevoelig’ gemarkeerd (verborgen uit de klembordgeschiedenis op Android 13+) en gewist bij het vergrendelen van de kluis. De timer van 45 seconden werkt alleen zolang ShieldKey open is: Android verbiedt apps op de achtergrond het klembord aan te raken. Het vergrendelen wist het met zekerheid.</string>
+    <string name="sec_screen_title">📵 Schermafbeeldingen geblokkeerd</string>
+    <string name="sec_screen_body">Android weigert ShieldKey vast te leggen, en het voorbeeld van de app blijft verborgen in de lijst met recente apps. Een schermopname-app legt niets vast.</string>
+    <string name="sec_screen_tech">FLAG_SECURE · voorbeeld verborgen in recente apps</string>
     <string name="sec_docs_title">📄 Versleutelde offline documenten</string>
     <string name="sec_docs_body">Elk document wordt apart versleuteld en blijft bruikbaar, ook zonder verbinding.</string>
     <string name="sec_phish_title">🎣 We vragen nooit om je gegevens</string>
     <string name="sec_phish_body">ShieldKey zal je nooit e-mailen of sms\'en om je wachtwoord of gegevens te vragen. Doet iemand dat wel, dan zijn wij het niet.</string>
+    <string name="sec_limits_heading">Wat ShieldKey niet kan</string>
+    <string name="sec_limits_intro">Geen enkele kluis beschermt tegen alles. Dit valt erbuiten — eerlijk gezegd, zodat je weet waar het echte risico zit.</string>
+    <string name="sec_limit_phish_title">🎣 Phishing (nepwebshop)</string>
+    <string name="sec_limit_phish_body">Als je je nummer op een nepsite invult, geef je het zelf weg. ShieldKey heeft geen internettoegang: het ziet geen webpagina\'s en kan je niet waarschuwen. Beste verdediging: een virtuele kaart met limiet — een eenmalig nummer is waardeloos voor een dief.</string>
+    <string name="sec_limit_breach_title">🏪 Datalek bij een verkoper</string>
+    <string name="sec_limit_breach_body">Je kaart wordt uit hun database gekopieerd, zonder dat je iets fout hebt gedaan. Niets op je telefoon kan dat voorkomen. Wat helpt: weten welke kaarten je aan wie hebt gegeven, om snel te reageren.</string>
+    <string name="sec_limit_malware_title">🦠 Schadelijke software op het toestel</string>
+    <string name="sec_limit_malware_body">Een toetsaanslagregistrator of een misbruikte toegankelijkheidsdienst ziet alles wat je typt of toont — in elke app, ook de onze. ShieldKey beperkt de schade (er gaat niets weg, er wordt niets vastgelegd, er blijft niets op het klembord) maar repareert geen gecompromitteerde telefoon.</string>
+    <string name="sec_limit_3ds_title">📱 3-D Secure omzeild (simswap)</string>
+    <string name="sec_limit_3ds_body">Als iemand je telefoonlijn overneemt, onderschept die de sms die een betaling bevestigt. Dat speelt zich af tussen je bank en je provider. Kies liever voor bevestiging via de bank-app dan via sms.</string>
     <string name="sec_footer">AES-256-GCM · Argon2id · 0 internet</string>
 
     <!-- Backup / restore -->

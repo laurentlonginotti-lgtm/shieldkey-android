@@ -5,7 +5,12 @@
     <string name="onb_title">Crie seu cofre</string>
     <string name="onb_subtitle">Escolha uma senha mestra. Ela é a única chave do seu cofre: faça uma senha forte e fácil de lembrar.</string>
     <string name="field_master_password">Senha mestra</string>
-    <string name="err_min8">Pelo menos 8 caracteres</string>
+    <string name="err_min_len">Pelo menos %1$d caracteres</string>
+    <string name="pwd_weak">Senha fraca</string>
+    <string name="pwd_fair">Senha média</string>
+    <string name="pwd_good">Boa senha</string>
+    <string name="pwd_strong">Senha excelente</string>
+    <string name="pwd_tip">Dica: quatro ou cinco palavras sem relação entre si formam uma senha fácil de lembrar e muito difícil de quebrar.</string>
     <string name="field_confirm_password">Confirmar senha</string>
     <string name="err_mismatch">As senhas não coincidem</string>
     <string name="err_generic">Erro: %1$s</string>
@@ -14,6 +19,7 @@
     <!-- Recovery kit -->
     <string name="kit_title">🔑 Seu kit de recuperação</string>
     <string name="kit_subtitle">Este código é a ÚNICA forma de recuperar seu cofre se você esquecer a senha mestra. Anote ou imprima e guarde em um lugar seguro.</string>
+    <string name="kit_renewed">⚠️ Este código substitui o anterior. O código antigo não abre mais o seu cofre — destrua a folha antiga.</string>
     <string name="kit_copy">📋 Copiar o código</string>
     <string name="kit_warning">⚠️ Sem este código E sua senha, seus dados serão perdidos para sempre. Ninguém poderá recuperá-los.</string>
     <string name="kit_checkbox">Guardei meu código de recuperação em um lugar seguro</string>
@@ -128,14 +134,27 @@
     <string name="sec_recovery_title">🔑 Kit de recuperação, sem porta dos fundos</string>
     <string name="sec_recovery_body">Se você esquecer a senha mestra, somente o SEU código de recuperação (aquele que você anotou) pode restaurar o cofre. Sem e-mail, sem servidor de recuperação: sem porta dos fundos.</string>
     <string name="sec_bio_title">👆 Desbloqueio rápido protegido por hardware</string>
-    <string name="sec_bio_body">Digital ou código da tela: a chave de desbloqueio fica no chip seguro do seu celular e nunca sai dele. Sua senha mestra continua sendo a verdadeira proteção.</string>
+    <string name="sec_bio_body">Digital ou código da tela: a chave que desbloqueia fica no chip seguro do telefone e nunca sai dele. Atenção: uma vez ativado o desbloqueio rápido, quem conseguir desbloquear seu telefone consegue abrir seu cofre — o código da tela precisa ser tão sério quanto a senha mestra.</string>
     <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
     <string name="sec_clip_title">📋 Área de transferência reforçada</string>
-    <string name="sec_clip_body">Quando você copia um segredo, ele é marcado como \"sensível\" (oculto do histórico da área de transferência) e apagado automaticamente.</string>
+    <string name="sec_clip_body">Quando você copia um segredo, ele é marcado como «sensível» (oculto do histórico da área de transferência no Android 13+) e apagado ao bloquear o cofre. O temporizador de 45 segundos só funciona enquanto o ShieldKey está aberto: o Android proíbe apps em segundo plano de mexer na área de transferência. É o bloqueio que apaga com certeza.</string>
+    <string name="sec_screen_title">📵 Capturas de tela bloqueadas</string>
+    <string name="sec_screen_body">O Android se recusa a capturar o ShieldKey, e a prévia do app fica oculta na lista de aplicativos recentes. Um app de gravação de tela não capta nada.</string>
+    <string name="sec_screen_tech">FLAG_SECURE · prévia oculta nos recentes</string>
     <string name="sec_docs_title">📄 Documentos criptografados offline</string>
     <string name="sec_docs_body">Cada documento é criptografado separadamente e continua utilizável mesmo sem conexão.</string>
     <string name="sec_phish_title">🎣 Nunca pediremos seus dados</string>
     <string name="sec_phish_body">O ShieldKey nunca enviará e-mail ou SMS pedindo sua senha ou seus dados. Se alguém fizer isso, não somos nós.</string>
+    <string name="sec_limits_heading">O que o ShieldKey não pode fazer</string>
+    <string name="sec_limits_intro">Nenhum cofre protege de tudo. Veja o que fica de fora — dito com franqueza, para você saber onde está o risco real.</string>
+    <string name="sec_limit_phish_title">🎣 Phishing (site falso de loja)</string>
+    <string name="sec_limit_phish_body">Se você digitar seu número em um site falso, é você mesmo quem o entrega. O ShieldKey não tem acesso à Internet: não vê páginas da web e não pode avisar você. Melhor defesa: um cartão virtual com limite — um número de uso único não vale nada para um ladrão.</string>
+    <string name="sec_limit_breach_title">🏪 Vazamento em uma loja</string>
+    <string name="sec_limit_breach_body">Seu cartão é copiado do banco de dados deles, sem que você tenha feito nada de errado. Nada no seu telefone pode impedir isso. O que ajuda: saber quais cartões você confiou a quem, para reagir rápido.</string>
+    <string name="sec_limit_malware_title">🦠 Software malicioso no aparelho</string>
+    <string name="sec_limit_malware_body">Um registrador de teclas ou um serviço de acessibilidade adulterado vê tudo o que você digita ou exibe — em qualquer app, inclusive no nosso. O ShieldKey limita o estrago (nada sai, nada é capturado, nada fica na área de transferência), mas não conserta um telefone comprometido.</string>
+    <string name="sec_limit_3ds_title">📱 3-D Secure desviado (SIM swap)</string>
+    <string name="sec_limit_3ds_body">Se alguém assumir sua linha, intercepta o SMS que valida um pagamento. Isso se resolve entre o seu banco e a sua operadora. Prefira a validação pelo app do banco em vez de SMS.</string>
     <string name="sec_footer">AES-256-GCM · Argon2id · 0 Internet</string>
 
     <!-- Backup / restore -->

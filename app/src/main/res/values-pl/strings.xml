@@ -5,7 +5,12 @@
     <string name="onb_title">Utwórz swój sejf</string>
     <string name="onb_subtitle">Wybierz hasło główne. To jedyny klucz do Twojego sejfu — niech będzie silne i łatwe do zapamiętania.</string>
     <string name="field_master_password">Hasło główne</string>
-    <string name="err_min8">Co najmniej 8 znaków</string>
+    <string name="err_min_len">Co najmniej %1$d znaków</string>
+    <string name="pwd_weak">Słabe hasło</string>
+    <string name="pwd_fair">Przeciętne hasło</string>
+    <string name="pwd_good">Dobre hasło</string>
+    <string name="pwd_strong">Doskonałe hasło</string>
+    <string name="pwd_tip">Wskazówka: cztery lub pięć niepowiązanych słów tworzy hasło łatwe do zapamiętania i bardzo trudne do złamania.</string>
     <string name="field_confirm_password">Potwierdź hasło</string>
     <string name="err_mismatch">Hasła nie są zgodne</string>
     <string name="err_generic">Błąd: %1$s</string>
@@ -14,6 +19,7 @@
     <!-- Recovery kit -->
     <string name="kit_title">🔑 Twój zestaw odzyskiwania</string>
     <string name="kit_subtitle">Ten kod to JEDYNY sposób na odzyskanie sejfu, jeśli zapomnisz hasła głównego. Zapisz go lub wydrukuj i przechowuj w bezpiecznym miejscu.</string>
+    <string name="kit_renewed">⚠️ Ten kod zastępuje poprzedni. Stary kod już nie otwiera sejfu — zniszcz starą kartkę.</string>
     <string name="kit_copy">📋 Kopiuj kod</string>
     <string name="kit_warning">⚠️ Bez tego kodu I hasła Twoje dane zostaną utracone na zawsze. Nikt nie będzie mógł ich odzyskać.</string>
     <string name="kit_checkbox">Zapisałem(-am) kod odzyskiwania w bezpiecznym miejscu</string>
@@ -128,14 +134,27 @@
     <string name="sec_recovery_title">🔑 Zestaw odzyskiwania, bez tylnych drzwi</string>
     <string name="sec_recovery_body">Jeśli zapomnisz hasła głównego, tylko TWÓJ kod odzyskiwania (ten, który zapisałeś) może przywrócić sejf. Bez e-maila, bez serwera odzyskiwania — bez tylnych drzwi.</string>
     <string name="sec_bio_title">👆 Szybkie odblokowanie chronione sprzętowo</string>
-    <string name="sec_bio_body">Odcisk palca lub kod ekranu: klucz odblokowujący znajduje się w bezpiecznym układzie telefonu i nigdy go nie opuszcza. Hasło główne pozostaje prawdziwym zabezpieczeniem.</string>
+    <string name="sec_bio_body">Odcisk palca lub kod ekranu: klucz odblokowujący pozostaje w bezpiecznym układzie telefonu i nigdy go nie opuszcza. Pamiętaj: po włączeniu szybkiego odblokowania każdy, kto potrafi odblokować twój telefon, otworzy też sejf — blokada ekranu musi więc być równie poważna jak hasło główne.</string>
     <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
     <string name="sec_clip_title">📋 Wzmocniony schowek</string>
-    <string name="sec_clip_body">Gdy kopiujesz sekret, jest oznaczany jako \"poufny\" (ukryty w historii schowka) i automatycznie usuwany.</string>
+    <string name="sec_clip_body">Gdy kopiujesz sekret, zostaje oznaczony jako „poufny“ (ukryty w historii schowka od Androida 13) i czyszczony przy blokowaniu sejfu. Licznik 45 sekund działa tylko wtedy, gdy ShieldKey jest otwarty: Android zabrania aplikacjom w tle dotykać schowka. To zablokowanie sejfu czyści go na pewno.</string>
+    <string name="sec_screen_title">📵 Zrzuty ekranu zablokowane</string>
+    <string name="sec_screen_body">Android odmawia wykonania zrzutu ShieldKey, a podgląd aplikacji pozostaje ukryty na liście ostatnich aplikacji. Aplikacja nagrywająca ekran nic nie zarejestruje.</string>
+    <string name="sec_screen_tech">FLAG_SECURE · podgląd ukryty w ostatnich</string>
     <string name="sec_docs_title">📄 Zaszyfrowane dokumenty offline</string>
     <string name="sec_docs_body">Każdy dokument jest szyfrowany osobno i pozostaje dostępny nawet bez połączenia.</string>
     <string name="sec_phish_title">🎣 Nigdy nie poprosimy o Twoje dane</string>
     <string name="sec_phish_body">ShieldKey nigdy nie wyśle Ci e-maila ani SMS-a z prośbą o hasło lub dane. Jeśli ktoś to zrobi, to nie my.</string>
+    <string name="sec_limits_heading">Czego ShieldKey nie potrafi</string>
+    <string name="sec_limits_intro">Żaden sejf nie chroni przed wszystkim. Oto co pozostaje poza jego zasięgiem — powiedziane wprost, abyś wiedział, gdzie leży prawdziwe ryzyko.</string>
+    <string name="sec_limit_phish_title">🎣 Phishing (fałszywy sklep)</string>
+    <string name="sec_limit_phish_body">Jeśli wpiszesz numer karty na fałszywej stronie, oddajesz go sam. ShieldKey nie ma dostępu do internetu: nie widzi stron i nie może cię ostrzec. Najlepsza obrona: karta wirtualna z limitem — numer jednorazowy jest dla złodzieja bezwartościowy.</string>
+    <string name="sec_limit_breach_title">🏪 Wyciek u sprzedawcy</string>
+    <string name="sec_limit_breach_body">Twoja karta zostaje skopiowana z ich bazy, choć nie zrobiłeś nic złego. Nic w telefonie tego nie powstrzyma. Co pomaga: wiedzieć, które karty komu powierzyłeś, aby szybko zareagować.</string>
+    <string name="sec_limit_malware_title">🦠 Złośliwe oprogramowanie na urządzeniu</string>
+    <string name="sec_limit_malware_body">Keylogger lub przejęta usługa ułatwień dostępu widzi wszystko, co piszesz i wyświetlasz — w każdej aplikacji, także w naszej. ShieldKey ogranicza szkody (nic nie wychodzi, nic nie jest przechwytywane, nic nie zostaje w schowku), ale nie naprawi zainfekowanego telefonu.</string>
+    <string name="sec_limit_3ds_title">📱 Przejęcie 3-D Secure (SIM swap)</string>
+    <string name="sec_limit_3ds_body">Jeśli ktoś przejmie twój numer, przechwyci SMS potwierdzający płatność. To rozgrywa się między bankiem a operatorem. Wybieraj potwierdzanie w aplikacji bankowej zamiast SMS-em.</string>
     <string name="sec_footer">AES-256-GCM · Argon2id · 0 Internetu</string>
 
     <!-- Backup / restore -->

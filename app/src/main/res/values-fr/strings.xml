@@ -5,7 +5,12 @@
     <string name="onb_title">Créez votre coffre</string>
     <string name="onb_subtitle">Choisissez un mot de passe maître. C\'est la seule clé de votre coffre — choisissez-le fort et mémorisable.</string>
     <string name="field_master_password">Mot de passe maître</string>
-    <string name="err_min8">Au moins 8 caractères</string>
+    <string name="err_min_len">Au moins %1$d caractères</string>
+    <string name="pwd_weak">Mot de passe faible</string>
+    <string name="pwd_fair">Mot de passe moyen</string>
+    <string name="pwd_good">Bon mot de passe</string>
+    <string name="pwd_strong">Excellent mot de passe</string>
+    <string name="pwd_tip">Conseil : quatre ou cinq mots sans rapport entre eux donnent un mot de passe facile à retenir et très difficile à casser.</string>
     <string name="field_confirm_password">Confirmer le mot de passe</string>
     <string name="err_mismatch">Les mots de passe ne correspondent pas</string>
     <string name="err_generic">Erreur : %1$s</string>
@@ -14,6 +19,7 @@
     <!-- Recovery kit -->
     <string name="kit_title">🔑 Votre kit de secours</string>
     <string name="kit_subtitle">Ce code est la SEULE façon de récupérer votre coffre si vous oubliez votre mot de passe maître. Notez-le ou imprimez-le, et gardez-le en lieu sûr.</string>
+    <string name="kit_renewed">⚠️ Ce code remplace le précédent. L\'ancien n\'ouvre plus votre coffre — détruisez l\'ancienne feuille.</string>
     <string name="kit_copy">📋 Copier le code</string>
     <string name="kit_warning">⚠️ Sans ce code ET votre mot de passe, vos données seront définitivement perdues. Personne ne peut les récupérer.</string>
     <string name="kit_checkbox">J\'ai noté mon code de secours en lieu sûr</string>
@@ -128,14 +134,27 @@
     <string name="sec_recovery_title">🔑 Kit de secours, sans porte dérobée</string>
     <string name="sec_recovery_body">Si vous oubliez votre mot de passe, seul VOTRE code de secours (celui que vous avez noté) peut récupérer le coffre. Aucun e-mail, aucun serveur de récupération — aucune porte dérobée.</string>
     <string name="sec_bio_title">👆 Déverrouillage rapide protégé par le matériel</string>
-    <string name="sec_bio_body">Empreinte ou code de l\'écran : la clé qui déverrouille est gardée dans la puce sécurisée du téléphone et n\'en sort jamais. Votre mot de passe maître reste le vrai rempart.</string>
+    <string name="sec_bio_body">Empreinte ou code de l\'écran : la clé qui déverrouille est gardée dans la puce sécurisée du téléphone et n\'en sort jamais. À savoir : une fois le déverrouillage rapide activé, qui peut déverrouiller votre téléphone peut ouvrir votre coffre — votre code d\'écran doit donc être aussi sérieux que votre mot de passe maître.</string>
     <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
     <string name="sec_clip_title">📋 Presse-papier durci</string>
-    <string name="sec_clip_body">Quand vous copiez un secret, il est marqué « sensible » (masqué de l\'historique) et effacé automatiquement.</string>
+    <string name="sec_clip_body">Quand vous copiez un secret, il est marqué « sensible » (masqué de l\'historique sur Android 13+) et effacé au verrouillage du coffre. Le minuteur de 45 secondes ne fonctionne que si ShieldKey est ouvert : Android interdit aux apps en arrière-plan de toucher au presse-papier. C\'est le verrouillage qui l\'efface à coup sûr.</string>
+    <string name="sec_screen_title">📵 Captures d\'écran bloquées</string>
+    <string name="sec_screen_body">Android refuse de photographier ShieldKey, et l\'aperçu de l\'app reste masqué dans la liste des applications récentes. Une app d\'enregistrement d\'écran ne capte rien.</string>
+    <string name="sec_screen_tech">FLAG_SECURE · aperçu masqué dans le multitâche</string>
     <string name="sec_docs_title">📄 Documents chiffrés hors-ligne</string>
     <string name="sec_docs_body">Chaque document est chiffré séparément et reste utilisable même sans connexion.</string>
     <string name="sec_phish_title">🎣 On ne vous demandera jamais vos infos</string>
     <string name="sec_phish_body">ShieldKey ne vous enverra jamais d\'e-mail ou de SMS pour demander votre mot de passe ou vos données. Si quelqu\'un le fait, ce n\'est pas nous.</string>
+    <string name="sec_limits_heading">Ce que ShieldKey ne peut pas faire</string>
+    <string name="sec_limits_intro">Aucun coffre ne protège de tout. Voici ce qui lui échappe — dit franchement, pour que vous sachiez où est le vrai risque.</string>
+    <string name="sec_limit_phish_title">🎣 Hameçonnage (faux site marchand)</string>
+    <string name="sec_limit_phish_body">Si vous saisissez votre numéro sur un faux site, vous le donnez vous-même. ShieldKey n\'a aucun accès à Internet : il ne voit pas les pages web et ne peut pas vous alerter. La meilleure parade : une carte virtuelle à plafond — un numéro à usage unique ne vaut rien pour un voleur.</string>
+    <string name="sec_limit_breach_title">🏪 Fuite chez un marchand</string>
+    <string name="sec_limit_breach_body">Votre carte est copiée dans leur base, sans que vous ayez rien fait de mal. Rien sur votre téléphone ne peut l\'empêcher. Ce qui aide : savoir quelles cartes vous avez confiées à qui, pour réagir vite.</string>
+    <string name="sec_limit_malware_title">🦠 Logiciel malveillant sur l\'appareil</string>
+    <string name="sec_limit_malware_body">Un enregistreur de frappe ou un service d\'accessibilité piégé voit tout ce que vous tapez ou affichez — dans n\'importe quelle app, y compris la nôtre. ShieldKey limite les dégâts (rien ne part, rien ne se capture, rien ne traîne dans le presse-papier) mais ne répare pas un téléphone compromis.</string>
+    <string name="sec_limit_3ds_title">📱 3-D Secure détourné (SIM swap)</string>
+    <string name="sec_limit_3ds_body">Si quelqu\'un s\'empare de votre ligne, il intercepte le SMS qui valide un paiement. Cela se joue entre votre banque et votre opérateur. Préférez la validation par l\'application bancaire plutôt que par SMS.</string>
     <string name="sec_footer">AES-256-GCM · Argon2id · 0 Internet</string>
 
     <!-- Sauvegarde / restauration -->

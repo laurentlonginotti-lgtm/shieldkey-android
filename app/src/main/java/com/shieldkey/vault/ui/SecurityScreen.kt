@@ -92,8 +92,33 @@ fun SecurityScreen(onClose: () -> Unit) {
             SecCard(stringResource(R.string.sec_recovery_title), stringResource(R.string.sec_recovery_body))
             SecCard(stringResource(R.string.sec_bio_title), stringResource(R.string.sec_bio_body), stringResource(R.string.sec_bio_tech))
             SecCard(stringResource(R.string.sec_clip_title), stringResource(R.string.sec_clip_body))
+            SecCard(stringResource(R.string.sec_screen_title), stringResource(R.string.sec_screen_body), stringResource(R.string.sec_screen_tech))
             SecCard(stringResource(R.string.sec_docs_title), stringResource(R.string.sec_docs_body))
             SecCard(stringResource(R.string.sec_phish_title), stringResource(R.string.sec_phish_body))
+
+            // Section « limites ». Dire ce qu'on ne protège PAS n'affaiblit pas l'argumentaire :
+            // sur un produit vendu sur la confiance, une limite assumée vaut mieux qu'une
+            // promesse large qu'un utilisateur — ou un concurrent — pourra prendre en défaut.
+            Spacer(Modifier.height(16.dp))
+            Text(
+                stringResource(R.string.sec_limits_heading),
+                color = Color.White,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(Modifier.height(6.dp))
+            Text(
+                stringResource(R.string.sec_limits_intro),
+                color = SkMuted,
+                fontSize = 13.sp,
+                textAlign = TextAlign.Center
+            )
+            Spacer(Modifier.height(14.dp))
+
+            SecCard(stringResource(R.string.sec_limit_phish_title), stringResource(R.string.sec_limit_phish_body))
+            SecCard(stringResource(R.string.sec_limit_breach_title), stringResource(R.string.sec_limit_breach_body))
+            SecCard(stringResource(R.string.sec_limit_malware_title), stringResource(R.string.sec_limit_malware_body))
+            SecCard(stringResource(R.string.sec_limit_3ds_title), stringResource(R.string.sec_limit_3ds_body))
 
             Spacer(Modifier.height(8.dp))
             Text(

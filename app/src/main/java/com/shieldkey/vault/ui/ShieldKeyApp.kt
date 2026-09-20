@@ -24,6 +24,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -72,6 +73,7 @@ import com.shieldkey.vault.crypto.BiometricGate
 import com.shieldkey.vault.data.BackupManager
 import com.shieldkey.vault.data.VaultStore
 import com.shieldkey.vault.sound.SoundFx
+import com.shieldkey.vault.util.PasswordStrength
 import com.shieldkey.vault.util.SecureClipboard
 import com.shieldkey.vault.ui.theme.SkBg
 import com.shieldkey.vault.ui.theme.SkBgDeep
@@ -100,6 +102,7 @@ fun ShieldKeyApp() {
     var screen by remember { mutableStateOf(if (store.isInitialized()) Screen.Unlock else Screen.Onboarding) }
     var dek by remember { mutableStateOf<ByteArray?>(null) }   // clé du coffre déchiffrée, gardée en mémoire
     var recoveryToShow by remember { mutableStateOf("") }
+    var kitRenewed by remember { mutableStateOf(false) }       // le kit affiché remplace un code devenu caduc
     var showSecurity by remember { mutableStateOf(false) }     // page « Sécurité » en surimpression
 
     // Déverrouillage rapide (empreinte OU code de l'écran, facultatif) — voir BiometricGate.
@@ -150,10 +153,15 @@ fun ShieldKeyApp() {
                 onRestore = { screen = Screen.Restore }
             )
 
-            Screen.RecoveryKit -> RecoveryKitScreen(code = recoveryToShow, onDone = {
-                recoveryToShow = ""
-                screen = Screen.Vault
-            })
+            Screen.RecoveryKit -> RecoveryKitScreen(
+                code = recoveryToShow,
+                renewed = kitRenewed,
+                onDone = {
+                    recoveryToShow = ""
+                    kitRenewed = false
+                    screen = Screen.Vault
+                }
+            )
 
             Screen.Unlock -> UnlockScreen(
                 onUnlock = { pwd ->
@@ -185,8 +193,16 @@ fun ShieldKeyApp() {
                 onRecover = { code, newPwd ->
                     val k = withContext(Dispatchers.Default) { store.unlockWithRecovery(code) }
                     if (k != null) {
-                        withContext(Dispatchers.Default) { store.resetMasterPassword(k, newPwd) }
-                        dek = k; SoundFx.success(); screen = Screen.Vault; true
+                        // Le code de secours est renouvelé en même temps que le mot de passe :
+                        // on montre le nouveau kit AVANT d'entrer dans le coffre, sans quoi
+                        // l'utilisateur repartirait avec une feuille qui ne vaut plus rien.
+                        val newCode = withContext(Dispatchers.Default) {
+                            store.resetMasterPassword(k, newPwd)
+                        }
+                        dek = k
+                        recoveryToShow = newCode
+                        kitRenewed = true
+                        SoundFx.success(); screen = Screen.RecoveryKit; true
                     } else {
                         SoundFx.error(); false
                     }
@@ -334,6 +350,56 @@ fun SkPasswordField(value: String, onValueChange: (String) -> Unit, label: Strin
         modifier = Modifier.fillMaxWidth(),
         colors = skFieldColors()
     )
+}
+
+/**
+ * Jauge de force du mot de passe maître. Muette tant que le champ est vide : on informe,
+ * on ne réprimande pas. Le conseil « phrase de passe » ne s'affiche que tant que le mot de
+ * passe n'est pas bon — une fois le niveau atteint, il disparaît.
+ */
+@Composable
+fun PasswordStrengthMeter(pwd: String) {
+    if (pwd.isEmpty()) return
+
+    val level = PasswordStrength.level(pwd)
+    val fraction = PasswordStrength.fraction(pwd)
+    val color = when (level) {
+        PasswordStrength.Level.WEAK -> Color(0xFFFF6B6B)
+        PasswordStrength.Level.FAIR -> Color(0xFFFFB84D)
+        PasswordStrength.Level.GOOD -> SkEmerald2
+        PasswordStrength.Level.STRONG -> SkEmerald
+    }
+    val label = stringResource(
+        when (level) {
+            PasswordStrength.Level.WEAK -> R.string.pwd_weak
+            PasswordStrength.Level.FAIR -> R.string.pwd_fair
+            PasswordStrength.Level.GOOD -> R.string.pwd_good
+            PasswordStrength.Level.STRONG -> R.string.pwd_strong
+        }
+    )
+
+    Column(Modifier.fillMaxWidth().padding(top = 8.dp)) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .height(4.dp)
+                .clip(RoundedCornerShape(2.dp))
+                .background(Color(0x22FFFFFF))
+        ) {
+            Box(
+                Modifier
+                    .fillMaxWidth(fraction)
+                    .height(4.dp)
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(color)
+            )
+        }
+        Spacer(Modifier.height(5.dp))
+        Text(label, color = color, fontSize = 11.sp)
+        if (level == PasswordStrength.Level.WEAK || level == PasswordStrength.Level.FAIR) {
+            Text(stringResource(R.string.pwd_tip), color = SkMuted, fontSize = 11.sp)
+        }
+    }
 }
 
 @Composable

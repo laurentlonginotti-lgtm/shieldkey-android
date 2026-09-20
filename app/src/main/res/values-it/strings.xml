@@ -5,7 +5,12 @@
     <string name="onb_title">Crea la tua cassaforte</string>
     <string name="onb_subtitle">Scegli una password principale. È l\'unica chiave della tua cassaforte: rendila forte e facile da ricordare.</string>
     <string name="field_master_password">Password principale</string>
-    <string name="err_min8">Almeno 8 caratteri</string>
+    <string name="err_min_len">Almeno %1$d caratteri</string>
+    <string name="pwd_weak">Password debole</string>
+    <string name="pwd_fair">Password media</string>
+    <string name="pwd_good">Buona password</string>
+    <string name="pwd_strong">Password eccellente</string>
+    <string name="pwd_tip">Consiglio: quattro o cinque parole senza legame tra loro formano una password facile da ricordare e molto difficile da violare.</string>
     <string name="field_confirm_password">Conferma password</string>
     <string name="err_mismatch">Le password non coincidono</string>
     <string name="err_generic">Errore: %1$s</string>
@@ -14,6 +19,7 @@
     <!-- Recovery kit -->
     <string name="kit_title">🔑 Il tuo kit di recupero</string>
     <string name="kit_subtitle">Questo codice è l\'UNICO modo per recuperare la cassaforte se dimentichi la password principale. Scrivilo o stampalo e conservalo in un luogo sicuro.</string>
+    <string name="kit_renewed">⚠️ Questo codice sostituisce il precedente. Il vecchio codice non apre più la tua cassaforte — distruggi il vecchio foglio.</string>
     <string name="kit_copy">📋 Copia il codice</string>
     <string name="kit_warning">⚠️ Senza questo codice E la tua password, i tuoi dati saranno persi per sempre. Nessuno potrà recuperarli.</string>
     <string name="kit_checkbox">Ho conservato il codice di recupero in un luogo sicuro</string>
@@ -128,14 +134,27 @@
     <string name="sec_recovery_title">🔑 Kit di recupero, nessuna backdoor</string>
     <string name="sec_recovery_body">Se dimentichi la password principale, solo il TUO codice di recupero (quello che hai annotato) può ripristinare la cassaforte. Nessuna e-mail, nessun server di recupero: nessuna backdoor.</string>
     <string name="sec_bio_title">👆 Sblocco rapido protetto dall\'hardware</string>
-    <string name="sec_bio_body">Impronta o codice schermo: la chiave di sblocco risiede nel chip sicuro del telefono e non lo lascia mai. La tua password principale resta la vera protezione.</string>
+    <string name="sec_bio_body">Impronta o codice dello schermo: la chiave che sblocca è custodita nel chip sicuro del telefono e non ne esce mai. Da sapere: una volta attivato lo sblocco rapido, chi può sbloccare il tuo telefono può aprire la tua cassaforte — il codice dello schermo deve quindi essere serio quanto la password principale.</string>
     <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
     <string name="sec_clip_title">📋 Appunti protetti</string>
-    <string name="sec_clip_body">Quando copi un segreto, viene contrassegnato come \"sensibile\" (nascosto dalla cronologia degli appunti) e cancellato automaticamente.</string>
+    <string name="sec_clip_body">Quando copi un segreto, viene contrassegnato come «sensibile» (nascosto dalla cronologia degli appunti su Android 13+) e cancellato al blocco della cassaforte. Il timer di 45 secondi funziona solo finché ShieldKey è aperta: Android vieta alle app in background di toccare gli appunti. È il blocco a cancellarlo con certezza.</string>
+    <string name="sec_screen_title">📵 Screenshot bloccati</string>
+    <string name="sec_screen_body">Android rifiuta di catturare ShieldKey, e l\'anteprima dell\'app resta nascosta nell\'elenco delle app recenti. Un\'app di registrazione dello schermo non cattura nulla.</string>
+    <string name="sec_screen_tech">FLAG_SECURE · anteprima nascosta nelle recenti</string>
     <string name="sec_docs_title">📄 Documenti cifrati offline</string>
     <string name="sec_docs_body">Ogni documento è cifrato separatamente e resta utilizzabile anche senza connessione.</string>
     <string name="sec_phish_title">🎣 Non ti chiederemo mai i tuoi dati</string>
     <string name="sec_phish_body">ShieldKey non ti invierà mai e-mail o SMS per chiederti la password o i tuoi dati. Se qualcuno lo fa, non siamo noi.</string>
+    <string name="sec_limits_heading">Ciò che ShieldKey non può fare</string>
+    <string name="sec_limits_intro">Nessuna cassaforte protegge da tutto. Ecco ciò che resta fuori — detto chiaramente, perché tu sappia dov\'è il rischio vero.</string>
+    <string name="sec_limit_phish_title">🎣 Phishing (falso sito commerciale)</string>
+    <string name="sec_limit_phish_body">Se digiti il tuo numero su un sito falso, lo consegni tu stesso. ShieldKey non ha accesso a Internet: non vede le pagine web e non può avvisarti. La difesa migliore: una carta virtuale con massimale — un numero usa e getta non vale nulla per un ladro.</string>
+    <string name="sec_limit_breach_title">🏪 Violazione presso un commerciante</string>
+    <string name="sec_limit_breach_body">La tua carta viene copiata dal loro database, senza che tu abbia fatto nulla di sbagliato. Niente sul tuo telefono può impedirlo. Ciò che aiuta: sapere quali carte hai affidato a chi, per reagire in fretta.</string>
+    <string name="sec_limit_malware_title">🦠 Software dannoso sul dispositivo</string>
+    <string name="sec_limit_malware_body">Un registratore di tasti o un servizio di accessibilità manomesso vede tutto ciò che digiti o mostri — in qualsiasi app, compresa la nostra. ShieldKey limita i danni (nulla esce, nulla viene catturato, nulla resta negli appunti) ma non ripara un telefono compromesso.</string>
+    <string name="sec_limit_3ds_title">📱 3-D Secure dirottato (SIM swap)</string>
+    <string name="sec_limit_3ds_body">Se qualcuno si impadronisce della tua linea, intercetta l\'SMS che convalida un pagamento. Si gioca tra la tua banca e il tuo operatore. Preferisci la convalida tramite l\'app bancaria invece che via SMS.</string>
     <string name="sec_footer">AES-256-GCM · Argon2id · 0 Internet</string>
 
     <!-- Backup / restore -->

@@ -5,7 +5,12 @@
     <string name="onb_title">Crea tu caja fuerte</string>
     <string name="onb_subtitle">Elige una contraseña maestra. Es la única llave de tu caja fuerte: hazla fuerte y fácil de recordar.</string>
     <string name="field_master_password">Contraseña maestra</string>
-    <string name="err_min8">Al menos 8 caracteres</string>
+    <string name="err_min_len">Al menos %1$d caracteres</string>
+    <string name="pwd_weak">Contraseña débil</string>
+    <string name="pwd_fair">Contraseña media</string>
+    <string name="pwd_good">Buena contraseña</string>
+    <string name="pwd_strong">Contraseña excelente</string>
+    <string name="pwd_tip">Consejo: cuatro o cinco palabras sin relación entre sí forman una contraseña fácil de recordar y muy difícil de descifrar.</string>
     <string name="field_confirm_password">Confirmar contraseña</string>
     <string name="err_mismatch">Las contraseñas no coinciden</string>
     <string name="err_generic">Error: %1$s</string>
@@ -14,6 +19,7 @@
     <!-- Recovery kit -->
     <string name="kit_title">🔑 Tu kit de recuperación</string>
     <string name="kit_subtitle">Este código es la ÚNICA forma de recuperar tu caja fuerte si olvidas la contraseña maestra. Anótalo o imprímelo y guárdalo en un lugar seguro.</string>
+    <string name="kit_renewed">⚠️ Este código sustituye al anterior. El código antiguo ya no abre tu caja fuerte — destruye la hoja antigua.</string>
     <string name="kit_copy">📋 Copiar el código</string>
     <string name="kit_warning">⚠️ Sin este código Y tu contraseña, tus datos se perderán para siempre. Nadie podrá recuperarlos.</string>
     <string name="kit_checkbox">He guardado mi código de recuperación en un lugar seguro</string>
@@ -128,14 +134,27 @@
     <string name="sec_recovery_title">🔑 Kit de recuperación, sin puerta trasera</string>
     <string name="sec_recovery_body">Si olvidas tu contraseña maestra, solo TU código de recuperación (el que anotaste) puede restaurar la caja fuerte. Sin correo, sin servidor de recuperación: sin puerta trasera.</string>
     <string name="sec_bio_title">👆 Desbloqueo rápido respaldado por hardware</string>
-    <string name="sec_bio_body">Huella o código de pantalla: la clave de desbloqueo vive en el chip seguro de tu teléfono y nunca sale de él. Tu contraseña maestra sigue siendo la verdadera protección.</string>
+    <string name="sec_bio_body">Huella o código de pantalla: la clave que desbloquea se guarda en el chip seguro del teléfono y nunca sale de él. Ten en cuenta: una vez activado el desbloqueo rápido, quien pueda desbloquear tu teléfono puede abrir tu caja fuerte — tu código de pantalla debe ser tan serio como tu contraseña maestra.</string>
     <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
     <string name="sec_clip_title">📋 Portapapeles reforzado</string>
-    <string name="sec_clip_body">Cuando copias un secreto, se marca como \"sensible\" (oculto del historial del portapapeles) y se borra automáticamente.</string>
+    <string name="sec_clip_body">Cuando copias un secreto, se marca como «sensible» (oculto del historial del portapapeles en Android 13+) y se borra al bloquear la caja fuerte. El temporizador de 45 segundos solo funciona mientras ShieldKey está abierta: Android prohíbe a las apps en segundo plano tocar el portapapeles. Es el bloqueo lo que lo borra con seguridad.</string>
+    <string name="sec_screen_title">📵 Capturas de pantalla bloqueadas</string>
+    <string name="sec_screen_body">Android se niega a capturar ShieldKey, y la vista previa de la app permanece oculta en la lista de aplicaciones recientes. Una app de grabación de pantalla no capta nada.</string>
+    <string name="sec_screen_tech">FLAG_SECURE · vista previa oculta en recientes</string>
     <string name="sec_docs_title">📄 Documentos cifrados sin conexión</string>
     <string name="sec_docs_body">Cada documento se cifra por separado y sigue siendo utilizable incluso sin red.</string>
     <string name="sec_phish_title">🎣 Nunca te pediremos tus datos</string>
     <string name="sec_phish_body">ShieldKey nunca te enviará un correo o SMS para pedirte tu contraseña o tus datos. Si alguien lo hace, no somos nosotros.</string>
+    <string name="sec_limits_heading">Lo que ShieldKey no puede hacer</string>
+    <string name="sec_limits_intro">Ninguna caja fuerte protege de todo. Esto es lo que queda fuera — dicho claramente, para que sepas dónde está el riesgo real.</string>
+    <string name="sec_limit_phish_title">🎣 Phishing (sitio falso de comercio)</string>
+    <string name="sec_limit_phish_body">Si escribes tu número en un sitio falso, lo entregas tú mismo. ShieldKey no tiene acceso a Internet: no ve las páginas web y no puede avisarte. La mejor defensa: una tarjeta virtual con límite — un número de un solo uso no vale nada para un ladrón.</string>
+    <string name="sec_limit_breach_title">🏪 Filtración en un comercio</string>
+    <string name="sec_limit_breach_body">Tu tarjeta se copia de su base de datos, sin que hayas hecho nada mal. Nada en tu teléfono puede impedirlo. Lo que ayuda: saber qué tarjetas has confiado a quién, para reaccionar rápido.</string>
+    <string name="sec_limit_malware_title">🦠 Software malicioso en el dispositivo</string>
+    <string name="sec_limit_malware_body">Un registrador de teclas o un servicio de accesibilidad manipulado ve todo lo que escribes o muestras — en cualquier app, incluida la nuestra. ShieldKey limita el daño (nada sale, nada se captura, nada queda en el portapapeles) pero no repara un teléfono comprometido.</string>
+    <string name="sec_limit_3ds_title">📱 3-D Secure desviado (SIM swap)</string>
+    <string name="sec_limit_3ds_body">Si alguien se apodera de tu línea, intercepta el SMS que valida un pago. Esto se juega entre tu banco y tu operador. Prefiere la validación mediante la app bancaria en lugar del SMS.</string>
     <string name="sec_footer">AES-256-GCM · Argon2id · 0 Internet</string>
 
     <!-- Backup / restore -->

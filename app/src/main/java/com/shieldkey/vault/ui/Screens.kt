@@ -59,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shieldkey.vault.R
 import com.shieldkey.vault.sound.SoundFx
+import com.shieldkey.vault.util.PasswordStrength
 import com.shieldkey.vault.ui.theme.SkEmerald
 import com.shieldkey.vault.ui.theme.SkEmerald2
 import com.shieldkey.vault.ui.theme.SkGold
@@ -107,9 +108,9 @@ fun OnboardingScreen(
     var loading by remember { mutableStateOf(false) }
     var errMsg by remember { mutableStateOf<String?>(null) }
 
-    val tooShort = pwd.isNotEmpty() && pwd.length < 8
+    val tooShort = pwd.isNotEmpty() && pwd.length < PasswordStrength.MIN_LENGTH
     val mismatch = confirm.isNotEmpty() && confirm != pwd
-    val canSubmit = pwd.length >= 8 && pwd == confirm && !loading
+    val canSubmit = pwd.length >= PasswordStrength.MIN_LENGTH && pwd == confirm && !loading
 
     CenteredColumn {
         SkLogo()
@@ -119,7 +120,8 @@ fun OnboardingScreen(
         Text(stringResource(R.string.onb_subtitle), color = SkMuted, fontSize = 13.sp, textAlign = TextAlign.Center)
         Spacer(Modifier.height(20.dp))
         SkPasswordField(pwd, { pwd = it; errMsg = null }, stringResource(R.string.field_master_password))
-        if (tooShort) HintText(stringResource(R.string.err_min8), warn = true)
+        PasswordStrengthMeter(pwd)
+        if (tooShort) HintText(stringResource(R.string.err_min_len, PasswordStrength.MIN_LENGTH), warn = true)
         Spacer(Modifier.height(10.dp))
         SkPasswordField(confirm, { confirm = it; errMsg = null }, stringResource(R.string.field_confirm_password))
         if (mismatch) HintText(stringResource(R.string.err_mismatch), warn = true)
@@ -148,7 +150,7 @@ fun OnboardingScreen(
 //  Kit de secours
 // ---------------------------------------------------------------------------
 @Composable
-fun RecoveryKitScreen(code: String, onDone: () -> Unit) {
+fun RecoveryKitScreen(code: String, onDone: () -> Unit, renewed: Boolean = false) {
     val clipboard = LocalClipboardManager.current
     var saved by remember { mutableStateOf(false) }
 
@@ -156,6 +158,17 @@ fun RecoveryKitScreen(code: String, onDone: () -> Unit) {
         Text(stringResource(R.string.kit_title), color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))
         Text(stringResource(R.string.kit_subtitle), color = SkMuted, fontSize = 13.sp, textAlign = TextAlign.Center)
+        // Après une récupération : dire explicitement que l'ancienne feuille est périmée,
+        // sinon l'utilisateur garde les deux et croit que l'ancienne vaut encore.
+        if (renewed) {
+            Spacer(Modifier.height(10.dp))
+            Text(
+                stringResource(R.string.kit_renewed),
+                color = SkGold,
+                fontSize = 12.sp,
+                textAlign = TextAlign.Center
+            )
+        }
         Spacer(Modifier.height(20.dp))
         Box(
             Modifier
@@ -277,7 +290,8 @@ fun RecoveryScreen(onRecover: suspend (String, String) -> Boolean, onCancel: () 
     var loading by remember { mutableStateOf(false) }
     var invalid by remember { mutableStateOf(false) }
 
-    val canSubmit = code.isNotBlank() && pwd.length >= 8 && pwd == confirm && !loading
+    val canSubmit = code.isNotBlank() && pwd.length >= PasswordStrength.MIN_LENGTH &&
+        pwd == confirm && !loading
 
     CenteredColumn {
         Text(stringResource(R.string.rec_title), color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
@@ -294,6 +308,7 @@ fun RecoveryScreen(onRecover: suspend (String, String) -> Boolean, onCancel: () 
         )
         Spacer(Modifier.height(12.dp))
         SkPasswordField(pwd, { pwd = it }, stringResource(R.string.field_new_master))
+        PasswordStrengthMeter(pwd)
         Spacer(Modifier.height(10.dp))
         SkPasswordField(confirm, { confirm = it }, stringResource(R.string.field_confirm))
         if (invalid) HintText(stringResource(R.string.rec_invalid), warn = true)

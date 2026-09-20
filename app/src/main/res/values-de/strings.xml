@@ -5,7 +5,12 @@
     <string name="onb_title">Tresor erstellen</string>
     <string name="onb_subtitle">Wählen Sie ein Master-Passwort. Es ist der einzige Schlüssel zu Ihrem Tresor — machen Sie es stark und merkbar.</string>
     <string name="field_master_password">Master-Passwort</string>
-    <string name="err_min8">Mindestens 8 Zeichen</string>
+    <string name="err_min_len">Mindestens %1$d Zeichen</string>
+    <string name="pwd_weak">Schwaches Passwort</string>
+    <string name="pwd_fair">Mittelmäßiges Passwort</string>
+    <string name="pwd_good">Gutes Passwort</string>
+    <string name="pwd_strong">Ausgezeichnetes Passwort</string>
+    <string name="pwd_tip">Tipp: Vier oder fünf zusammenhanglose Wörter ergeben ein Passwort, das leicht zu merken und sehr schwer zu knacken ist.</string>
     <string name="field_confirm_password">Passwort bestätigen</string>
     <string name="err_mismatch">Die Passwörter stimmen nicht überein</string>
     <string name="err_generic">Fehler: %1$s</string>
@@ -14,6 +19,7 @@
     <!-- Recovery kit -->
     <string name="kit_title">🔑 Ihr Wiederherstellungs-Kit</string>
     <string name="kit_subtitle">Dieser Code ist der EINZIGE Weg, Ihren Tresor wiederherzustellen, falls Sie Ihr Master-Passwort vergessen. Schreiben Sie ihn auf oder drucken Sie ihn aus und bewahren Sie ihn sicher auf.</string>
+    <string name="kit_renewed">⚠️ Dieser Code ersetzt den vorherigen. Der alte Code öffnet Ihren Tresor nicht mehr — vernichten Sie das alte Blatt.</string>
     <string name="kit_copy">📋 Code kopieren</string>
     <string name="kit_warning">⚠️ Ohne diesen Code UND Ihr Passwort sind Ihre Daten für immer verloren. Niemand kann sie wiederherstellen.</string>
     <string name="kit_checkbox">Ich habe meinen Wiederherstellungscode sicher aufbewahrt</string>
@@ -128,14 +134,27 @@
     <string name="sec_recovery_title">🔑 Wiederherstellungs-Kit, keine Hintertür</string>
     <string name="sec_recovery_body">Wenn Sie Ihr Master-Passwort vergessen, kann nur IHR Wiederherstellungscode (den Sie notiert haben) den Tresor wiederherstellen. Keine E-Mail, kein Wiederherstellungsserver — keine Hintertür.</string>
     <string name="sec_bio_title">👆 Hardwaregestützte Schnellentsperrung</string>
-    <string name="sec_bio_body">Fingerabdruck oder Gerätecode: Der Entsperrschlüssel liegt im Sicherheitschip Ihres Telefons und verlässt ihn nie. Ihr Master-Passwort bleibt der eigentliche Schutz.</string>
+    <string name="sec_bio_body">Fingerabdruck oder Bildschirmcode: Der entsperrende Schlüssel liegt im Sicherheitschip Ihres Telefons und verlässt ihn nie. Wichtig: Sobald die Schnellentsperrung aktiv ist, kann jeder, der Ihr Telefon entsperren kann, auch Ihren Tresor öffnen — Ihre Bildschirmsperre muss also so ernst genommen werden wie Ihr Master-Passwort.</string>
     <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
     <string name="sec_clip_title">📋 Gehärtete Zwischenablage</string>
-    <string name="sec_clip_body">Wenn Sie ein Geheimnis kopieren, wird es als \"sensibel\" markiert (aus dem Zwischenablageverlauf ausgeblendet) und automatisch gelöscht.</string>
+    <string name="sec_clip_body">Wenn Sie ein Geheimnis kopieren, wird es als „vertraulich“ markiert (ab Android 13 aus dem Verlauf der Zwischenablage ausgeblendet) und beim Sperren des Tresors gelöscht. Der 45-Sekunden-Timer wirkt nur, solange ShieldKey geöffnet ist: Android verbietet Apps im Hintergrund den Zugriff auf die Zwischenablage. Zuverlässig gelöscht wird beim Sperren.</string>
+    <string name="sec_screen_title">📵 Screenshots blockiert</string>
+    <string name="sec_screen_body">Android verweigert Aufnahmen von ShieldKey, und die Vorschau der App bleibt in der Liste der zuletzt verwendeten Apps verborgen. Eine Bildschirmaufnahme-App erfasst nichts.</string>
+    <string name="sec_screen_tech">FLAG_SECURE · Vorschau in der Übersicht ausgeblendet</string>
     <string name="sec_docs_title">📄 Verschlüsselte Offline-Dokumente</string>
     <string name="sec_docs_body">Jedes Dokument wird einzeln verschlüsselt und bleibt auch ohne Verbindung nutzbar.</string>
     <string name="sec_phish_title">🎣 Wir fragen nie nach Ihren Daten</string>
     <string name="sec_phish_body">ShieldKey wird Ihnen niemals eine E-Mail oder SMS schicken, um nach Ihrem Passwort oder Ihren Daten zu fragen. Tut es jemand, sind wir es nicht.</string>
+    <string name="sec_limits_heading">Was ShieldKey nicht leisten kann</string>
+    <string name="sec_limits_intro">Kein Tresor schützt vor allem. Hier steht, was außerhalb liegt — offen gesagt, damit Sie wissen, wo das eigentliche Risiko liegt.</string>
+    <string name="sec_limit_phish_title">🎣 Phishing (gefälschte Händlerseite)</string>
+    <string name="sec_limit_phish_body">Wenn Sie Ihre Kartennummer auf einer gefälschten Seite eingeben, geben Sie sie selbst preis. ShieldKey hat keinen Internetzugang: Es sieht keine Webseiten und kann Sie nicht warnen. Bester Schutz: eine virtuelle Karte mit Limit — eine Einmalnummer ist für einen Dieb wertlos.</string>
+    <string name="sec_limit_breach_title">🏪 Datenleck beim Händler</string>
+    <string name="sec_limit_breach_body">Ihre Karte wird aus dessen Datenbank kopiert, ohne dass Sie etwas falsch gemacht haben. Nichts auf Ihrem Telefon kann das verhindern. Was hilft: zu wissen, welche Karten Sie wem anvertraut haben, um schnell zu reagieren.</string>
+    <string name="sec_limit_malware_title">🦠 Schadsoftware auf dem Gerät</string>
+    <string name="sec_limit_malware_body">Ein Tastaturmitschnitt oder ein manipulierter Bedienungshilfen-Dienst sieht alles, was Sie tippen oder anzeigen — in jeder App, auch in unserer. ShieldKey begrenzt den Schaden (nichts geht hinaus, nichts wird aufgenommen, nichts bleibt in der Zwischenablage), kann aber ein kompromittiertes Telefon nicht reparieren.</string>
+    <string name="sec_limit_3ds_title">📱 3-D Secure umgangen (SIM-Swap)</string>
+    <string name="sec_limit_3ds_body">Wenn jemand Ihre Rufnummer übernimmt, fängt er die SMS ab, die eine Zahlung bestätigt. Das spielt sich zwischen Ihrer Bank und Ihrem Mobilfunkanbieter ab. Bevorzugen Sie die Bestätigung über die Banking-App statt per SMS.</string>
     <string name="sec_footer">AES-256-GCM · Argon2id · 0 Internet</string>
 
     <!-- Backup / restore -->

@@ -112,14 +112,36 @@ class VaultStore(context: Context) {
         }
     }
 
-    /** Après une récupération réussie : redéfinit le mot de passe maître à partir de la DEK. */
-    fun resetMasterPassword(dek: ByteArray, newPassword: String) {
+    /**
+     * Après une récupération réussie : redéfinit le mot de passe maître à partir de la DEK,
+     * ET renouvelle le code de secours. Renvoie le nouveau code — l'appelant DOIT l'afficher.
+     *
+     * Renouveler n'est pas un détail de confort. L'ancien code de secours est une clé complète
+     * du coffre : il emballe la même DEK, au même titre que le mot de passe maître. Le laisser
+     * en place reviendrait à ne changer qu'une serrure sur deux — et précisément dans le moment
+     * où l'utilisateur change de mot de passe, souvent parce qu'il se croit compromis. Quelqu'un
+     * qui aurait vu ou photographié l'ancienne feuille garderait alors un accès à vie, sans que
+     * rien dans l'app ne le laisse soupçonner.
+     *
+     * On réemballe donc la DEK avec un code neuf et un sel neuf : l'ancien code ne déchiffre
+     * plus rien. Le contenu du coffre, lui, n'est pas touché (la DEK ne change pas).
+     */
+    fun resetMasterPassword(dek: ByteArray, newPassword: String): String {
         val root = JSONObject(file.readText())
+
         val masterSalt = SkCrypto.randomBytes(SkCrypto.SALT_LEN)
         val masterKey = SkCrypto.deriveKey(newPassword.toByteArray(Charsets.UTF_8), masterSalt)
         root.put("masterSalt", b64(masterSalt))
         root.put("masterWrap", b64(SkCrypto.encrypt(dek, masterKey)))
+
+        val recoveryCode = RecoveryCode.generate()
+        val recoverySalt = SkCrypto.randomBytes(SkCrypto.SALT_LEN)
+        val recoveryKey = SkCrypto.deriveKey(RecoveryCode.normalize(recoveryCode), recoverySalt)
+        root.put("recoverySalt", b64(recoverySalt))
+        root.put("recoveryWrap", b64(SkCrypto.encrypt(dek, recoveryKey)))
+
         save(root)
+        return recoveryCode
     }
 
     /** Lit le contenu déchiffré du coffre (JSON) avec la DEK. */
