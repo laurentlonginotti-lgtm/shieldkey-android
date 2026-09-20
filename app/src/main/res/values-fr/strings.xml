@@ -24,7 +24,7 @@
     <string name="unlock_button">Déverrouiller</string>
     <string name="unlock_wrong">Mot de passe incorrect</string>
     <string name="unlock_forgot">Mot de passe oublié ? Utiliser le code de secours</string>
-    <string name="offline_badge">🔒 100%% hors-ligne</string>
+    <string name="offline_badge" formatted="false">🔒 100% hors-ligne</string>
 
     <!-- Recovery -->
     <string name="rec_title">Récupération</string>
@@ -38,7 +38,7 @@
 
     <!-- Vault -->
     <string name="vault_lock">🔒 Verrouiller</string>
-    <string name="vault_secure_badge">🔒 100%% hors-ligne · Chiffré AES-256 · Argon2id</string>
+    <string name="vault_secure_badge" formatted="false">🔒 100% hors-ligne · Chiffré AES-256 · Argon2id</string>
     <string name="chip_all">Tout</string>
     <string name="vault_empty_title">Votre coffre est vide</string>
     <string name="vault_empty_sub">Ajoutez votre première entrée avec le bouton ci-dessous.</string>
@@ -111,44 +111,44 @@
     <!-- Page Sécurité -->
     <string name="sec_open">🛡️ Sécurité</string>
     <string name="sec_title">Sécurité</string>
-    <string name="sec_tagline">Ta confiance, expliquée.</string>
-    <string name="sec_intro">ShieldKey est conçu pour que tes données restent à toi. Voici comment — sans jargon.</string>
-    <string name="sec_offline_title">🌐 100%% hors-ligne</string>
-    <string name="sec_offline_body">Aucune permission Internet. Rien ne quitte jamais ton téléphone. Pas de compte, pas de serveur — rien à pirater à distance.</string>
+    <string name="sec_tagline">Votre confiance, expliquée.</string>
+    <string name="sec_intro">ShieldKey est conçu pour que vos données restent les vôtres. Voici comment — sans jargon.</string>
+    <string name="sec_offline_title" formatted="false">🌐 100% hors-ligne</string>
+    <string name="sec_offline_body">Aucune permission Internet. Rien ne quitte jamais votre téléphone. Pas de compte, pas de serveur — rien à pirater à distance.</string>
     <string name="sec_offline_tech">0 permission réseau · sauvegarde cloud désactivée</string>
     <string name="sec_aes_title">🔐 Chiffrement AES-256-GCM</string>
     <string name="sec_aes_body">De niveau militaire et authentifié : si un seul octet est altéré ou la clé fausse, l\'ouverture échoue, tout simplement.</string>
     <string name="sec_aes_tech">AES-256 · GCM · tag 128 bits · IV aléatoire par élément</string>
     <string name="sec_argon_title">🧗 Dérivation Argon2id</string>
-    <string name="sec_argon_body">Ton mot de passe maître est transformé en clé par Argon2id — « mémoire-dur », conçu pour être lent et coûteux à casser en masse (anti-GPU/ASIC), bien plus résistant que PBKDF2.</string>
+    <string name="sec_argon_body">Votre mot de passe maître est transformé en clé par Argon2id — « mémoire-dur », conçu pour être lent et coûteux à casser en masse (anti-GPU/ASIC), bien plus résistant que PBKDF2.</string>
     <string name="sec_argon_tech">Argon2id · %1$d passes · %2$d Mo · parallélisme %3$d</string>
     <string name="sec_envelope_title">🕵️ Zéro connaissance</string>
-    <string name="sec_envelope_body">Ton mot de passe maître n\'est stocké nulle part. Il ne sert qu\'à déverrouiller une clé interne aléatoire. Personne — pas même le développeur — ne peut ouvrir ton coffre sans ton mot de passe.</string>
+    <string name="sec_envelope_body">Votre mot de passe maître n\'est stocké nulle part. Il ne sert qu\'à déverrouiller une clé interne aléatoire. Personne — pas même le développeur — ne peut ouvrir votre coffre sans votre mot de passe.</string>
     <string name="sec_envelope_tech">Chiffrement à enveloppe · clé aléatoire 256 bits</string>
     <string name="sec_recovery_title">🔑 Kit de secours, sans porte dérobée</string>
-    <string name="sec_recovery_body">Si tu oublies ton mot de passe, seul TON code de secours (celui que tu as noté) peut récupérer le coffre. Aucun e-mail, aucun serveur de récupération — aucune porte dérobée.</string>
+    <string name="sec_recovery_body">Si vous oubliez votre mot de passe, seul VOTRE code de secours (celui que vous avez noté) peut récupérer le coffre. Aucun e-mail, aucun serveur de récupération — aucune porte dérobée.</string>
     <string name="sec_bio_title">👆 Déverrouillage rapide protégé par le matériel</string>
-    <string name="sec_bio_body">Empreinte ou code de l\'écran : la clé qui déverrouille est gardée dans la puce sécurisée du téléphone et n\'en sort jamais. Ton mot de passe maître reste le vrai rempart.</string>
+    <string name="sec_bio_body">Empreinte ou code de l\'écran : la clé qui déverrouille est gardée dans la puce sécurisée du téléphone et n\'en sort jamais. Votre mot de passe maître reste le vrai rempart.</string>
     <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
     <string name="sec_clip_title">📋 Presse-papier durci</string>
-    <string name="sec_clip_body">Quand tu copies un secret, il est marqué « sensible » (masqué de l\'historique) et effacé automatiquement.</string>
+    <string name="sec_clip_body">Quand vous copiez un secret, il est marqué « sensible » (masqué de l\'historique) et effacé automatiquement.</string>
     <string name="sec_docs_title">📄 Documents chiffrés hors-ligne</string>
     <string name="sec_docs_body">Chaque document est chiffré séparément et reste utilisable même sans connexion.</string>
-    <string name="sec_phish_title">🎣 On ne te demandera jamais tes infos</string>
-    <string name="sec_phish_body">ShieldKey ne t\'enverra jamais d\'e-mail ou de SMS pour demander ton mot de passe ou tes données. Si quelqu\'un le fait, ce n\'est pas nous.</string>
+    <string name="sec_phish_title">🎣 On ne vous demandera jamais vos infos</string>
+    <string name="sec_phish_body">ShieldKey ne vous enverra jamais d\'e-mail ou de SMS pour demander votre mot de passe ou vos données. Si quelqu\'un le fait, ce n\'est pas nous.</string>
     <string name="sec_footer">AES-256-GCM · Argon2id · 0 Internet</string>
 
     <!-- Sauvegarde / restauration -->
     <string name="backup_open">💾 Sauvegarder le coffre</string>
     <string name="backup_title">Sauvegarder le coffre</string>
-    <string name="backup_prompt">Entre ton mot de passe maître pour chiffrer le fichier de sauvegarde.</string>
+    <string name="backup_prompt">Entrez votre mot de passe maître pour chiffrer le fichier de sauvegarde.</string>
     <string name="backup_action">Créer la sauvegarde</string>
-    <string name="backup_hint">Un fichier .skb chiffré. Garde-le en lieu sûr (Drive, ordinateur…) pour restaurer sur un nouveau téléphone.</string>
+    <string name="backup_hint">Un fichier .skb chiffré. Gardez-le en lieu sûr (Drive, ordinateur…) pour restaurer sur un nouveau téléphone.</string>
     <string name="restore_open">🗄️ Restaurer une sauvegarde</string>
     <string name="restore_title">Restaurer une sauvegarde</string>
     <string name="restore_pick">Choisir le fichier de sauvegarde (.skb)</string>
     <string name="restore_file_ok">✓ Fichier sélectionné</string>
-    <string name="restore_prompt">Entre le mot de passe maître de cette sauvegarde.</string>
+    <string name="restore_prompt">Entrez le mot de passe maître de cette sauvegarde.</string>
     <string name="restore_action">Restaurer</string>
     <string name="restore_warning">⚠️ Ceci remplace le coffre présent sur ce téléphone.</string>
     <string name="restore_error">Mot de passe incorrect ou fichier invalide.</string>

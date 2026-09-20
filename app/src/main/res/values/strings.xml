@@ -24,7 +24,7 @@
     <string name="unlock_button">Unlock</string>
     <string name="unlock_wrong">Wrong password</string>
     <string name="unlock_forgot">Forgot your password? Use the recovery code</string>
-    <string name="offline_badge">🔒 100%% offline</string>
+    <string name="offline_badge" formatted="false">🔒 100% offline</string>
 
     <!-- Recovery -->
     <string name="rec_title">Recovery</string>
@@ -38,7 +38,7 @@
 
     <!-- Vault -->
     <string name="vault_lock">🔒 Lock</string>
-    <string name="vault_secure_badge">🔒 100%% offline · AES-256 encrypted · Argon2id</string>
+    <string name="vault_secure_badge" formatted="false">🔒 100% offline · AES-256 encrypted · Argon2id</string>
     <string name="chip_all">All</string>
     <string name="vault_empty_title">Your vault is empty</string>
     <string name="vault_empty_sub">Add your first entry with the button below.</string>
@@ -113,7 +113,7 @@
     <string name="sec_title">Security</string>
     <string name="sec_tagline">Your trust, explained.</string>
     <string name="sec_intro">ShieldKey is built so your data stays yours. Here is how — no jargon.</string>
-    <string name="sec_offline_title">🌐 100%% offline</string>
+    <string name="sec_offline_title" formatted="false">🌐 100% offline</string>
     <string name="sec_offline_body">No Internet permission. Nothing ever leaves your phone. No account, no server — nothing to hack remotely.</string>
     <string name="sec_offline_tech">0 network permission · cloud backup disabled</string>
     <string name="sec_aes_title">🔐 AES-256-GCM encryption</string>

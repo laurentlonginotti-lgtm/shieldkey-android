@@ -24,7 +24,7 @@
     <string name="unlock_button">Desbloquear</string>
     <string name="unlock_wrong">Senha incorreta</string>
     <string name="unlock_forgot">Esqueceu a senha? Use o código de recuperação</string>
-    <string name="offline_badge">🔒 100%% offline</string>
+    <string name="offline_badge" formatted="false">🔒 100% offline</string>
 
     <!-- Recovery -->
     <string name="rec_title">Recuperação</string>
@@ -38,7 +38,7 @@
 
     <!-- Vault -->
     <string name="vault_lock">🔒 Bloquear</string>
-    <string name="vault_secure_badge">🔒 100%% offline · criptografia AES-256 · Argon2id</string>
+    <string name="vault_secure_badge" formatted="false">🔒 100% offline · criptografia AES-256 · Argon2id</string>
     <string name="chip_all">Tudo</string>
     <string name="vault_empty_title">Seu cofre está vazio</string>
     <string name="vault_empty_sub">Adicione seu primeiro item com o botão abaixo.</string>
@@ -113,7 +113,7 @@
     <string name="sec_title">Segurança</string>
     <string name="sec_tagline">Sua confiança, explicada.</string>
     <string name="sec_intro">O ShieldKey foi feito para que seus dados continuem sendo seus. Veja como, sem jargão.</string>
-    <string name="sec_offline_title">🌐 100%% offline</string>
+    <string name="sec_offline_title" formatted="false">🌐 100% offline</string>
     <string name="sec_offline_body">Sem permissão de Internet. Nada sai do seu celular. Sem conta, sem servidor: nada para hackear à distância.</string>
     <string name="sec_offline_tech">0 permissões de rede · backup na nuvem desativado</string>
     <string name="sec_aes_title">🔐 Criptografia AES-256-GCM</string>

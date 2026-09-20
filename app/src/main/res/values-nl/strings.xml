@@ -24,7 +24,7 @@
     <string name="unlock_button">Ontgrendelen</string>
     <string name="unlock_wrong">Onjuist wachtwoord</string>
     <string name="unlock_forgot">Wachtwoord vergeten? Gebruik de herstelcode</string>
-    <string name="offline_badge">🔒 100%% offline</string>
+    <string name="offline_badge" formatted="false">🔒 100% offline</string>
 
     <!-- Recovery -->
     <string name="rec_title">Herstel</string>
@@ -38,7 +38,7 @@
 
     <!-- Vault -->
     <string name="vault_lock">🔒 Vergrendelen</string>
-    <string name="vault_secure_badge">🔒 100%% offline · AES-256-versleuteld · Argon2id</string>
+    <string name="vault_secure_badge" formatted="false">🔒 100% offline · AES-256-versleuteld · Argon2id</string>
     <string name="chip_all">Alles</string>
     <string name="vault_empty_title">Je kluis is leeg</string>
     <string name="vault_empty_sub">Voeg je eerste item toe met de knop hieronder.</string>
@@ -113,7 +113,7 @@
     <string name="sec_title">Beveiliging</string>
     <string name="sec_tagline">Jouw vertrouwen, uitgelegd.</string>
     <string name="sec_intro">ShieldKey is zo gebouwd dat je gegevens van jou blijven. Zo werkt het, zonder jargon.</string>
-    <string name="sec_offline_title">🌐 100%% offline</string>
+    <string name="sec_offline_title" formatted="false">🌐 100% offline</string>
     <string name="sec_offline_body">Geen internetmachtiging. Niets verlaat ooit je telefoon. Geen account, geen server: niets om op afstand te hacken.</string>
     <string name="sec_offline_tech">0 netwerkmachtigingen · cloudback-up uitgeschakeld</string>
     <string name="sec_aes_title">🔐 AES-256-GCM-versleuteling</string>

@@ -24,7 +24,7 @@
     <string name="unlock_button">Sblocca</string>
     <string name="unlock_wrong">Password errata</string>
     <string name="unlock_forgot">Password dimenticata? Usa il codice di recupero</string>
-    <string name="offline_badge">🔒 100%% offline</string>
+    <string name="offline_badge" formatted="false">🔒 100% offline</string>
 
     <!-- Recovery -->
     <string name="rec_title">Recupero</string>
@@ -38,7 +38,7 @@
 
     <!-- Vault -->
     <string name="vault_lock">🔒 Blocca</string>
-    <string name="vault_secure_badge">🔒 100%% offline · cifratura AES-256 · Argon2id</string>
+    <string name="vault_secure_badge" formatted="false">🔒 100% offline · cifratura AES-256 · Argon2id</string>
     <string name="chip_all">Tutto</string>
     <string name="vault_empty_title">La tua cassaforte è vuota</string>
     <string name="vault_empty_sub">Aggiungi la tua prima voce con il pulsante qui sotto.</string>
@@ -113,7 +113,7 @@
     <string name="sec_title">Sicurezza</string>
     <string name="sec_tagline">La tua fiducia, spiegata.</string>
     <string name="sec_intro">ShieldKey è progettata perché i tuoi dati restino tuoi. Ecco come, senza gergo tecnico.</string>
-    <string name="sec_offline_title">🌐 100%% offline</string>
+    <string name="sec_offline_title" formatted="false">🌐 100% offline</string>
     <string name="sec_offline_body">Nessuna autorizzazione Internet. Nulla esce mai dal tuo telefono. Nessun account, nessun server: niente da attaccare a distanza.</string>
     <string name="sec_offline_tech">0 autorizzazioni di rete · backup cloud disattivato</string>
     <string name="sec_aes_title">🔐 Cifratura AES-256-GCM</string>
