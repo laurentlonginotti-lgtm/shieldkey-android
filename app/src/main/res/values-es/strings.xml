@@ -29,6 +29,7 @@
     <string name="unlock_locked">Tu caja fuerte está bloqueada</string>
     <string name="unlock_button">Desbloquear</string>
     <string name="unlock_wrong">Contraseña incorrecta</string>
+    <string name="unlock_throttled">Demasiados intentos. Vuelve a probar en %1$d segundos.</string>
     <string name="unlock_forgot">¿Olvidaste la contraseña? Usa el código de recuperación</string>
     <string name="offline_badge" formatted="false">🔒 100% sin conexión</string>
 
@@ -113,6 +114,7 @@
     <string name="bio_enable">👆 Activar el desbloqueo rápido</string>
     <string name="bio_enabled">👆 Desbloqueo rápido activado</string>
     <string name="bio_hint_no_lock">Configura un bloqueo de pantalla (huella o PIN) en Android para usar esta función.</string>
+    <string name="bio_invalidated">El desbloqueo rápido se ha desactivado: las huellas registradas en este teléfono han cambiado. Introduce tu contraseña maestra y vuelve a activarlo.</string>
 
     <!-- Security page -->
     <string name="sec_open">🛡️ Seguridad</string>
@@ -134,8 +136,8 @@
     <string name="sec_recovery_title">🔑 Kit de recuperación, sin puerta trasera</string>
     <string name="sec_recovery_body">Si olvidas tu contraseña maestra, solo TU código de recuperación (el que anotaste) puede restaurar la caja fuerte. Sin correo, sin servidor de recuperación: sin puerta trasera.</string>
     <string name="sec_bio_title">👆 Desbloqueo rápido respaldado por hardware</string>
-    <string name="sec_bio_body">Huella o código de pantalla: la clave que desbloquea se guarda en el chip seguro del teléfono y nunca sale de él. Ten en cuenta: una vez activado el desbloqueo rápido, quien pueda desbloquear tu teléfono puede abrir tu caja fuerte — tu código de pantalla debe ser tan serio como tu contraseña maestra.</string>
-    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
+    <string name="sec_bio_body">Huella: la clave que desbloquea se guarda en el chip seguro del teléfono y nunca sale de él. Registrar una huella nueva destruye esa clave — así nadie puede inscribir su propio dedo para entrar. En un teléfono sin sensor se usa el código de pantalla, y el desbloqueo rápido vale entonces lo que valga ese código.</string>
+    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox · destruida al registrar una huella</string>
     <string name="sec_clip_title">📋 Portapapeles reforzado</string>
     <string name="sec_clip_body">Cuando copias un secreto, se marca como «sensible» (oculto del historial del portapapeles en Android 13+) y se borra al bloquear la caja fuerte. El temporizador de 45 segundos solo funciona mientras ShieldKey está abierta: Android prohíbe a las apps en segundo plano tocar el portapapeles. Es el bloqueo lo que lo borra con seguridad.</string>
     <string name="sec_screen_title">📵 Capturas de pantalla bloqueadas</string>

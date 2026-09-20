@@ -223,17 +223,19 @@ fun RecoveryKitScreen(code: String, onDone: () -> Unit, renewed: Boolean = false
 // ---------------------------------------------------------------------------
 @Composable
 fun UnlockScreen(
-    onUnlock: suspend (String) -> Boolean,
+    /** Renvoie null si le coffre s'est ouvert, sinon le message à afficher sous le champ. */
+    onUnlock: suspend (String) -> String?,
     onForgot: () -> Unit,
     onSecurity: () -> Unit = {},
     onRestore: () -> Unit = {},
     biometricEnabled: Boolean = false,
-    onBiometric: () -> Unit = {}
+    onBiometric: () -> Unit = {},
+    notice: String? = null
 ) {
     val scope = rememberCoroutineScope()
     var pwd by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) }
-    var error by remember { mutableStateOf(false) }
+    var errorMsg by remember { mutableStateOf<String?>(null) }
 
     // Si la biométrie est active, on propose l'empreinte dès l'ouverture de l'écran.
     LaunchedEffect(Unit) { if (biometricEnabled) onBiometric() }
@@ -244,16 +246,30 @@ fun UnlockScreen(
         Text("ShieldKey", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(4.dp))
         Text(stringResource(R.string.unlock_locked), color = SkMuted, fontSize = 13.sp)
+        // Le déverrouillage rapide a pu être invalidé par le système (empreintes modifiées).
+        // Ce n'est pas un échec mais une protection : on l'explique au lieu d'échouer en silence.
+        if (notice != null) {
+            Spacer(Modifier.height(14.dp))
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color(0x1AFFC857))
+                    .padding(12.dp)
+            ) {
+                Text(notice, color = SkGold, fontSize = 12.sp)
+            }
+        }
         Spacer(Modifier.height(22.dp))
-        SkPasswordField(pwd, { pwd = it; error = false }, stringResource(R.string.field_master_password))
-        if (error) HintText(stringResource(R.string.unlock_wrong), warn = true)
+        SkPasswordField(pwd, { pwd = it; errorMsg = null }, stringResource(R.string.field_master_password))
+        errorMsg?.let { HintText(it, warn = true) }
         Spacer(Modifier.height(20.dp))
         SkPrimaryButton(stringResource(R.string.unlock_button), enabled = pwd.isNotEmpty(), loading = loading) {
             scope.launch {
                 loading = true
-                val ok = onUnlock(pwd)
-                if (!ok) {
-                    error = true
+                val msg = onUnlock(pwd)
+                if (msg != null) {
+                    errorMsg = msg
                     pwd = ""
                 }
                 loading = false
@@ -678,7 +694,9 @@ fun VaultScreen(
                 loading = busy,
                 onConfirm = { pwd ->
                     scope.launch {
-                        val ok = withContext(Dispatchers.IO) { store.unlock(pwd) != null }
+                        val ok = withContext(Dispatchers.IO) {
+                            store.unlock(pwd) is VaultStore.UnlockResult.Success
+                        }
                         if (ok) {
                             backupError = null
                             showBackupPrompt = false

@@ -29,6 +29,7 @@
     <string name="unlock_locked">Votre coffre est verrouillé</string>
     <string name="unlock_button">Déverrouiller</string>
     <string name="unlock_wrong">Mot de passe incorrect</string>
+    <string name="unlock_throttled">Trop d\'essais. Réessayez dans %1$d secondes.</string>
     <string name="unlock_forgot">Mot de passe oublié ? Utiliser le code de secours</string>
     <string name="offline_badge" formatted="false">🔒 100% hors-ligne</string>
 
@@ -113,6 +114,7 @@
     <string name="bio_enable">👆 Activer le déverrouillage rapide</string>
     <string name="bio_enabled">👆 Déverrouillage rapide activé</string>
     <string name="bio_hint_no_lock">Configurez un verrouillage d\'écran (empreinte ou code) dans Android pour l\'utiliser.</string>
+    <string name="bio_invalidated">Le déverrouillage rapide a été désactivé : les empreintes enregistrées sur ce téléphone ont changé. Entrez votre mot de passe maître, puis réactivez-le.</string>
 
     <!-- Page Sécurité -->
     <string name="sec_open">🛡️ Sécurité</string>
@@ -134,8 +136,8 @@
     <string name="sec_recovery_title">🔑 Kit de secours, sans porte dérobée</string>
     <string name="sec_recovery_body">Si vous oubliez votre mot de passe, seul VOTRE code de secours (celui que vous avez noté) peut récupérer le coffre. Aucun e-mail, aucun serveur de récupération — aucune porte dérobée.</string>
     <string name="sec_bio_title">👆 Déverrouillage rapide protégé par le matériel</string>
-    <string name="sec_bio_body">Empreinte ou code de l\'écran : la clé qui déverrouille est gardée dans la puce sécurisée du téléphone et n\'en sort jamais. À savoir : une fois le déverrouillage rapide activé, qui peut déverrouiller votre téléphone peut ouvrir votre coffre — votre code d\'écran doit donc être aussi sérieux que votre mot de passe maître.</string>
-    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
+    <string name="sec_bio_body">Empreinte : la clé qui déverrouille est gardée dans la puce sécurisée du téléphone et n\'en sort jamais. Enregistrer une nouvelle empreinte détruit cette clé — personne ne peut donc enrôler son doigt pour entrer. Sur un téléphone sans capteur, c\'est le code de l\'écran qui sert, et le déverrouillage rapide ne vaut alors que ce code.</string>
+    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox · détruite au nouvel enrôlement</string>
     <string name="sec_clip_title">📋 Presse-papier durci</string>
     <string name="sec_clip_body">Quand vous copiez un secret, il est marqué « sensible » (masqué de l\'historique sur Android 13+) et effacé au verrouillage du coffre. Le minuteur de 45 secondes ne fonctionne que si ShieldKey est ouvert : Android interdit aux apps en arrière-plan de toucher au presse-papier. C\'est le verrouillage qui l\'efface à coup sûr.</string>
     <string name="sec_screen_title">📵 Captures d\'écran bloquées</string>

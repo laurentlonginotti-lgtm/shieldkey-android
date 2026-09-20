@@ -114,6 +114,11 @@ fun ShieldKeyApp() {
     val bioTitle = stringResource(R.string.bio_prompt_title)
     val bioSubUnlock = stringResource(R.string.bio_prompt_sub_unlock)
     val bioSubEnable = stringResource(R.string.bio_prompt_sub_enable)
+    // En mode biométrie seule, le prompt système n'offre pas « Utiliser le code » :
+    // il faut lui fournir un libellé de bouton négatif.
+    val bioNegative = stringResource(R.string.action_cancel)
+    val bioInvalidatedMsg = stringResource(R.string.bio_invalidated)
+    var bioNotice by remember { mutableStateOf<String?>(null) }
 
     // Verrouillage AUTOMATIQUE : dès que l'app quitte l'écran (veille/bouton power, Accueil,
     // multitâche), on efface la DEK et on repasse en écran verrouillé. Suspendu pendant une
@@ -123,6 +128,10 @@ fun ShieldKeyApp() {
         val lifecycle = activity?.lifecycle
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_STOP && !authInProgress && dek != null) {
+                // On relâche la référence sans remplir le tableau de zéros : la DEK est partagée
+                // avec l'écran du coffre, et une sauvegarde encore en vol chiffrerait alors avec
+                // une clé nulle — un coffre illisible. Le gain d'un effacement (se prémunir d'un
+                // vidage mémoire, qui suppose déjà un téléphone rooté) ne vaut pas ce risque.
                 dek = null
                 screen = Screen.Unlock
                 SecureClipboard.clearIfOurs(context)   // ne pas laisser un secret copié en veille
@@ -165,25 +174,47 @@ fun ShieldKeyApp() {
 
             Screen.Unlock -> UnlockScreen(
                 onUnlock = { pwd ->
-                    val k = withContext(Dispatchers.Default) { store.unlock(pwd) }
-                    if (k != null) {
-                        dek = k; SoundFx.success(); screen = Screen.Vault; true
-                    } else {
-                        SoundFx.error(); false
+                    when (val res = withContext(Dispatchers.Default) { store.unlock(pwd) }) {
+                        is VaultStore.UnlockResult.Success -> {
+                            bioNotice = null
+                            dek = res.dek; SoundFx.success(); screen = Screen.Vault
+                            null
+                        }
+                        is VaultStore.UnlockResult.Throttled -> {
+                            SoundFx.error()
+                            ctx.getString(R.string.unlock_throttled, res.secondsLeft)
+                        }
+                        else -> {
+                            SoundFx.error()
+                            ctx.getString(R.string.unlock_wrong)
+                        }
                     }
                 },
                 onForgot = { screen = Screen.Recovery },
                 onSecurity = { showSecurity = true },
                 onRestore = { screen = Screen.Restore },
                 biometricEnabled = bioAvailable && bioEnabled,
+                notice = bioNotice,
                 onBiometric = {
                     val act = activity
                     if (act != null) {
                         authInProgress = true
-                        BiometricGate.unlock(act, bioTitle, bioSubUnlock) { k ->
+                        BiometricGate.unlock(act, bioTitle, bioSubUnlock, bioNegative) { k, invalidated ->
                             authInProgress = false
-                            if (k != null) { dek = k; SoundFx.success(); screen = Screen.Vault }
-                            else SoundFx.error()
+                            when {
+                                k != null -> {
+                                    bioNotice = null
+                                    dek = k; SoundFx.success(); screen = Screen.Vault
+                                }
+                                // Le système a détruit la clé : les empreintes du téléphone ont
+                                // changé. On l'explique et on renvoie au mot de passe maître.
+                                invalidated -> {
+                                    bioEnabled = false
+                                    bioNotice = bioInvalidatedMsg
+                                    SoundFx.error()
+                                }
+                                else -> SoundFx.error()
+                            }
                         }
                     }
                 }
@@ -218,8 +249,10 @@ fun ShieldKeyApp() {
                     if (restored) {
                         BiometricGate.disable(context)   // le déverrouillage rapide de l'ancien tél ne vaut plus
                         bioEnabled = false
-                        val k = withContext(Dispatchers.Default) { store.unlock(pwd) }
-                        if (k != null) { dek = k; SoundFx.success(); screen = Screen.Vault; ok = true }
+                        val res = withContext(Dispatchers.Default) { store.unlock(pwd) }
+                        if (res is VaultStore.UnlockResult.Success) {
+                            dek = res.dek; SoundFx.success(); screen = Screen.Vault; ok = true
+                        }
                     }
                     ok
                 },
@@ -247,9 +280,11 @@ fun ShieldKeyApp() {
                         if (turnOn) {
                             if (act != null) {
                                 authInProgress = true
-                                BiometricGate.enable(act, currentDek, bioTitle, bioSubEnable) { ok ->
+                                BiometricGate.enable(act, currentDek, bioTitle, bioSubEnable, bioNegative) { ok ->
                                     authInProgress = false
-                                    if (ok) { bioEnabled = true; SoundFx.success() } else SoundFx.error()
+                                    if (ok) {
+                                        bioEnabled = true; bioNotice = null; SoundFx.success()
+                                    } else SoundFx.error()
                                 }
                             }
                         } else {

@@ -29,6 +29,7 @@
     <string name="unlock_locked">La tua cassaforte è bloccata</string>
     <string name="unlock_button">Sblocca</string>
     <string name="unlock_wrong">Password errata</string>
+    <string name="unlock_throttled">Troppi tentativi. Riprova tra %1$d secondi.</string>
     <string name="unlock_forgot">Password dimenticata? Usa il codice di recupero</string>
     <string name="offline_badge" formatted="false">🔒 100% offline</string>
 
@@ -113,6 +114,7 @@
     <string name="bio_enable">👆 Attiva lo sblocco rapido</string>
     <string name="bio_enabled">👆 Sblocco rapido attivo</string>
     <string name="bio_hint_no_lock">Imposta un blocco schermo (impronta o PIN) in Android per usare questa funzione.</string>
+    <string name="bio_invalidated">Lo sblocco rapido è stato disattivato: le impronte registrate su questo telefono sono cambiate. Inserisci la password principale, poi riattivalo.</string>
 
     <!-- Security page -->
     <string name="sec_open">🛡️ Sicurezza</string>
@@ -134,8 +136,8 @@
     <string name="sec_recovery_title">🔑 Kit di recupero, nessuna backdoor</string>
     <string name="sec_recovery_body">Se dimentichi la password principale, solo il TUO codice di recupero (quello che hai annotato) può ripristinare la cassaforte. Nessuna e-mail, nessun server di recupero: nessuna backdoor.</string>
     <string name="sec_bio_title">👆 Sblocco rapido protetto dall\'hardware</string>
-    <string name="sec_bio_body">Impronta o codice dello schermo: la chiave che sblocca è custodita nel chip sicuro del telefono e non ne esce mai. Da sapere: una volta attivato lo sblocco rapido, chi può sbloccare il tuo telefono può aprire la tua cassaforte — il codice dello schermo deve quindi essere serio quanto la password principale.</string>
-    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
+    <string name="sec_bio_body">Impronta: la chiave che sblocca è custodita nel chip sicuro del telefono e non ne esce mai. Registrare una nuova impronta distrugge questa chiave — nessuno può quindi inserire il proprio dito per entrare. Su un telefono senza sensore si usa il codice dello schermo, e lo sblocco rapido vale allora quanto quel codice.</string>
+    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox · distrutta alla nuova registrazione</string>
     <string name="sec_clip_title">📋 Appunti protetti</string>
     <string name="sec_clip_body">Quando copi un segreto, viene contrassegnato come «sensibile» (nascosto dalla cronologia degli appunti su Android 13+) e cancellato al blocco della cassaforte. Il timer di 45 secondi funziona solo finché ShieldKey è aperta: Android vieta alle app in background di toccare gli appunti. È il blocco a cancellarlo con certezza.</string>
     <string name="sec_screen_title">📵 Screenshot bloccati</string>

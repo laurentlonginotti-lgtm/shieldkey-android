@@ -29,6 +29,7 @@
     <string name="unlock_locked">Je kluis is vergrendeld</string>
     <string name="unlock_button">Ontgrendelen</string>
     <string name="unlock_wrong">Onjuist wachtwoord</string>
+    <string name="unlock_throttled">Te veel pogingen. Probeer het over %1$d seconden opnieuw.</string>
     <string name="unlock_forgot">Wachtwoord vergeten? Gebruik de herstelcode</string>
     <string name="offline_badge" formatted="false">🔒 100% offline</string>
 
@@ -113,6 +114,7 @@
     <string name="bio_enable">👆 Snel ontgrendelen inschakelen</string>
     <string name="bio_enabled">👆 Snel ontgrendelen ingeschakeld</string>
     <string name="bio_hint_no_lock">Stel een schermvergrendeling (vingerafdruk of pincode) in op Android om dit te gebruiken.</string>
+    <string name="bio_invalidated">Snel ontgrendelen is uitgeschakeld: de vingerafdrukken op deze telefoon zijn gewijzigd. Voer je hoofdwachtwoord in en schakel het opnieuw in.</string>
 
     <!-- Security page -->
     <string name="sec_open">🛡️ Beveiliging</string>
@@ -134,8 +136,8 @@
     <string name="sec_recovery_title">🔑 Herstelkit, geen achterdeur</string>
     <string name="sec_recovery_body">Als je je hoofdwachtwoord vergeet, kan alleen JOUW herstelcode (die je hebt opgeschreven) de kluis herstellen. Geen e-mail, geen herstelserver: geen achterdeur.</string>
     <string name="sec_bio_title">👆 Snel ontgrendelen met hardwarebeveiliging</string>
-    <string name="sec_bio_body">Vingerafdruk of schermcode: de sleutel die ontgrendelt zit in de beveiligde chip van je telefoon en verlaat die nooit. Let op: zodra snel ontgrendelen aanstaat, kan iedereen die je telefoon kan ontgrendelen ook je kluis openen — je schermvergrendeling moet dus net zo serieus zijn als je hoofdwachtwoord.</string>
-    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
+    <string name="sec_bio_body">Vingerafdruk: de sleutel die ontgrendelt zit in de beveiligde chip van je telefoon en verlaat die nooit. Een nieuwe vingerafdruk registreren vernietigt die sleutel — niemand kan dus zijn eigen vinger toevoegen om binnen te komen. Op een telefoon zonder sensor wordt de schermcode gebruikt, en snel ontgrendelen is dan niet sterker dan die code.</string>
+    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox · vernietigd bij nieuwe registratie</string>
     <string name="sec_clip_title">📋 Beveiligd klembord</string>
     <string name="sec_clip_body">Wanneer je een geheim kopieert, wordt het als ‘gevoelig’ gemarkeerd (verborgen uit de klembordgeschiedenis op Android 13+) en gewist bij het vergrendelen van de kluis. De timer van 45 seconden werkt alleen zolang ShieldKey open is: Android verbiedt apps op de achtergrond het klembord aan te raken. Het vergrendelen wist het met zekerheid.</string>
     <string name="sec_screen_title">📵 Schermafbeeldingen geblokkeerd</string>

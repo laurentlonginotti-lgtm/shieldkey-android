@@ -29,6 +29,7 @@
     <string name="unlock_locked">Ihr Tresor ist gesperrt</string>
     <string name="unlock_button">Entsperren</string>
     <string name="unlock_wrong">Falsches Passwort</string>
+    <string name="unlock_throttled">Zu viele Versuche. Bitte in %1$d Sekunden erneut versuchen.</string>
     <string name="unlock_forgot">Passwort vergessen? Wiederherstellungscode verwenden</string>
     <string name="offline_badge" formatted="false">🔒 100% offline</string>
 
@@ -113,6 +114,7 @@
     <string name="bio_enable">👆 Schnellentsperrung aktivieren</string>
     <string name="bio_enabled">👆 Schnellentsperrung aktiv</string>
     <string name="bio_hint_no_lock">Richten Sie in Android eine Displaysperre (Fingerabdruck oder PIN) ein, um dies zu nutzen.</string>
+    <string name="bio_invalidated">Die Schnellentsperrung wurde deaktiviert: Die auf diesem Telefon registrierten Fingerabdrücke haben sich geändert. Geben Sie Ihr Master-Passwort ein und aktivieren Sie sie erneut.</string>
 
     <!-- Security page -->
     <string name="sec_open">🛡️ Sicherheit</string>
@@ -134,8 +136,8 @@
     <string name="sec_recovery_title">🔑 Wiederherstellungs-Kit, keine Hintertür</string>
     <string name="sec_recovery_body">Wenn Sie Ihr Master-Passwort vergessen, kann nur IHR Wiederherstellungscode (den Sie notiert haben) den Tresor wiederherstellen. Keine E-Mail, kein Wiederherstellungsserver — keine Hintertür.</string>
     <string name="sec_bio_title">👆 Hardwaregestützte Schnellentsperrung</string>
-    <string name="sec_bio_body">Fingerabdruck oder Bildschirmcode: Der entsperrende Schlüssel liegt im Sicherheitschip Ihres Telefons und verlässt ihn nie. Wichtig: Sobald die Schnellentsperrung aktiv ist, kann jeder, der Ihr Telefon entsperren kann, auch Ihren Tresor öffnen — Ihre Bildschirmsperre muss also so ernst genommen werden wie Ihr Master-Passwort.</string>
-    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
+    <string name="sec_bio_body">Fingerabdruck: Der entsperrende Schlüssel liegt im Sicherheitschip Ihres Telefons und verlässt ihn nie. Das Hinzufügen eines neuen Fingerabdrucks zerstört diesen Schlüssel — niemand kann also den eigenen Finger registrieren, um hineinzukommen. Auf einem Telefon ohne Sensor dient der Bildschirmcode, und die Schnellentsperrung ist dann nur so stark wie dieser Code.</string>
+    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox · bei neuer Registrierung zerstört</string>
     <string name="sec_clip_title">📋 Gehärtete Zwischenablage</string>
     <string name="sec_clip_body">Wenn Sie ein Geheimnis kopieren, wird es als „vertraulich“ markiert (ab Android 13 aus dem Verlauf der Zwischenablage ausgeblendet) und beim Sperren des Tresors gelöscht. Der 45-Sekunden-Timer wirkt nur, solange ShieldKey geöffnet ist: Android verbietet Apps im Hintergrund den Zugriff auf die Zwischenablage. Zuverlässig gelöscht wird beim Sperren.</string>
     <string name="sec_screen_title">📵 Screenshots blockiert</string>

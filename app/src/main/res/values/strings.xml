@@ -29,6 +29,7 @@
     <string name="unlock_locked">Your vault is locked</string>
     <string name="unlock_button">Unlock</string>
     <string name="unlock_wrong">Wrong password</string>
+    <string name="unlock_throttled">Too many attempts. Try again in %1$d seconds.</string>
     <string name="unlock_forgot">Forgot your password? Use the recovery code</string>
     <string name="offline_badge" formatted="false">🔒 100% offline</string>
 
@@ -113,6 +114,7 @@
     <string name="bio_enable">👆 Enable quick unlock</string>
     <string name="bio_enabled">👆 Quick unlock enabled</string>
     <string name="bio_hint_no_lock">Set up a screen lock (fingerprint or PIN) in Android to use this.</string>
+    <string name="bio_invalidated">Quick unlock was turned off: the fingerprints registered on this phone have changed. Enter your master password, then turn it back on.</string>
 
     <!-- Security page -->
     <string name="sec_open">🛡️ Security</string>
@@ -134,8 +136,8 @@
     <string name="sec_recovery_title">🔑 Recovery kit, no backdoor</string>
     <string name="sec_recovery_body">If you forget your master password, only YOUR recovery code (the one you wrote down) can restore the vault. No email, no recovery server — no backdoor.</string>
     <string name="sec_bio_title">👆 Hardware-backed quick unlock</string>
-    <string name="sec_bio_body">Fingerprint or screen code: the unlocking key lives in your phone\'s secure chip and never leaves it. Be aware: once quick unlock is on, anyone who can unlock your phone can open your vault — so your screen lock must be as serious as your master password.</string>
-    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
+    <string name="sec_bio_body">Fingerprint: the unlocking key lives in your phone\'s secure chip and never leaves it. Registering a new fingerprint destroys that key — so nobody can enrol their own finger to get in. On a phone with no sensor, the screen code is used instead, and quick unlock is then only as strong as that code.</string>
+    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox · destroyed on new enrolment</string>
     <string name="sec_clip_title">📋 Hardened clipboard</string>
     <string name="sec_clip_body">When you copy a secret, it is flagged \"sensitive\" (hidden from clipboard history on Android 13+) and cleared when you lock the vault. The 45-second timer only works while ShieldKey is open: Android forbids background apps from touching the clipboard. Locking the vault is what clears it for certain.</string>
     <string name="sec_screen_title">📵 Screenshots blocked</string>

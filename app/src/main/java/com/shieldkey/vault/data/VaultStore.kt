@@ -81,20 +81,83 @@ class VaultStore(context: Context) {
             put("vault", b64(SkCrypto.encrypt(emptyVault.toByteArray(Charsets.UTF_8), dek)))
         }
         save(root)
+        // Les clés dérivées ont fini leur office : seule la DEK doit survivre en mémoire.
+        masterKey.fill(0)
+        recoveryKey.fill(0)
         return CreateResult(dek, recoveryCode)
     }
 
-    /** Déverrouille avec le mot de passe maître. Renvoie la DEK, ou null si le mot de passe est faux. */
-    fun unlock(masterPassword: String): ByteArray? {
+    /** Issue d'une tentative de déverrouillage. */
+    sealed class UnlockResult {
+        class Success(val dek: ByteArray) : UnlockResult()
+        object WrongPassword : UnlockResult()
+        /** Trop d'essais : la saisie est refusée pendant [secondsLeft] secondes. */
+        class Throttled(val secondsLeft: Long) : UnlockResult()
+    }
+
+    /**
+     * Freinage des essais répétés.
+     *
+     * Argon2id impose déjà ~1 s par tentative, ce qui décourage un curieux mais pas quelqu'un
+     * qui a le téléphone en main et du temps devant lui — un proche, typiquement, qui connaît
+     * les habitudes et peut tester les candidats les plus probables. Au-delà de [FREE_TRIES]
+     * échecs, on impose une attente qui double à chaque fois, plafonnée à [MAX_DELAY_S].
+     *
+     * Ce que cela ne fait PAS, et il faut être clair : un attaquant qui a extrait le fichier
+     * (téléphone rooté, ou sauvegarde `.skb` récupérée) attaque hors ligne et n'est pas concerné.
+     * Là, seule la force du mot de passe compte. Ce freinage protège l'accès PAR l'application.
+     *
+     * On ne détruit jamais le coffre après N échecs : une fausse manœuvre ou un enfant qui
+     * tapote ne doit pas provoquer une perte de données irréversible.
+     */
+    private companion object {
+        const val FREE_TRIES = 5
+        const val BASE_DELAY_S = 15L
+        const val MAX_DELAY_S = 900L    // 15 minutes
+    }
+
+    private fun penaltySeconds(fails: Int): Long {
+        if (fails < FREE_TRIES) return 0
+        val steps = (fails - FREE_TRIES).coerceAtMost(8)
+        return (BASE_DELAY_S shl steps).coerceAtMost(MAX_DELAY_S)
+    }
+
+    /** Déverrouille avec le mot de passe maître. */
+    fun unlock(masterPassword: String): UnlockResult {
         val root = JSONObject(file.readText())
+
+        val lockedUntil = root.optLong("lockedUntil", 0L)
+        val now = System.currentTimeMillis()
+        if (lockedUntil > now) {
+            return UnlockResult.Throttled((lockedUntil - now + 999) / 1000)
+        }
+
         val masterKey = SkCrypto.deriveKey(
             masterPassword.toByteArray(Charsets.UTF_8),
             unb64(root.getString("masterSalt"))
         )
-        return try {
+        val dek = try {
             SkCrypto.decrypt(unb64(root.getString("masterWrap")), masterKey)
         } catch (e: Exception) {
             null
+        } finally {
+            // La clé dérivée ne sert qu'ici : on ne la laisse pas traîner dans le tas.
+            masterKey.fill(0)
+        }
+
+        return if (dek != null) {
+            if (root.optInt("failCount", 0) != 0 || lockedUntil != 0L) {
+                root.put("failCount", 0).put("lockedUntil", 0L)
+                save(root)
+            }
+            UnlockResult.Success(dek)
+        } else {
+            val fails = root.optInt("failCount", 0) + 1
+            val penalty = penaltySeconds(fails)
+            root.put("failCount", fails)
+                .put("lockedUntil", if (penalty > 0) now + penalty * 1000 else 0L)
+            save(root)
+            if (penalty > 0) UnlockResult.Throttled(penalty) else UnlockResult.WrongPassword
         }
     }
 
@@ -109,6 +172,8 @@ class VaultStore(context: Context) {
             SkCrypto.decrypt(unb64(root.getString("recoveryWrap")), recoveryKey)
         } catch (e: Exception) {
             null
+        } finally {
+            recoveryKey.fill(0)
         }
     }
 
@@ -140,7 +205,12 @@ class VaultStore(context: Context) {
         root.put("recoverySalt", b64(recoverySalt))
         root.put("recoveryWrap", b64(SkCrypto.encrypt(dek, recoveryKey)))
 
+        // Un mot de passe redéfini remet aussi le compteur d'essais à zéro.
+        root.put("failCount", 0).put("lockedUntil", 0L)
+
         save(root)
+        masterKey.fill(0)
+        recoveryKey.fill(0)
         return recoveryCode
     }
 

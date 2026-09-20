@@ -29,6 +29,7 @@
     <string name="unlock_locked">Twój sejf jest zablokowany</string>
     <string name="unlock_button">Odblokuj</string>
     <string name="unlock_wrong">Błędne hasło</string>
+    <string name="unlock_throttled">Zbyt wiele prób. Spróbuj ponownie za %1$d sekund.</string>
     <string name="unlock_forgot">Nie pamiętasz hasła? Użyj kodu odzyskiwania</string>
     <string name="offline_badge" formatted="false">🔒 100% offline</string>
 
@@ -113,6 +114,7 @@
     <string name="bio_enable">👆 Włącz szybkie odblokowanie</string>
     <string name="bio_enabled">👆 Szybkie odblokowanie włączone</string>
     <string name="bio_hint_no_lock">Aby z tego korzystać, ustaw blokadę ekranu (odcisk palca lub PIN) w Androidzie.</string>
+    <string name="bio_invalidated">Szybkie odblokowanie zostało wyłączone: odciski palców zapisane w tym telefonie uległy zmianie. Wpisz hasło główne, a następnie włącz je ponownie.</string>
 
     <!-- Security page -->
     <string name="sec_open">🛡️ Bezpieczeństwo</string>
@@ -134,8 +136,8 @@
     <string name="sec_recovery_title">🔑 Zestaw odzyskiwania, bez tylnych drzwi</string>
     <string name="sec_recovery_body">Jeśli zapomnisz hasła głównego, tylko TWÓJ kod odzyskiwania (ten, który zapisałeś) może przywrócić sejf. Bez e-maila, bez serwera odzyskiwania — bez tylnych drzwi.</string>
     <string name="sec_bio_title">👆 Szybkie odblokowanie chronione sprzętowo</string>
-    <string name="sec_bio_body">Odcisk palca lub kod ekranu: klucz odblokowujący pozostaje w bezpiecznym układzie telefonu i nigdy go nie opuszcza. Pamiętaj: po włączeniu szybkiego odblokowania każdy, kto potrafi odblokować twój telefon, otworzy też sejf — blokada ekranu musi więc być równie poważna jak hasło główne.</string>
-    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
+    <string name="sec_bio_body">Odcisk palca: klucz odblokowujący pozostaje w bezpiecznym układzie telefonu i nigdy go nie opuszcza. Dodanie nowego odcisku niszczy ten klucz — nikt nie zarejestruje więc własnego palca, by wejść. W telefonie bez czytnika służy kod ekranu, a szybkie odblokowanie jest wtedy warte tyle, co ten kod.</string>
+    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox · niszczony przy nowej rejestracji</string>
     <string name="sec_clip_title">📋 Wzmocniony schowek</string>
     <string name="sec_clip_body">Gdy kopiujesz sekret, zostaje oznaczony jako „poufny“ (ukryty w historii schowka od Androida 13) i czyszczony przy blokowaniu sejfu. Licznik 45 sekund działa tylko wtedy, gdy ShieldKey jest otwarty: Android zabrania aplikacjom w tle dotykać schowka. To zablokowanie sejfu czyści go na pewno.</string>
     <string name="sec_screen_title">📵 Zrzuty ekranu zablokowane</string>

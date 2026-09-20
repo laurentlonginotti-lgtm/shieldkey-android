@@ -29,6 +29,7 @@
     <string name="unlock_locked">Seu cofre está bloqueado</string>
     <string name="unlock_button">Desbloquear</string>
     <string name="unlock_wrong">Senha incorreta</string>
+    <string name="unlock_throttled">Tentativas demais. Tente de novo em %1$d segundos.</string>
     <string name="unlock_forgot">Esqueceu a senha? Use o código de recuperação</string>
     <string name="offline_badge" formatted="false">🔒 100% offline</string>
 
@@ -113,6 +114,7 @@
     <string name="bio_enable">👆 Ativar desbloqueio rápido</string>
     <string name="bio_enabled">👆 Desbloqueio rápido ativado</string>
     <string name="bio_hint_no_lock">Configure um bloqueio de tela (digital ou PIN) no Android para usar este recurso.</string>
+    <string name="bio_invalidated">O desbloqueio rápido foi desativado: as digitais cadastradas neste telefone mudaram. Digite sua senha mestra e ative-o novamente.</string>
 
     <!-- Security page -->
     <string name="sec_open">🛡️ Segurança</string>
@@ -134,8 +136,8 @@
     <string name="sec_recovery_title">🔑 Kit de recuperação, sem porta dos fundos</string>
     <string name="sec_recovery_body">Se você esquecer a senha mestra, somente o SEU código de recuperação (aquele que você anotou) pode restaurar o cofre. Sem e-mail, sem servidor de recuperação: sem porta dos fundos.</string>
     <string name="sec_bio_title">👆 Desbloqueio rápido protegido por hardware</string>
-    <string name="sec_bio_body">Digital ou código da tela: a chave que desbloqueia fica no chip seguro do telefone e nunca sai dele. Atenção: uma vez ativado o desbloqueio rápido, quem conseguir desbloquear seu telefone consegue abrir seu cofre — o código da tela precisa ser tão sério quanto a senha mestra.</string>
-    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox</string>
+    <string name="sec_bio_body">Digital: a chave que desbloqueia fica no chip seguro do telefone e nunca sai dele. Cadastrar uma nova digital destrói essa chave — ninguém consegue, portanto, cadastrar o próprio dedo para entrar. Em um telefone sem sensor usa-se o código da tela, e o desbloqueio rápido vale então o que valer esse código.</string>
+    <string name="sec_bio_tech">Android Keystore / TEE / StrongBox · destruída ao cadastrar digital</string>
     <string name="sec_clip_title">📋 Área de transferência reforçada</string>
     <string name="sec_clip_body">Quando você copia um segredo, ele é marcado como «sensível» (oculto do histórico da área de transferência no Android 13+) e apagado ao bloquear o cofre. O temporizador de 45 segundos só funciona enquanto o ShieldKey está aberto: o Android proíbe apps em segundo plano de mexer na área de transferência. É o bloqueio que apaga com certeza.</string>
     <string name="sec_screen_title">📵 Capturas de tela bloqueadas</string>
