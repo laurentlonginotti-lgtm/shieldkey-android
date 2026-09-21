@@ -21,6 +21,7 @@ package com.shieldkey.vault
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.fragment.app.FragmentActivity
@@ -60,6 +61,13 @@ class MainActivity : FragmentActivity() {
                 ShieldKeyApp()
             }
         }
+        // Autofill : depuis Compose 1.8, les champs de texte participent d'office au cadre
+        // d'autofill d'Android. Un service d'autofill (Google ou tiers) verrait la structure
+        // des champs, et le système proposerait « Enregistrer ce mot de passe dans Google ? »
+        // après la saisie du mot de passe maître — l'heuristique reconnaît un champ mot de
+        // passe même sans indice. Dans une appli « 0 Internet », ce serait le pire des
+        // paradoxes. On exclut toute la fenêtre : aucun service d'autofill ne voit ShieldKey.
+        window.decorView.importantForAutofill = View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS
     }
 
     override fun onPause() {

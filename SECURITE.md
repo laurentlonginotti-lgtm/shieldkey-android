@@ -62,7 +62,7 @@ déverrouillage rapide est un confort protégé par le matériel.
 
 ## Presse-papier durci
 
-Quand tu copies un champ sensible (mot de passe, CVV, IBAN, seed, clé privée), ShieldKey :
+Quand tu copies un champ sensible (mot de passe, CVV, IBAN, seed, clé privée — ou le code de secours), ShieldKey :
 - marque la copie `EXTRA_IS_SENSITIVE` (masquée dans l'aperçu/historique/suggestions sur Android 13+),
 - l'**efface automatiquement après 45 secondes**,
 - l'**efface au verrouillage** du coffre.
@@ -82,6 +82,11 @@ Quand tu copies un champ sensible (mot de passe, CVV, IBAN, seed, clé privée),
 - **Rappel de sauvegarde** : jamais sauvegardé, sauvegarde de plus de 30 jours avec des modifications,
   ou mot de passe changé depuis — le coffre le signale. Contre la perte, le vol et les rançongiciels,
   c'est la sauvegarde `.skb` hors du téléphone qui protège, rien d'autre.
+- **Invisible pour l'autofill** : aucun service d'autofill (Google ou tiers) ne voit les champs de
+  ShieldKey, et Android ne proposera jamais « Enregistrer ce mot de passe dans Google ? » après la
+  saisie du mot de passe maître.
+- **Affinité de tâche vide** : sur Android 8 à 10, une appli malveillante ne peut pas se glisser dans la
+  tâche de ShieldKey pour y afficher un faux écran de déverrouillage (StrandHogg).
 - `allowBackup=false` : le système Android ne sauvegarde pas automatiquement le coffre.
 - Les **documents** sont chiffrés séparément (un fichier `.blob` par document, AES-256-GCM avec la DEK).
 - Les **sauvegardes `.skb`** sont rechiffrées (Argon2id + AES-256-GCM) avec ton mot de passe maître.

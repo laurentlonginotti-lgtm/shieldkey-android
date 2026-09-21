@@ -50,9 +50,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -60,6 +58,7 @@ import androidx.compose.ui.unit.sp
 import com.shieldkey.vault.R
 import com.shieldkey.vault.sound.SoundFx
 import com.shieldkey.vault.util.PasswordStrength
+import com.shieldkey.vault.util.SecureClipboard
 import com.shieldkey.vault.ui.theme.SkEmerald
 import com.shieldkey.vault.ui.theme.SkEmerald2
 import com.shieldkey.vault.ui.theme.SkGold
@@ -152,7 +151,7 @@ fun OnboardingScreen(
 // ---------------------------------------------------------------------------
 @Composable
 fun RecoveryKitScreen(code: String, onDone: () -> Unit, renewed: Boolean = false) {
-    val clipboard = LocalClipboardManager.current
+    val context = LocalContext.current
     var saved by remember { mutableStateOf(false) }
 
     CenteredColumn {
@@ -189,7 +188,11 @@ fun RecoveryKitScreen(code: String, onDone: () -> Unit, renewed: Boolean = false
             )
         }
         Spacer(Modifier.height(10.dp))
-        TextButton(onClick = { clipboard.setText(AnnotatedString(code)) }) {
+        // Le code de secours est une clé complète du coffre : même traitement que les champs
+        // sensibles (drapeau « sensible » pour le clavier et les presse-papiers cloud, effacement
+        // automatique). Le presse-papier ordinaire l'aurait laissé dans l'historique de Gboard
+        // et, sur certains téléphones, synchronisé vers un PC.
+        TextButton(onClick = { SecureClipboard.copySensitive(context, code) }) {
             Text(stringResource(R.string.kit_copy), color = SkEmerald2)
         }
         Spacer(Modifier.height(6.dp))

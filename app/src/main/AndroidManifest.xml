@@ -34,9 +34,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ShieldKey">
 
+        <!-- taskAffinity="" : sur Android 8 à 10, une appli malveillante pouvait déclarer
+             l'affinité de tâche de ShieldKey et se glisser DANS sa tâche — l'utilisateur ouvre
+             ShieldKey et voit un faux écran de déverrouillage dessiné par l'autre appli
+             (StrandHogg, corrigé par Android 11). Une affinité vide ferme cette porte. -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:taskAffinity=""
             android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
