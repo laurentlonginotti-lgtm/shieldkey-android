@@ -26,6 +26,7 @@ import com.shieldkey.vault.util.AtomicWrite
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
+import java.security.MessageDigest
 
 /**
  * Stockage chiffré du coffre, avec chiffrement à enveloppe ("envelope encryption") :
@@ -58,6 +59,32 @@ class VaultStore(context: Context) {
 
     private val requiredFields = listOf("masterSalt", "masterWrap", "recoverySalt", "recoveryWrap", "vault")
 
+    /** Tailles fixes : un sel fait SALT_LEN octets, un emballage de DEK fait iv(12) || 32 || tag(16). */
+    private val expectedLen = mapOf(
+        "masterSalt" to SkCrypto.SALT_LEN,
+        "recoverySalt" to SkCrypto.SALT_LEN,
+        "masterWrap" to 12 + SkCrypto.KEY_LEN + 16,
+        "recoveryWrap" to 12 + SkCrypto.KEY_LEN + 16
+    )
+
+    /**
+     * Empreinte SHA-256 des cinq champs chiffrés, posée à chaque écriture, vérifiée à chaque lecture.
+     *
+     * Ce n'est PAS une défense contre un attaquant — il la recalculerait ; l'intégrité face à lui,
+     * c'est GCM qui la garantit, sous la clé. C'est un détecteur de DÉGÂTS : support défaillant,
+     * copie tronquée, éditeur de texte trop zélé. Sans elle, un sel abîmé ne lève rien — le décodeur
+     * Base64 d'Android saute les caractères invalides en silence — et dérive simplement une autre
+     * clé : l'utilisateur taperait dix fois le bon mot de passe en lisant « incorrect ».
+     */
+    private fun checksum(root: JSONObject): String {
+        val md = MessageDigest.getInstance("SHA-256")
+        for (k in requiredFields) {
+            md.update(root.optString(k, "").toByteArray(Charsets.UTF_8))
+            md.update(0)   // séparateur : "ab"+"c" ≠ "a"+"bc"
+        }
+        return md.digest().joinToString("") { "%02x".format(it) }
+    }
+
     /** Lit le fichier et vérifie sa structure. Lève [CorruptedVaultException] si elle est altérée. */
     private fun readRoot(): JSONObject {
         val root = try {
@@ -66,6 +93,12 @@ class VaultStore(context: Context) {
             throw CorruptedVaultException()
         }
         if (!requiredFields.all { root.has(it) }) throw CorruptedVaultException()
+        // Un fichier d'avant l'empreinte n'en a pas : il en recevra une à sa prochaine écriture.
+        val stored = root.optString("checksum", "")
+        if (stored.isNotEmpty() && stored != checksum(root)) throw CorruptedVaultException()
+        for ((k, len) in expectedLen) {
+            if (bytes(root, k).size != len) throw CorruptedVaultException()
+        }
         return root
     }
 
@@ -96,9 +129,11 @@ class VaultStore(context: Context) {
     private fun b64(b: ByteArray) = Base64.encodeToString(b, Base64.NO_WRAP)
     private fun unb64(s: String) = Base64.decode(s, Base64.NO_WRAP)
 
-    /** Seul point d'écriture du coffre : atomique + durable. */
-    private fun save(root: JSONObject) =
+    /** Seul point d'écriture du coffre : atomique + durable, empreinte d'intégrité comprise. */
+    private fun save(root: JSONObject) {
+        root.put("checksum", checksum(root))
         AtomicWrite.write(file, root.toString().toByteArray(Charsets.UTF_8))
+    }
 
     data class CreateResult(val dek: ByteArray, val recoveryCode: String)
 

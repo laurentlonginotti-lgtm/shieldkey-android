@@ -246,20 +246,79 @@ class VaultStoreTest {
         assertTrue(store.unlock(PWD) is UnlockResult.Corrupted)
     }
 
-    @Test
-    fun unContenuAltereAvecLeBonMotDePasseEstUneCorruptionPasUneErreurDeSaisie() {
-        store.create(PWD)
-        val f = TestFiles.vaultFile()
-        val root = JSONObject(f.readText())
+    /** Altère un octet au milieu du champ « vault » (base64 valide, contenu faux). */
+    private fun tamperVault(root: JSONObject) {
         val bytes = Base64.decode(root.getString("vault"), Base64.NO_WRAP)
         bytes[bytes.size / 2] = (bytes[bytes.size / 2].toInt() xor 0x01).toByte()
         root.put("vault", Base64.encodeToString(bytes, Base64.NO_WRAP))
+    }
+
+    @Test
+    fun unContenuAltereEstDetecteParLEmpreinteSansMotDePasse() {
+        store.create(PWD)
+        val f = TestFiles.vaultFile()
+        val root = JSONObject(f.readText())
+        tamperVault(root)
         f.writeText(root.toString())
 
-        // Structure intacte : indétectable sans clé…
+        // L'empreinte parle avant toute dérivation : bon ou mauvais mot de passe, c'est le fichier.
+        assertTrue(store.isCorrupted())
+        assertTrue(store.unlock(PWD) is UnlockResult.Corrupted)
+        assertTrue(store.unlock(WRONG) is UnlockResult.Corrupted)
+    }
+
+    @Test
+    fun sansEmpreinteLeBonMotDePasseReveleLaCorruptionEtLeMauvaisResteMauvais() {
+        // Fichier d'une version antérieure (pas d'empreinte) dont le contenu est abîmé : GCM sous
+        // la DEK est alors le seul juge. Le mauvais mot de passe, lui, reste « mauvais ».
+        store.create(PWD)
+        val f = TestFiles.vaultFile()
+        val root = JSONObject(f.readText())
+        tamperVault(root)
+        root.remove("checksum")
+        f.writeText(root.toString())
+
         assertFalse(store.isCorrupted())
-        // …mais le bon mot de passe révèle la corruption, et le mauvais reste « mauvais ».
         assertTrue(store.unlock(PWD) is UnlockResult.Corrupted)
         assertTrue(store.unlock(WRONG) is UnlockResult.WrongPassword)
+    }
+
+    @Test
+    fun unFichierSansEmpreinteResteLisibleEtEnRecoitUne() {
+        // Migration silencieuse : un coffre d'avant s'ouvre, et sa prochaine écriture le dote
+        // de l'empreinte — sans rien demander à l'utilisateur.
+        store.create(PWD)
+        val f = TestFiles.vaultFile()
+        val root = JSONObject(f.readText())
+        root.remove("checksum")
+        f.writeText(root.toString())
+
+        assertFalse(store.isCorrupted())
+        val dek = dekOf(store.unlock(PWD))
+        store.writeVault(dek, store.readVault(dek))
+        assertTrue(JSONObject(f.readText()).has("checksum"))
+        assertFalse(store.isCorrupted())
+    }
+
+    @Test
+    fun unSelDeMauvaiseTailleEstUneCorruptionMemeSansEmpreinte() {
+        store.create(PWD)
+        val f = TestFiles.vaultFile()
+        val root = JSONObject(f.readText())
+        root.put("masterSalt", Base64.encodeToString(ByteArray(8), Base64.NO_WRAP))
+        root.remove("checksum")
+        f.writeText(root.toString())
+        assertTrue(store.isCorrupted())
+        assertTrue(store.unlock(PWD) is UnlockResult.Corrupted)
+    }
+
+    @Test
+    fun lEmpreinteSuitChaqueEcriture() {
+        val created = store.create(PWD)
+        val before = JSONObject(TestFiles.vaultFile().readText()).getString("checksum")
+        store.writeVault(created.dek, JSONObject().put("version", 1).put("items", JSONArray()).toString())
+        val after = JSONObject(TestFiles.vaultFile().readText()).getString("checksum")
+        assertNotEquals(before, after)
+        assertFalse(store.isCorrupted())
     }
 }
