@@ -57,33 +57,44 @@ class VaultStore(context: Context) {
 
     data class CreateResult(val dek: ByteArray, val recoveryCode: String)
 
+    /**
+     * Emballe la DEK avec une clé dérivée du mot de passe maître, sur un sel neuf.
+     * Seul point où le mot de passe maître touche le fichier : création, récupération, changement.
+     */
+    private fun wrapMaster(root: JSONObject, dek: ByteArray, masterPassword: String) {
+        val salt = SkCrypto.randomBytes(SkCrypto.SALT_LEN)
+        val key = SkCrypto.deriveKey(masterPassword.toByteArray(Charsets.UTF_8), salt)
+        root.put("masterSalt", b64(salt))
+        root.put("masterWrap", b64(SkCrypto.encrypt(dek, key)))
+        // La clé dérivée a fini son office : seule la DEK doit survivre en mémoire.
+        key.fill(0)
+    }
+
+    /** Emballe la DEK avec un code de secours NEUF (sel neuf) et renvoie ce code. */
+    private fun wrapRecovery(root: JSONObject, dek: ByteArray): String {
+        val code = RecoveryCode.generate()
+        val salt = SkCrypto.randomBytes(SkCrypto.SALT_LEN)
+        val key = SkCrypto.deriveKey(RecoveryCode.normalize(code), salt)
+        root.put("recoverySalt", b64(salt))
+        root.put("recoveryWrap", b64(SkCrypto.encrypt(dek, key)))
+        key.fill(0)
+        return code
+    }
+
     /** Crée un coffre vide. Renvoie la DEK déverrouillée + le code de secours à afficher UNE fois. */
     fun create(masterPassword: String): CreateResult {
-        val masterSalt = SkCrypto.randomBytes(SkCrypto.SALT_LEN)
-        val recoverySalt = SkCrypto.randomBytes(SkCrypto.SALT_LEN)
         val dek = SkCrypto.randomBytes(SkCrypto.KEY_LEN)
-        val recoveryCode = RecoveryCode.generate()
-
-        val masterKey = SkCrypto.deriveKey(masterPassword.toByteArray(Charsets.UTF_8), masterSalt)
-        val recoveryKey = SkCrypto.deriveKey(RecoveryCode.normalize(recoveryCode), recoverySalt)
 
         val emptyVault = JSONObject()
             .put("version", 1)
             .put("items", JSONArray())
             .toString()
 
-        val root = JSONObject().apply {
-            put("version", 1)
-            put("masterSalt", b64(masterSalt))
-            put("recoverySalt", b64(recoverySalt))
-            put("masterWrap", b64(SkCrypto.encrypt(dek, masterKey)))
-            put("recoveryWrap", b64(SkCrypto.encrypt(dek, recoveryKey)))
-            put("vault", b64(SkCrypto.encrypt(emptyVault.toByteArray(Charsets.UTF_8), dek)))
-        }
+        val root = JSONObject().put("version", 1)
+        wrapMaster(root, dek, masterPassword)
+        val recoveryCode = wrapRecovery(root, dek)
+        root.put("vault", b64(SkCrypto.encrypt(emptyVault.toByteArray(Charsets.UTF_8), dek)))
         save(root)
-        // Les clés dérivées ont fini leur office : seule la DEK doit survivre en mémoire.
-        masterKey.fill(0)
-        recoveryKey.fill(0)
         return CreateResult(dek, recoveryCode)
     }
 
@@ -193,24 +204,39 @@ class VaultStore(context: Context) {
      */
     fun resetMasterPassword(dek: ByteArray, newPassword: String): String {
         val root = JSONObject(file.readText())
-
-        val masterSalt = SkCrypto.randomBytes(SkCrypto.SALT_LEN)
-        val masterKey = SkCrypto.deriveKey(newPassword.toByteArray(Charsets.UTF_8), masterSalt)
-        root.put("masterSalt", b64(masterSalt))
-        root.put("masterWrap", b64(SkCrypto.encrypt(dek, masterKey)))
-
-        val recoveryCode = RecoveryCode.generate()
-        val recoverySalt = SkCrypto.randomBytes(SkCrypto.SALT_LEN)
-        val recoveryKey = SkCrypto.deriveKey(RecoveryCode.normalize(recoveryCode), recoverySalt)
-        root.put("recoverySalt", b64(recoverySalt))
-        root.put("recoveryWrap", b64(SkCrypto.encrypt(dek, recoveryKey)))
-
+        wrapMaster(root, dek, newPassword)
+        val recoveryCode = wrapRecovery(root, dek)
         // Un mot de passe redéfini remet aussi le compteur d'essais à zéro.
         root.put("failCount", 0).put("lockedUntil", 0L)
-
         save(root)
-        masterKey.fill(0)
-        recoveryKey.fill(0)
+        return recoveryCode
+    }
+
+    /**
+     * Changement VOLONTAIRE du mot de passe maître, coffre ouvert — l'appelant a déjà vérifié
+     * le mot de passe actuel via [unlock], et donc traversé le freinage des essais.
+     *
+     * Seul l'emballage de la DEK est refait : le contenu du coffre, chiffré par la DEK, n'est pas
+     * touché, et l'opération prend le même temps quelle que soit la taille du coffre. Le
+     * déverrouillage rapide (qui emballe lui aussi la DEK, pas le mot de passe) reste valable.
+     *
+     * Le code de secours est conservé par défaut, à l'inverse de [resetMasterPassword] : ici
+     * rien n'indique que la feuille papier ait été compromise, et forcer l'utilisateur à en
+     * recopier une nouvelle à chaque changement est le plus sûr moyen qu'il ne le fasse pas —
+     * il repartirait alors avec une feuille périmée sans le savoir. [renewRecovery] couvre le
+     * cas inverse (feuille vue, photographiée, égarée) : l'ancien code est révoqué et le nouveau,
+     * renvoyé, DOIT être montré. Sinon la fonction renvoie null.
+     *
+     * Ce que ça ne change PAS, et l'écran doit le dire : les sauvegardes `.skb` déjà exportées
+     * sont chiffrées avec l'ancien mot de passe et le resteront. Renforcer un mot de passe
+     * faible sans refaire de sauvegarde laisse la version faible en circulation.
+     */
+    fun changeMasterPassword(dek: ByteArray, newPassword: String, renewRecovery: Boolean): String? {
+        val root = JSONObject(file.readText())
+        wrapMaster(root, dek, newPassword)
+        val recoveryCode = if (renewRecovery) wrapRecovery(root, dek) else null
+        root.put("failCount", 0).put("lockedUntil", 0L)
+        save(root)
         return recoveryCode
     }
 

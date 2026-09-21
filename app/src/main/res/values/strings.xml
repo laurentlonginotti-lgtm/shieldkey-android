@@ -174,6 +174,22 @@
     <string name="restore_warning">⚠️ This replaces any vault currently on this phone.</string>
     <string name="restore_error">Wrong password or invalid file.</string>
 
+    <!-- Master password change -->
+    <string name="chpwd_open">🔑 Change master password</string>
+    <string name="chpwd_title">Change master password</string>
+    <string name="chpwd_subtitle">Enter your current password, then choose a new one. Quick unlock stays active.</string>
+    <string name="field_current_password">Current password</string>
+    <string name="chpwd_same">The new password must differ from the current one</string>
+    <string name="chpwd_wrong">Current password is incorrect</string>
+    <string name="chpwd_renew">Also renew the recovery code</string>
+    <string name="chpwd_renew_hint">Turn this on if your recovery sheet may have been seen, photographed or lost. The old code will stop opening the vault and a new one will be shown to you.</string>
+    <string name="chpwd_backup_note">⚠️ Backups you already made stay protected by the old password. Make a new backup after the change.</string>
+    <string name="chpwd_action">Change password</string>
+    <string name="chpwd_done_title">✓ Master password changed</string>
+    <string name="chpwd_done_body">Your recovery code is unchanged. Remember to make a new backup: the old ones still use the old password.</string>
+    <string name="chpwd_done_back">Back to my vault</string>
+    <string name="chpwd_weak_banner">⚠️ Your master password is shorter than %1$d characters. From a backup file, it could be cracked in a few hours. Tap to strengthen it.</string>
+
     <!-- Language -->
     <string name="lang_title">Language</string>
     <string name="lang_system">System (default)</string>

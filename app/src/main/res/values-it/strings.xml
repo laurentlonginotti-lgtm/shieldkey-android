@@ -174,6 +174,22 @@
     <string name="restore_warning">⚠️ Questa operazione sostituisce qualsiasi cassaforte presente su questo telefono.</string>
     <string name="restore_error">Password errata o file non valido.</string>
 
+    <!-- Master password change -->
+    <string name="chpwd_open">🔑 Cambia la password principale</string>
+    <string name="chpwd_title">Cambia la password principale</string>
+    <string name="chpwd_subtitle">Inserisci la password attuale, poi scegline una nuova. Lo sblocco rapido resta attivo.</string>
+    <string name="field_current_password">Password attuale</string>
+    <string name="chpwd_same">La nuova password deve essere diversa da quella attuale</string>
+    <string name="chpwd_wrong">La password attuale non è corretta</string>
+    <string name="chpwd_renew">Rinnova anche il codice di recupero</string>
+    <string name="chpwd_renew_hint">Attivalo se il tuo foglio di recupero potrebbe essere stato visto, fotografato o smarrito. Il vecchio codice non aprirà più la cassaforte e te ne verrà mostrato uno nuovo.</string>
+    <string name="chpwd_backup_note">⚠️ I backup già creati restano protetti dalla vecchia password. Creane uno nuovo dopo il cambio.</string>
+    <string name="chpwd_action">Cambia la password</string>
+    <string name="chpwd_done_title">✓ Password principale cambiata</string>
+    <string name="chpwd_done_body">Il tuo codice di recupero è invariato. Ricorda di creare un nuovo backup: quelli vecchi usano ancora la vecchia password.</string>
+    <string name="chpwd_done_back">Torna alla mia cassaforte</string>
+    <string name="chpwd_weak_banner">⚠️ La tua password principale ha meno di %1$d caratteri. Da un file di backup potrebbe essere violata in poche ore. Tocca per rafforzarla.</string>
+
     <!-- Language -->
     <string name="lang_title">Lingua</string>
     <string name="lang_system">Sistema (predefinita)</string>

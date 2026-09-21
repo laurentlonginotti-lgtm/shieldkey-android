@@ -174,6 +174,22 @@
     <string name="restore_warning">⚠️ Dies ersetzt jeden Tresor, der sich derzeit auf diesem Telefon befindet.</string>
     <string name="restore_error">Falsches Passwort oder ungültige Datei.</string>
 
+    <!-- Master password change -->
+    <string name="chpwd_open">🔑 Master-Passwort ändern</string>
+    <string name="chpwd_title">Master-Passwort ändern</string>
+    <string name="chpwd_subtitle">Geben Sie Ihr aktuelles Passwort ein und wählen Sie dann ein neues. Die Schnellentsperrung bleibt aktiv.</string>
+    <string name="field_current_password">Aktuelles Passwort</string>
+    <string name="chpwd_same">Das neue Passwort muss sich vom aktuellen unterscheiden</string>
+    <string name="chpwd_wrong">Aktuelles Passwort ist falsch</string>
+    <string name="chpwd_renew">Auch den Wiederherstellungscode erneuern</string>
+    <string name="chpwd_renew_hint">Aktivieren Sie dies, wenn Ihr Wiederherstellungsblatt gesehen, fotografiert oder verloren worden sein könnte. Der alte Code öffnet den Tresor dann nicht mehr, und ein neuer wird Ihnen angezeigt.</string>
+    <string name="chpwd_backup_note">⚠️ Bereits erstellte Sicherungen bleiben durch das alte Passwort geschützt. Erstellen Sie nach der Änderung eine neue Sicherung.</string>
+    <string name="chpwd_action">Passwort ändern</string>
+    <string name="chpwd_done_title">✓ Master-Passwort geändert</string>
+    <string name="chpwd_done_body">Ihr Wiederherstellungscode ist unverändert. Denken Sie an eine neue Sicherung: Die alten verwenden noch das alte Passwort.</string>
+    <string name="chpwd_done_back">Zurück zu meinem Tresor</string>
+    <string name="chpwd_weak_banner">⚠️ Ihr Master-Passwort ist kürzer als %1$d Zeichen. Aus einer Sicherungsdatei könnte es in wenigen Stunden geknackt werden. Tippen Sie, um es zu stärken.</string>
+
     <!-- Language -->
     <string name="lang_title">Sprache</string>
     <string name="lang_system">System (Standard)</string>

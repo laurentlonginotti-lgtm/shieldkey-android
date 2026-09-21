@@ -86,6 +86,7 @@ sealed interface VaultSub {
     object ChooseType : VaultSub
     data class Edit(val type: EntryType, val existing: VaultEntry?) : VaultSub
     data class View(val entry: VaultEntry) : VaultSub
+    object ChangePassword : VaultSub
 }
 
 // ---------------------------------------------------------------------------

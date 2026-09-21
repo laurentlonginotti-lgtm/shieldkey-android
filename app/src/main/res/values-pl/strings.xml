@@ -174,6 +174,22 @@
     <string name="restore_warning">⚠️ Zastąpi to każdy sejf znajdujący się obecnie na tym telefonie.</string>
     <string name="restore_error">Błędne hasło lub nieprawidłowy plik.</string>
 
+    <!-- Master password change -->
+    <string name="chpwd_open">🔑 Zmień hasło główne</string>
+    <string name="chpwd_title">Zmień hasło główne</string>
+    <string name="chpwd_subtitle">Wpisz obecne hasło, a następnie wybierz nowe. Szybkie odblokowanie pozostaje aktywne.</string>
+    <string name="field_current_password">Obecne hasło</string>
+    <string name="chpwd_same">Nowe hasło musi różnić się od obecnego</string>
+    <string name="chpwd_wrong">Obecne hasło jest nieprawidłowe</string>
+    <string name="chpwd_renew">Odnów także kod odzyskiwania</string>
+    <string name="chpwd_renew_hint">Włącz, jeśli Twoja kartka z kodem mogła zostać zobaczona, sfotografowana lub zgubiona. Stary kod przestanie otwierać sejf, a nowy zostanie Ci pokazany.</string>
+    <string name="chpwd_backup_note">⚠️ Utworzone wcześniej kopie zapasowe pozostają chronione starym hasłem. Po zmianie utwórz nową kopię.</string>
+    <string name="chpwd_action">Zmień hasło</string>
+    <string name="chpwd_done_title">✓ Hasło główne zmienione</string>
+    <string name="chpwd_done_body">Twój kod odzyskiwania pozostaje bez zmian. Pamiętaj o nowej kopii zapasowej: stare nadal używają starego hasła.</string>
+    <string name="chpwd_done_back">Wróć do sejfu</string>
+    <string name="chpwd_weak_banner">⚠️ Twoje hasło główne ma mniej niż %1$d znaków. Z pliku kopii zapasowej można je złamać w kilka godzin. Dotknij, aby je wzmocnić.</string>
+
     <!-- Language -->
     <string name="lang_title">Język</string>
     <string name="lang_system">Systemowy (domyślny)</string>

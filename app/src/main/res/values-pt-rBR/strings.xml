@@ -174,6 +174,22 @@
     <string name="restore_warning">⚠️ Isso substitui qualquer cofre existente neste celular.</string>
     <string name="restore_error">Senha incorreta ou arquivo inválido.</string>
 
+    <!-- Master password change -->
+    <string name="chpwd_open">🔑 Alterar a senha mestra</string>
+    <string name="chpwd_title">Alterar a senha mestra</string>
+    <string name="chpwd_subtitle">Digite sua senha atual e depois escolha uma nova. O desbloqueio rápido continua ativo.</string>
+    <string name="field_current_password">Senha atual</string>
+    <string name="chpwd_same">A nova senha deve ser diferente da atual</string>
+    <string name="chpwd_wrong">A senha atual está incorreta</string>
+    <string name="chpwd_renew">Renovar também o código de recuperação</string>
+    <string name="chpwd_renew_hint">Ative se a sua folha de recuperação pode ter sido vista, fotografada ou perdida. O código antigo deixará de abrir o cofre e um novo será mostrado a você.</string>
+    <string name="chpwd_backup_note">⚠️ Os backups já criados continuam protegidos pela senha antiga. Faça um novo backup após a alteração.</string>
+    <string name="chpwd_action">Alterar a senha</string>
+    <string name="chpwd_done_title">✓ Senha mestra alterada</string>
+    <string name="chpwd_done_body">Seu código de recuperação não mudou. Lembre-se de fazer um novo backup: os antigos ainda usam a senha anterior.</string>
+    <string name="chpwd_done_back">Voltar ao meu cofre</string>
+    <string name="chpwd_weak_banner">⚠️ Sua senha mestra tem menos de %1$d caracteres. A partir de um arquivo de backup, ela poderia ser quebrada em poucas horas. Toque para reforçá-la.</string>
+
     <!-- Language -->
     <string name="lang_title">Idioma</string>
     <string name="lang_system">Sistema (padrão)</string>

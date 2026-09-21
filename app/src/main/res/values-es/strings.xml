@@ -174,6 +174,22 @@
     <string name="restore_warning">⚠️ Esto sustituye cualquier caja fuerte que haya en este teléfono.</string>
     <string name="restore_error">Contraseña incorrecta o archivo no válido.</string>
 
+    <!-- Master password change -->
+    <string name="chpwd_open">🔑 Cambiar la contraseña maestra</string>
+    <string name="chpwd_title">Cambiar la contraseña maestra</string>
+    <string name="chpwd_subtitle">Introduce tu contraseña actual y luego elige una nueva. El desbloqueo rápido sigue activo.</string>
+    <string name="field_current_password">Contraseña actual</string>
+    <string name="chpwd_same">La nueva contraseña debe ser distinta de la actual</string>
+    <string name="chpwd_wrong">La contraseña actual es incorrecta</string>
+    <string name="chpwd_renew">Renovar también el código de recuperación</string>
+    <string name="chpwd_renew_hint">Actívalo si tu hoja de recuperación pudo ser vista, fotografiada o extraviada. El código antiguo dejará de abrir la caja fuerte y se te mostrará uno nuevo.</string>
+    <string name="chpwd_backup_note">⚠️ Las copias ya creadas siguen protegidas por la contraseña antigua. Haz una nueva copia después del cambio.</string>
+    <string name="chpwd_action">Cambiar la contraseña</string>
+    <string name="chpwd_done_title">✓ Contraseña maestra cambiada</string>
+    <string name="chpwd_done_body">Tu código de recuperación no ha cambiado. Recuerda hacer una nueva copia: las antiguas aún usan la contraseña anterior.</string>
+    <string name="chpwd_done_back">Volver a mi caja fuerte</string>
+    <string name="chpwd_weak_banner">⚠️ Tu contraseña maestra tiene menos de %1$d caracteres. A partir de un archivo de copia, podría romperse en pocas horas. Toca para reforzarla.</string>
+
     <!-- Language -->
     <string name="lang_title">Idioma</string>
     <string name="lang_system">Sistema (predeterminado)</string>

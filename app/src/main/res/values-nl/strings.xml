@@ -174,6 +174,22 @@
     <string name="restore_warning">⚠️ Dit vervangt elke kluis die nu op deze telefoon staat.</string>
     <string name="restore_error">Onjuist wachtwoord of ongeldig bestand.</string>
 
+    <!-- Master password change -->
+    <string name="chpwd_open">🔑 Hoofdwachtwoord wijzigen</string>
+    <string name="chpwd_title">Hoofdwachtwoord wijzigen</string>
+    <string name="chpwd_subtitle">Voer je huidige wachtwoord in en kies daarna een nieuw. Snel ontgrendelen blijft actief.</string>
+    <string name="field_current_password">Huidig wachtwoord</string>
+    <string name="chpwd_same">Het nieuwe wachtwoord moet verschillen van het huidige</string>
+    <string name="chpwd_wrong">Huidig wachtwoord is onjuist</string>
+    <string name="chpwd_renew">Ook de herstelcode vernieuwen</string>
+    <string name="chpwd_renew_hint">Schakel dit in als je herstelblad mogelijk is gezien, gefotografeerd of kwijtgeraakt. De oude code opent de kluis dan niet meer en je krijgt een nieuwe te zien.</string>
+    <string name="chpwd_backup_note">⚠️ Eerder gemaakte back-ups blijven beschermd door het oude wachtwoord. Maak na de wijziging een nieuwe back-up.</string>
+    <string name="chpwd_action">Wachtwoord wijzigen</string>
+    <string name="chpwd_done_title">✓ Hoofdwachtwoord gewijzigd</string>
+    <string name="chpwd_done_body">Je herstelcode is ongewijzigd. Vergeet niet een nieuwe back-up te maken: de oude gebruiken nog het oude wachtwoord.</string>
+    <string name="chpwd_done_back">Terug naar mijn kluis</string>
+    <string name="chpwd_weak_banner">⚠️ Je hoofdwachtwoord is korter dan %1$d tekens. Vanuit een back-upbestand kan het in enkele uren worden gekraakt. Tik om het te versterken.</string>
+
     <!-- Language -->
     <string name="lang_title">Taal</string>
     <string name="lang_system">Systeem (standaard)</string>

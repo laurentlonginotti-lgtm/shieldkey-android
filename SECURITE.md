@@ -72,6 +72,8 @@ Quand tu copies un champ sensible (mot de passe, CVV, IBAN, seed, clé privée),
 - `allowBackup=false` : le système Android ne sauvegarde pas automatiquement le coffre.
 - Les **documents** sont chiffrés séparément (un fichier `.blob` par document, AES-256-GCM avec la DEK).
 - Les **sauvegardes `.skb`** sont rechiffrées (Argon2id + AES-256-GCM) avec ton mot de passe maître.
+  Une sauvegarde déjà exportée reste protégée par le mot de passe en vigueur au moment de l'export :
+  après un changement de mot de passe, refais-en une.
 
 ## Résistance quantique
 

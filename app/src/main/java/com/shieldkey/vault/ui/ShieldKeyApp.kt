@@ -104,6 +104,13 @@ fun ShieldKeyApp() {
     var recoveryToShow by remember { mutableStateOf("") }
     var kitRenewed by remember { mutableStateOf(false) }       // le kit affiché remplace un code devenu caduc
     var showSecurity by remember { mutableStateOf(false) }     // page « Sécurité » en surimpression
+    // Le coffre a été ouvert avec un mot de passe sous le minimum actuel (créé avant le passage
+    // à 12) : on ne stocke rien, on ne le sait qu'au moment où il est tapé, et seulement là.
+    var weakPassword by remember { mutableStateOf(false) }
+
+    // Un kit de secours encore à l'écran survit à un verrouillage : le code neuf est déjà le seul
+    // valable, le perdre parce que le téléphone s'est mis en veille serait irréparable.
+    fun afterUnlock() = if (recoveryToShow.isNotEmpty()) Screen.RecoveryKit else Screen.Vault
 
     // Déverrouillage rapide (empreinte OU code de l'écran, facultatif) — voir BiometricGate.
     val bioStatus = BiometricGate.status(context)
@@ -133,6 +140,7 @@ fun ShieldKeyApp() {
                 // une clé nulle — un coffre illisible. Le gain d'un effacement (se prémunir d'un
                 // vidage mémoire, qui suppose déjà un téléphone rooté) ne vaut pas ce risque.
                 dek = null
+                weakPassword = false
                 screen = Screen.Unlock
                 SecureClipboard.clearIfOurs(context)   // ne pas laisser un secret copié en veille
             }
@@ -177,7 +185,8 @@ fun ShieldKeyApp() {
                     when (val res = withContext(Dispatchers.Default) { store.unlock(pwd) }) {
                         is VaultStore.UnlockResult.Success -> {
                             bioNotice = null
-                            dek = res.dek; SoundFx.success(); screen = Screen.Vault
+                            weakPassword = pwd.length < PasswordStrength.MIN_LENGTH
+                            dek = res.dek; SoundFx.success(); screen = afterUnlock()
                             null
                         }
                         is VaultStore.UnlockResult.Throttled -> {
@@ -204,7 +213,7 @@ fun ShieldKeyApp() {
                             when {
                                 k != null -> {
                                     bioNotice = null
-                                    dek = k; SoundFx.success(); screen = Screen.Vault
+                                    dek = k; SoundFx.success(); screen = afterUnlock()
                                 }
                                 // Le système a détruit la clé : les empreintes du téléphone ont
                                 // changé. On l'explique et on renvoie au mot de passe maître.
@@ -251,6 +260,7 @@ fun ShieldKeyApp() {
                         bioEnabled = false
                         val res = withContext(Dispatchers.Default) { store.unlock(pwd) }
                         if (res is VaultStore.UnlockResult.Success) {
+                            weakPassword = pwd.length < PasswordStrength.MIN_LENGTH
                             dek = res.dek; SoundFx.success(); screen = Screen.Vault; ok = true
                         }
                     }
@@ -264,9 +274,19 @@ fun ShieldKeyApp() {
                     dek = currentDek,
                     onLock = {
                         dek = null
+                        weakPassword = false
                         SoundFx.close()
                         screen = Screen.Unlock
                         SecureClipboard.clearIfOurs(context)   // efface un éventuel secret copié
+                    },
+                    weakPassword = weakPassword,
+                    onPasswordChanged = { weakPassword = false },
+                    onRecoveryRenewed = { newCode ->
+                        // Même chemin que la récupération : le nouveau kit s'affiche avant
+                        // de revenir au coffre, l'ancienne feuille ne vaut plus rien.
+                        recoveryToShow = newCode
+                        kitRenewed = true
+                        screen = Screen.RecoveryKit
                     },
                     // Suspend le verrouillage auto pendant qu'une fenêtre système
                     // (sélecteur de fichier, visionneuse…) passe l'app en ON_STOP.

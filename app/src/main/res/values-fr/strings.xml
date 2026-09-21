@@ -174,6 +174,22 @@
     <string name="restore_warning">⚠️ Ceci remplace le coffre présent sur ce téléphone.</string>
     <string name="restore_error">Mot de passe incorrect ou fichier invalide.</string>
 
+    <!-- Changement du mot de passe maître -->
+    <string name="chpwd_open">🔑 Changer le mot de passe maître</string>
+    <string name="chpwd_title">Changer le mot de passe maître</string>
+    <string name="chpwd_subtitle">Entrez votre mot de passe actuel, puis choisissez-en un nouveau. Le déverrouillage rapide reste actif.</string>
+    <string name="field_current_password">Mot de passe actuel</string>
+    <string name="chpwd_same">Le nouveau mot de passe doit être différent de l\'actuel</string>
+    <string name="chpwd_wrong">Mot de passe actuel incorrect</string>
+    <string name="chpwd_renew">Renouveler aussi le code de secours</string>
+    <string name="chpwd_renew_hint">À activer si votre feuille de secours a pu être vue, photographiée ou égarée. L\'ancien code n\'ouvrira plus le coffre et un nouveau vous sera montré.</string>
+    <string name="chpwd_backup_note">⚠️ Les sauvegardes déjà créées restent protégées par l\'ancien mot de passe. Refaites-en une après le changement.</string>
+    <string name="chpwd_action">Changer le mot de passe</string>
+    <string name="chpwd_done_title">✓ Mot de passe maître modifié</string>
+    <string name="chpwd_done_body">Votre code de secours est inchangé. Pensez à refaire une sauvegarde : les anciennes utilisent encore l\'ancien mot de passe.</string>
+    <string name="chpwd_done_back">Retour à mon coffre</string>
+    <string name="chpwd_weak_banner">⚠️ Votre mot de passe maître fait moins de %1$d caractères. À partir d\'un fichier de sauvegarde, il pourrait être cassé en quelques heures. Touchez pour le renforcer.</string>
+
     <!-- Language -->
     <string name="lang_title">Langue</string>
     <string name="lang_system">Système (par défaut)</string>

@@ -353,7 +353,12 @@ fun VaultScreen(
     biometricAvailable: Boolean = false,
     biometricEnabled: Boolean = false,
     biometricHint: String? = null,
-    onToggleBiometric: (Boolean) -> Unit = {}
+    onToggleBiometric: (Boolean) -> Unit = {},
+    /** Le coffre a été ouvert avec un mot de passe sous la longueur minimale : on invite à le changer. */
+    weakPassword: Boolean = false,
+    onPasswordChanged: () -> Unit = {},
+    /** Le code de secours a été renouvelé avec le mot de passe : l'hôte doit afficher le nouveau kit. */
+    onRecoveryRenewed: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -512,6 +517,34 @@ fun VaultScreen(
             }
         )
 
+        VaultSub.ChangePassword -> ChangePasswordScreen(
+            onSubmit = { current, newPwd, renew ->
+                // Argon2id (vérification + réemballage) : hors du fil principal.
+                // Le mot de passe actuel passe par unlock(), donc par le freinage des essais.
+                val (error, newCode) = withContext(Dispatchers.Default) {
+                    when (val res = store.unlock(current)) {
+                        is VaultStore.UnlockResult.Success -> {
+                            // Copie transitoire de la DEK renvoyée par unlock() — pas la DEK
+                            // partagée, qui reste intacte (voir le verrouillage auto).
+                            res.dek.fill(0)
+                            null to store.changeMasterPassword(dek, newPwd, renew)
+                        }
+                        is VaultStore.UnlockResult.Throttled ->
+                            context.getString(R.string.unlock_throttled, res.secondsLeft) to null
+                        else -> context.getString(R.string.chpwd_wrong) to null
+                    }
+                }
+                if (error == null) {
+                    SoundFx.success()
+                    onPasswordChanged()
+                    if (newCode != null) onRecoveryRenewed(newCode)
+                }
+                error
+            },
+            onDone = { sub = VaultSub.List },
+            onCancel = { sub = VaultSub.List }
+        )
+
         is VaultSub.View -> EntryDetailScreen(
             entry = s.entry,
             onEdit = { sub = VaultSub.Edit(s.entry.type, s.entry) },
@@ -605,6 +638,32 @@ fun VaultScreen(
                     ) {
                         Text(stringResource(R.string.backup_open), color = SkText, fontSize = 13.sp, modifier = Modifier.weight(1f))
                         Text("›", color = SkEmerald2, fontSize = 16.sp)
+                    }
+                    Spacer(Modifier.height(10.dp))
+                    Row(
+                        Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Color(0x14FFFFFF))
+                            .clickable { sub = VaultSub.ChangePassword }
+                            .padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(stringResource(R.string.chpwd_open), color = SkText, fontSize = 13.sp, modifier = Modifier.weight(1f))
+                        Text("›", color = SkEmerald2, fontSize = 16.sp)
+                    }
+                    // Mot de passe sous le minimum (coffre créé avant le passage à 12) : on le dit
+                    // ici, coffre ouvert, là où l'utilisateur peut agir tout de suite.
+                    if (weakPassword) {
+                        Spacer(Modifier.height(10.dp))
+                        Box(
+                            Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Color(0x1AFFC857))
+                                .clickable { sub = VaultSub.ChangePassword }
+                                .padding(12.dp)
+                        ) {
+                            Text(
+                                stringResource(R.string.chpwd_weak_banner, PasswordStrength.MIN_LENGTH),
+                                color = SkGold,
+                                fontSize = 12.sp
+                            )
+                        }
                     }
                 }
                 Spacer(Modifier.height(16.dp))
