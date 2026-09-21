@@ -165,12 +165,49 @@ jobs:
           profile: pixel_6
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: ./gradlew connectedDebugAndroidTest --no-daemon --console=plain
+          # bash + pipefail : le runner lance le script avec sh, qui n'a pas PIPESTATUS.
+          script: bash -o pipefail -c "./gradlew connectedDebugAndroidTest --no-daemon --console=plain 2>&1 | tee emu.log"
+
+      # Le journal brut d'un job n'est lisible qu'avec un jeton GitHub ; les ANNOTATIONS, elles,
+      # sont publiques (API check-runs). En cas d'échec, on y publie chaque test rouge avec son
+      # message, ou les lignes d'erreur de Gradle si l'échec précède les tests.
+      - name: Report failures as annotations
+        if: failure()
+        run: |
+          python3 - <<'PYEOF'
+          import glob, re, xml.etree.ElementTree as ET
+          files = glob.glob("app/build/outputs/androidTest-results/**/*.xml", recursive=True)
+          total = failed = 0
+          for f in files:
+              r = ET.parse(f).getroot()
+              total += int(r.get("tests", 0))
+              for tc in r.iter("testcase"):
+                  for bad in list(tc.iter("failure")) + list(tc.iter("error")):
+                      failed += 1
+                      text = (bad.get("message") or bad.text or "?").strip()
+                      first = text.splitlines()[0][:400] if text else "?"
+                      cls = (tc.get("classname") or "?").split(".")[-1]
+                      print(f"::error title={cls}.{tc.get('name')}::{first}")
+          if files:
+              print(f"::notice title=Tests instrumentes::{failed} en echec sur {total}")
+          else:
+              print("::error title=Aucun rapport XML::l'echec precede les tests (emulateur, installation ou compilation)")
+              try:
+                  lines = open("emu.log", encoding="utf-8", errors="replace").read().splitlines()
+              except OSError:
+                  lines = []
+              hits = [l for l in lines if re.search(r"FAILED|error:|Exception|INSTALL_FAILED|What went wrong|No connected|Could not", l)]
+              for l in (hits or lines[-25:])[-25:]:
+                  print(f"::error::{l[:400]}")
+          PYEOF
 
       - name: Upload instrumented test report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: rapport-tests-emulateur
-          path: app/build/reports/androidTests/connected
+          path: |
+            app/build/reports/androidTests/connected
+            app/build/outputs/androidTest-results
+            emu.log
           retention-days: 14
