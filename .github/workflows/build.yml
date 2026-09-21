@@ -56,6 +56,28 @@ jobs:
           echo "[DEBUG] Keystore valide, prêt pour signature"
           echo "release_ready=true" >> "$GITHUB_OUTPUT"
 
+      # Tests JVM (SkCrypto, PasswordStrength, RecoveryCode, AtomicWrite) : rapides, et
+      # BLOQUANTS — un test rouge, pas d'APK. C'est le contrat : on ne livre pas ce qui
+      # contredit ce qu'on a promis.
+      - name: Unit tests (JVM)
+        run: |
+          set +e
+          ./gradlew testDebugUnitTest --no-daemon --console=plain 2>&1 | tee test.log
+          STATUS=${PIPESTATUS[0]}
+          echo ""
+          echo "==================== TESTS EN ECHEC (copier ci-dessous) ===================="
+          grep -nE "FAILED|^e: |error:" test.log
+          echo "==========================================================================="
+          exit $STATUS
+
+      - name: Upload unit test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapport-tests-jvm
+          path: app/build/reports/tests/testDebugUnitTest
+          retention-days: 14
+
       - name: Build Debug APK
         run: |
           set +e
@@ -105,3 +127,50 @@ jobs:
           name: ShieldKey-release-aab
           path: app/build/outputs/bundle/release/app-release.aab
           retention-days: 90
+
+  # Tests instrumentés : VaultStore, BackupManager, BackupMeta, VaultRepository — tout ce qui
+  # touche au fichier du coffre, avec le VRAI Argon2 natif et le vrai Android. Job séparé :
+  # l'émulateur prend ~8 min et ne doit pas retarder l'APK ; mais s'il est rouge, on le voit.
+  instrumented:
+    name: Instrumented tests (emulator)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      # Accélération matérielle : sans KVM l'émulateur met 20 min à démarrer, quand il démarre.
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run instrumented tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          profile: pixel_6
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: ./gradlew connectedDebugAndroidTest --no-daemon --console=plain
+
+      - name: Upload instrumented test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapport-tests-emulateur
+          path: app/build/reports/androidTests/connected
+          retention-days: 14

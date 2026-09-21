@@ -16,6 +16,9 @@ android {
         versionCode 1
         versionName "0.1"
         vectorDrawables { useSupportLibrary true }
+        // Tests instrumentés (émulateur en CI) : VaultStore, BackupManager, BackupMeta ont
+        // besoin d'Android (Base64, org.json, Context) et d'Argon2 natif.
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     // Signature release pilotée par variables d'environnement.
@@ -90,4 +93,11 @@ dependencies {
     // (sinon biometric:1.1.0 tirerait fragment 1.2.5, incompatible avec activity-compose).
     implementation 'androidx.fragment:fragment-ktx:1.8.9'
     debugImplementation 'androidx.compose.ui:ui-tooling'
+
+    // Tests JVM (app/src/test) : SkCrypto (AES-GCM), PasswordStrength, RecoveryCode, AtomicWrite —
+    // du Kotlin pur, sans Android ni code natif. Rapides, dans le job de build.
+    testImplementation 'junit:junit:4.13.2'
+    // Tests instrumentés (app/src/androidTest) : tout ce qui touche au fichier du coffre.
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test:runner:1.6.2'
 }

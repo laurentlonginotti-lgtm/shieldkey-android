@@ -62,9 +62,9 @@ object BackupMeta {
     }
 
     /** Une sauvegarde vient d'être écrite AVEC SUCCÈS (pas seulement produite en mémoire). */
-    fun noteBackup(context: Context) {
+    fun noteBackup(context: Context, at: Long = System.currentTimeMillis()) {
         prefs(context).edit()
-            .putLong(LAST_BACKUP_AT, System.currentTimeMillis())
+            .putLong(LAST_BACKUP_AT, at)
             .putInt(CHANGES, 0)
             .putBoolean(PWD_CHANGED, false)
             .apply()
@@ -97,14 +97,14 @@ object BackupMeta {
      * cas où une sauvegarde existante est non pas vieille, mais TROMPEUSE (elle ne s'ouvre plus
      * avec le mot de passe que l'utilisateur connaît désormais).
      */
-    fun reminder(context: Context): Reminder {
+    fun reminder(context: Context, now: Long = System.currentTimeMillis()): Reminder {
         val p = prefs(context)
         if (p.getBoolean(PWD_CHANGED, false)) return Reminder.PasswordChanged
         val changes = p.getInt(CHANGES, 0)
         if (changes == 0) return Reminder.None
         val last = p.getLong(LAST_BACKUP_AT, 0L)
         if (last == 0L) return Reminder.Never
-        val days = ((System.currentTimeMillis() - last) / DAY_MS).toInt()
+        val days = ((now - last) / DAY_MS).toInt()
         return if (days >= STALE_AFTER_DAYS) Reminder.Stale(days, changes) else Reminder.None
     }
 }
