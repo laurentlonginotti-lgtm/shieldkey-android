@@ -8,6 +8,24 @@
          ce n'est PAS une permission Internet — l'argument "100 % hors-ligne" reste vrai. -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 
+    <!-- Superpositions : permet à ShieldKey d'interdire aux autres applis de dessiner par-dessus
+         elle (Android 12+). Permission « normale » (accordée à l'installation, sans demande),
+         locale à l'affichage — là encore, rien de réseau. -->
+    <uses-permission android:name="android.permission.HIDE_OVERLAY_WINDOWS" />
+
+    <!-- Détection de root (avertissement, jamais un blocage) : depuis Android 11, une appli ne
+         « voit » un autre paquet que si elle le déclare ici. Uniquement les gestionnaires de root
+         connus — pas QUERY_ALL_PACKAGES, qui serait une vraie intrusion. -->
+    <queries>
+        <package android:name="com.topjohnwu.magisk" />
+        <package android:name="eu.chainfire.supersu" />
+        <package android:name="com.koushikdutta.superuser" />
+        <package android:name="com.noshufou.android.su" />
+        <package android:name="com.thirdparty.superuser" />
+        <package android:name="com.kingroot.kinguser" />
+        <package android:name="me.phh.superuser" />
+    </queries>
+
     <application
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher"

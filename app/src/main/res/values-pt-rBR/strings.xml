@@ -190,6 +190,18 @@
     <string name="chpwd_done_back">Voltar ao meu cofre</string>
     <string name="chpwd_weak_banner">⚠️ Sua senha mestra tem menos de %1$d caracteres. A partir de um arquivo de backup, ela poderia ser quebrada em poucas horas. Toque para reforçá-la.</string>
 
+    <!-- Resilience: corrupted vault, backup reminder, root warning, overlays -->
+    <string name="unlock_corrupted">⚠️ O arquivo do cofre está danificado e não pode mais ser lido, seja qual for a senha. Restaure seu último backup (.skb) com o botão abaixo.</string>
+    <string name="backup_never_banner">💾 Seu cofre nunca teve um backup. Um backup criptografado fora do telefone é sua única proteção contra perda, roubo ou ransomware. Toque para criar um.</string>
+    <string name="backup_stale_banner">💾 Último backup há %1$d dias, %2$d alteração(ões) desde então. Toque para fazer um novo.</string>
+    <string name="backup_pwd_banner">💾 Sua senha mestra mudou desde o último backup: os backups existentes ainda abrem com a antiga. Toque para fazer um novo.</string>
+    <string name="root_banner">⚠️ Este telefone parece ter root: o isolamento de apps do Android não protege mais o cofre. Toque para saber mais.</string>
+    <string name="sec_root_title">⚠️ Este telefone parece ter root</string>
+    <string name="sec_root_body">Foi detectado acesso root (su, Magisk…). Em um telefone assim, qualquer app ao qual você conceda root pode ler os arquivos do ShieldKey, sua memória enquanto o cofre está aberto ou o que você digita. A criptografia continua valendo: com o cofre fechado, o arquivo permanece ilegível sem sua senha. Mas o ShieldKey não pode impedir o que o root permite, nem garantir esta detecção — ela pode ser ocultada. O risco é você quem avalia.</string>
+    <string name="sec_overlay_title">🪟 Sobreposições bloqueadas</string>
+    <string name="sec_overlay_body">Enquanto o ShieldKey está na tela, o Android 12 e posteriores proíbem outros apps de desenhar por cima. Um campo de senha falso sobre o verdadeiro, ou um botão invisível sob o seu dedo — o truque favorito dos trojans bancários — não pode aparecer.</string>
+    <string name="sec_overlay_tech">setHideOverlayWindows · Android 12+</string>
+
     <!-- Language -->
     <string name="lang_title">Idioma</string>
     <string name="lang_system">Sistema (padrão)</string>

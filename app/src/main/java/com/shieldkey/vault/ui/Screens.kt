@@ -80,6 +80,7 @@ import androidx.core.content.FileProvider
 import java.io.File
 import androidx.compose.ui.text.style.TextOverflow
 import com.shieldkey.vault.data.BackupManager
+import com.shieldkey.vault.data.BackupMeta
 import com.shieldkey.vault.data.DocumentMeta
 import com.shieldkey.vault.data.DocumentStore
 import com.shieldkey.vault.data.EntryType
@@ -297,14 +298,15 @@ fun UnlockScreen(
 // ---------------------------------------------------------------------------
 //  Récupération via code de secours
 // ---------------------------------------------------------------------------
+/** [onRecover] renvoie null si le coffre est récupéré, sinon le message d'erreur à afficher. */
 @Composable
-fun RecoveryScreen(onRecover: suspend (String, String) -> Boolean, onCancel: () -> Unit) {
+fun RecoveryScreen(onRecover: suspend (String, String) -> String?, onCancel: () -> Unit) {
     val scope = rememberCoroutineScope()
     var code by remember { mutableStateOf("") }
     var pwd by remember { mutableStateOf("") }
     var confirm by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) }
-    var invalid by remember { mutableStateOf(false) }
+    var errMsg by remember { mutableStateOf<String?>(null) }
 
     val canSubmit = code.isNotBlank() && pwd.length >= PasswordStrength.MIN_LENGTH &&
         pwd == confirm && !loading
@@ -316,7 +318,7 @@ fun RecoveryScreen(onRecover: suspend (String, String) -> Boolean, onCancel: () 
         Spacer(Modifier.height(18.dp))
         OutlinedTextField(
             value = code,
-            onValueChange = { code = it; invalid = false },
+            onValueChange = { code = it; errMsg = null },
             label = { Text(stringResource(R.string.field_recovery_code)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
@@ -327,13 +329,12 @@ fun RecoveryScreen(onRecover: suspend (String, String) -> Boolean, onCancel: () 
         PasswordStrengthMeter(pwd)
         Spacer(Modifier.height(10.dp))
         SkPasswordField(confirm, { confirm = it }, stringResource(R.string.field_confirm))
-        if (invalid) HintText(stringResource(R.string.rec_invalid), warn = true)
+        errMsg?.let { HintText(it, warn = true) }
         Spacer(Modifier.height(20.dp))
         SkPrimaryButton(stringResource(R.string.rec_button), enabled = canSubmit, loading = loading) {
             scope.launch {
                 loading = true
-                val ok = onRecover(code, pwd)
-                if (!ok) invalid = true
+                errMsg = onRecover(code, pwd)
                 loading = false
             }
         }
@@ -356,6 +357,8 @@ fun VaultScreen(
     onToggleBiometric: (Boolean) -> Unit = {},
     /** Le coffre a été ouvert avec un mot de passe sous la longueur minimale : on invite à le changer. */
     weakPassword: Boolean = false,
+    /** Un indice de root a été trouvé sur ce téléphone : on avertit, on n'empêche rien. */
+    rooted: Boolean = false,
     onPasswordChanged: () -> Unit = {},
     /** Le code de secours a été renouvelé avec le mot de passe : l'hôte doit afficher le nouveau kit. */
     onRecoveryRenewed: (String) -> Unit = {}
@@ -374,6 +377,7 @@ fun VaultScreen(
     var showBackupPrompt by remember { mutableStateOf(false) }
     var backupError by remember { mutableStateOf<String?>(null) }
     var pendingBackupPwd by remember { mutableStateOf("") }
+    var backupReminder by remember { mutableStateOf<BackupMeta.Reminder>(BackupMeta.Reminder.None) }
     val wrongPwd = stringResource(R.string.unlock_wrong)
 
     LaunchedEffect(reload) {
@@ -382,6 +386,9 @@ fun VaultScreen(
         }
         entries = e
         docs = d
+        // Réévalué à chaque écriture (reload++), après une sauvegarde et après un changement
+        // de mot de passe : c'est là que le rappel peut apparaître ou disparaître.
+        backupReminder = BackupMeta.reminder(context)
     }
 
     // Sélecteur de fichier système (SAF) : aucune permission de stockage requise.
@@ -486,7 +493,11 @@ fun VaultScreen(
                     } catch (e: Exception) { false }
                 }
                 busy = false
-                if (ok) SoundFx.success() else SoundFx.error()
+                if (ok) {
+                    BackupMeta.noteBackup(context)   // écrite pour de bon, pas seulement produite
+                    reload++
+                    SoundFx.success()
+                } else SoundFx.error()
             }
         }
     }
@@ -541,7 +552,7 @@ fun VaultScreen(
                 }
                 error
             },
-            onDone = { sub = VaultSub.List },
+            onDone = { sub = VaultSub.List; reload++ },   // reload : rafraîchit le rappel de sauvegarde
             onCancel = { sub = VaultSub.List }
         )
 
@@ -649,6 +660,18 @@ fun VaultScreen(
                         Text(stringResource(R.string.chpwd_open), color = SkText, fontSize = 13.sp, modifier = Modifier.weight(1f))
                         Text("›", color = SkEmerald2, fontSize = 16.sp)
                     }
+                    // Root : le cloisonnement d'Android ne joue plus. On le dit une fois par session,
+                    // ici, et la page Sécurité détaille ce que ça change.
+                    if (rooted) {
+                        Spacer(Modifier.height(10.dp))
+                        Box(
+                            Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Color(0x1AFFC857))
+                                .clickable { onSecurity() }
+                                .padding(12.dp)
+                        ) {
+                            Text(stringResource(R.string.root_banner), color = SkGold, fontSize = 12.sp)
+                        }
+                    }
                     // Mot de passe sous le minimum (coffre créé avant le passage à 12) : on le dit
                     // ici, coffre ouvert, là où l'utilisateur peut agir tout de suite.
                     if (weakPassword) {
@@ -663,6 +686,23 @@ fun VaultScreen(
                                 color = SkGold,
                                 fontSize = 12.sp
                             )
+                        }
+                    }
+                    // Rappel de sauvegarde : la seule vraie parade à la perte, au vol, au rançongiciel.
+                    val reminderText = when (val r = backupReminder) {
+                        BackupMeta.Reminder.None -> null
+                        BackupMeta.Reminder.Never -> stringResource(R.string.backup_never_banner)
+                        BackupMeta.Reminder.PasswordChanged -> stringResource(R.string.backup_pwd_banner)
+                        is BackupMeta.Reminder.Stale -> stringResource(R.string.backup_stale_banner, r.days, r.changes)
+                    }
+                    if (reminderText != null) {
+                        Spacer(Modifier.height(10.dp))
+                        Box(
+                            Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Color(0x1AFFC857))
+                                .clickable { backupError = null; showBackupPrompt = true }
+                                .padding(12.dp)
+                        ) {
+                            Text(reminderText, color = SkGold, fontSize = 12.sp)
                         }
                     }
                 }

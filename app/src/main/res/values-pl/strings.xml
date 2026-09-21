@@ -190,6 +190,18 @@
     <string name="chpwd_done_back">Wróć do sejfu</string>
     <string name="chpwd_weak_banner">⚠️ Twoje hasło główne ma mniej niż %1$d znaków. Z pliku kopii zapasowej można je złamać w kilka godzin. Dotknij, aby je wzmocnić.</string>
 
+    <!-- Resilience: corrupted vault, backup reminder, root warning, overlays -->
+    <string name="unlock_corrupted">⚠️ Plik sejfu jest uszkodzony i nie można go już odczytać, niezależnie od hasła. Przywróć ostatnią kopię zapasową (.skb) przyciskiem poniżej.</string>
+    <string name="backup_never_banner">💾 Twój sejf nigdy nie miał kopii zapasowej. Zaszyfrowana kopia poza telefonem to Twoja jedyna ochrona przed utratą, kradzieżą lub ransomware. Dotknij, aby ją utworzyć.</string>
+    <string name="backup_stale_banner">💾 Ostatnia kopia %1$d dni temu, od tego czasu %2$d zmian(y). Dotknij, aby utworzyć nową.</string>
+    <string name="backup_pwd_banner">💾 Twoje hasło główne zmieniło się od ostatniej kopii: istniejące kopie nadal otwierają się starym hasłem. Dotknij, aby utworzyć nową.</string>
+    <string name="root_banner">⚠️ Ten telefon wygląda na zrootowany: izolacja aplikacji w Androidzie nie chroni już sejfu. Dotknij, aby dowiedzieć się więcej.</string>
+    <string name="sec_root_title">⚠️ Ten telefon wygląda na zrootowany</string>
+    <string name="sec_root_body">Wykryto dostęp root (su, Magisk…). Na takim telefonie każda aplikacja, której przyznasz root, może czytać pliki ShieldKey, jego pamięć, gdy sejf jest otwarty, lub to, co wpisujesz. Szyfrowanie nadal działa: przy zamkniętym sejfie plik pozostaje nieczytelny bez Twojego hasła. Ale ShieldKey nie może ani zapobiec temu, na co pozwala root, ani zagwarantować tego wykrycia — można je ukryć. Ryzyko oceniasz sam.</string>
+    <string name="sec_overlay_title">🪟 Nakładki zablokowane</string>
+    <string name="sec_overlay_body">Dopóki ShieldKey jest na ekranie, Android 12 i nowsze zabraniają innym aplikacjom rysowania nad nim. Fałszywe pole hasła nałożone na prawdziwe lub niewidzialny przycisk pod palcem — ulubiona sztuczka trojanów bankowych — nie może się pojawić.</string>
+    <string name="sec_overlay_tech">setHideOverlayWindows · Android 12+</string>
+
     <!-- Language -->
     <string name="lang_title">Język</string>
     <string name="lang_system">Systemowy (domyślny)</string>

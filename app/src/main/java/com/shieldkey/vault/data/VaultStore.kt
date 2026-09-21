@@ -44,9 +44,54 @@ import java.io.File
  */
 class VaultStore(context: Context) {
 
+    private val context = context.applicationContext
     private val file = File(context.filesDir, "vault.skv")
 
     fun isInitialized(): Boolean = file.exists()
+
+    /**
+     * Le fichier existe mais n'est plus lisible : JSON invalide, champ manquant, base64 altéré.
+     * Ce n'est PAS un mauvais mot de passe, et il faut le dire à l'utilisateur — sinon il tape
+     * dix fois le bon, se fait freiner, et ne pense jamais à restaurer sa sauvegarde.
+     */
+    class CorruptedVaultException : RuntimeException("vault.skv illisible")
+
+    private val requiredFields = listOf("masterSalt", "masterWrap", "recoverySalt", "recoveryWrap", "vault")
+
+    /** Lit le fichier et vérifie sa structure. Lève [CorruptedVaultException] si elle est altérée. */
+    private fun readRoot(): JSONObject {
+        val root = try {
+            JSONObject(file.readText())
+        } catch (e: Exception) {
+            throw CorruptedVaultException()
+        }
+        if (!requiredFields.all { root.has(it) }) throw CorruptedVaultException()
+        return root
+    }
+
+    /** Un champ binaire du fichier ; un base64 altéré est une corruption, pas une erreur banale. */
+    private fun bytes(root: JSONObject, key: String): ByteArray = try {
+        unb64(root.getString(key))
+    } catch (e: Exception) {
+        throw CorruptedVaultException()
+    }
+
+    /** Le coffre est présent mais illisible (sans avoir besoin du mot de passe pour le savoir). */
+    fun isCorrupted(): Boolean = file.exists() && try {
+        val root = readRoot()
+        requiredFields.forEach { bytes(root, it) }
+        false
+    } catch (e: CorruptedVaultException) {
+        true
+    }
+
+    /** Le contenu chiffré du coffre se déchiffre bien avec cette DEK (sinon : blob altéré). */
+    fun vaultDecrypts(dek: ByteArray): Boolean = try {
+        SkCrypto.decrypt(bytes(readRoot(), "vault"), dek)
+        true
+    } catch (e: Exception) {
+        false
+    }
 
     private fun b64(b: ByteArray) = Base64.encodeToString(b, Base64.NO_WRAP)
     private fun unb64(s: String) = Base64.decode(s, Base64.NO_WRAP)
@@ -95,6 +140,7 @@ class VaultStore(context: Context) {
         val recoveryCode = wrapRecovery(root, dek)
         root.put("vault", b64(SkCrypto.encrypt(emptyVault.toByteArray(Charsets.UTF_8), dek)))
         save(root)
+        BackupMeta.reset(context)   // coffre vide : rien à sauvegarder encore
         return CreateResult(dek, recoveryCode)
     }
 
@@ -104,6 +150,8 @@ class VaultStore(context: Context) {
         object WrongPassword : UnlockResult()
         /** Trop d'essais : la saisie est refusée pendant [secondsLeft] secondes. */
         class Throttled(val secondsLeft: Long) : UnlockResult()
+        /** Le fichier est altéré : aucun mot de passe ne l'ouvrira, il faut restaurer une sauvegarde. */
+        object Corrupted : UnlockResult()
     }
 
     /**
@@ -133,9 +181,22 @@ class VaultStore(context: Context) {
         return (BASE_DELAY_S shl steps).coerceAtMost(MAX_DELAY_S)
     }
 
-    /** Déverrouille avec le mot de passe maître. */
-    fun unlock(masterPassword: String): UnlockResult {
-        val root = JSONObject(file.readText())
+    /**
+     * Déverrouille avec le mot de passe maître.
+     *
+     * Deux diagnostics de corruption, tous deux certains : un fichier dont la structure ne se lit
+     * pas (avant même de dériver quoi que ce soit), et un `masterWrap` qui s'ouvre — donc le mot
+     * de passe est bon — mais un `vault` qui ne se déchiffre pas. Dans les deux cas, insister
+     * sur le mot de passe ne mènera nulle part : seule une sauvegarde peut réparer.
+     */
+    fun unlock(masterPassword: String): UnlockResult = try {
+        unlockOrThrow(masterPassword)
+    } catch (e: CorruptedVaultException) {
+        UnlockResult.Corrupted
+    }
+
+    private fun unlockOrThrow(masterPassword: String): UnlockResult {
+        val root = readRoot()
 
         val lockedUntil = root.optLong("lockedUntil", 0L)
         val now = System.currentTimeMillis()
@@ -145,10 +206,12 @@ class VaultStore(context: Context) {
 
         val masterKey = SkCrypto.deriveKey(
             masterPassword.toByteArray(Charsets.UTF_8),
-            unb64(root.getString("masterSalt"))
+            bytes(root, "masterSalt")
         )
         val dek = try {
-            SkCrypto.decrypt(unb64(root.getString("masterWrap")), masterKey)
+            SkCrypto.decrypt(bytes(root, "masterWrap"), masterKey)
+        } catch (e: CorruptedVaultException) {
+            throw e
         } catch (e: Exception) {
             null
         } finally {
@@ -157,6 +220,12 @@ class VaultStore(context: Context) {
         }
 
         return if (dek != null) {
+            // Bon mot de passe mais contenu illisible : c'est le fichier qui est atteint.
+            try {
+                SkCrypto.decrypt(bytes(root, "vault"), dek)
+            } catch (e: Exception) {
+                throw CorruptedVaultException()
+            }
             if (root.optInt("failCount", 0) != 0 || lockedUntil != 0L) {
                 root.put("failCount", 0).put("lockedUntil", 0L)
                 save(root)
@@ -172,20 +241,32 @@ class VaultStore(context: Context) {
         }
     }
 
-    /** Récupération : déverrouille via le code de secours. Renvoie la DEK, ou null si le code est faux. */
-    fun unlockWithRecovery(recoveryCode: String): ByteArray? {
-        val root = JSONObject(file.readText())
+    /**
+     * Récupération : déverrouille via le code de secours. [UnlockResult.WrongPassword] signifie
+     * ici « code de secours invalide » ; pas de freinage sur ce chemin (175 bits, indevinable).
+     */
+    fun unlockWithRecovery(recoveryCode: String): UnlockResult = try {
+        val root = readRoot()
         val recoveryKey = SkCrypto.deriveKey(
             RecoveryCode.normalize(recoveryCode),
-            unb64(root.getString("recoverySalt"))
+            bytes(root, "recoverySalt")
         )
-        return try {
-            SkCrypto.decrypt(unb64(root.getString("recoveryWrap")), recoveryKey)
+        val dek = try {
+            SkCrypto.decrypt(bytes(root, "recoveryWrap"), recoveryKey)
+        } catch (e: CorruptedVaultException) {
+            throw e
         } catch (e: Exception) {
             null
         } finally {
             recoveryKey.fill(0)
         }
+        when {
+            dek == null -> UnlockResult.WrongPassword
+            !vaultDecrypts(dek) -> UnlockResult.Corrupted
+            else -> UnlockResult.Success(dek)
+        }
+    } catch (e: CorruptedVaultException) {
+        UnlockResult.Corrupted
     }
 
     /**
@@ -203,12 +284,13 @@ class VaultStore(context: Context) {
      * plus rien. Le contenu du coffre, lui, n'est pas touché (la DEK ne change pas).
      */
     fun resetMasterPassword(dek: ByteArray, newPassword: String): String {
-        val root = JSONObject(file.readText())
+        val root = readRoot()
         wrapMaster(root, dek, newPassword)
         val recoveryCode = wrapRecovery(root, dek)
         // Un mot de passe redéfini remet aussi le compteur d'essais à zéro.
         root.put("failCount", 0).put("lockedUntil", 0L)
         save(root)
+        BackupMeta.notePasswordChanged(context)
         return recoveryCode
     }
 
@@ -232,24 +314,26 @@ class VaultStore(context: Context) {
      * faible sans refaire de sauvegarde laisse la version faible en circulation.
      */
     fun changeMasterPassword(dek: ByteArray, newPassword: String, renewRecovery: Boolean): String? {
-        val root = JSONObject(file.readText())
+        val root = readRoot()
         wrapMaster(root, dek, newPassword)
         val recoveryCode = if (renewRecovery) wrapRecovery(root, dek) else null
         root.put("failCount", 0).put("lockedUntil", 0L)
         save(root)
+        BackupMeta.notePasswordChanged(context)
         return recoveryCode
     }
 
     /** Lit le contenu déchiffré du coffre (JSON) avec la DEK. */
     fun readVault(dek: ByteArray): String {
-        val root = JSONObject(file.readText())
-        return String(SkCrypto.decrypt(unb64(root.getString("vault")), dek), Charsets.UTF_8)
+        val root = readRoot()
+        return String(SkCrypto.decrypt(bytes(root, "vault"), dek), Charsets.UTF_8)
     }
 
-    /** Écrit (chiffre) le contenu du coffre avec la DEK. */
+    /** Écrit (chiffre) le contenu du coffre avec la DEK. Chaque écriture éloigne de la dernière sauvegarde. */
     fun writeVault(dek: ByteArray, vaultJson: String) {
-        val root = JSONObject(file.readText())
+        val root = readRoot()
         root.put("vault", b64(SkCrypto.encrypt(vaultJson.toByteArray(Charsets.UTF_8), dek)))
         save(root)
+        BackupMeta.noteChange(context)
     }
 }

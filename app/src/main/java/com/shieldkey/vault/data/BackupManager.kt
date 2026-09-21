@@ -94,6 +94,7 @@ object BackupManager {
             decoded.docs.forEach { (name, bytes) -> AtomicWrite.write(File(docsDir, name), bytes) }
             AtomicWrite.write(File(filesDir, "vault.skv"), decoded.vault)
             docsDir.listFiles()?.forEach { if (it.name !in decoded.docs) it.delete() }
+            BackupMeta.noteRestored(context)   // le fichier restauré vaut sauvegarde de l'état courant
             true
         } catch (e: Exception) {
             // Une exception ici signifie que le coffre n'a PAS été remplacé (écriture atomique) :

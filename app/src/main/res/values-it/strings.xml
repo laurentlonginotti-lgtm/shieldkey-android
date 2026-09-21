@@ -190,6 +190,18 @@
     <string name="chpwd_done_back">Torna alla mia cassaforte</string>
     <string name="chpwd_weak_banner">⚠️ La tua password principale ha meno di %1$d caratteri. Da un file di backup potrebbe essere violata in poche ore. Tocca per rafforzarla.</string>
 
+    <!-- Resilience: corrupted vault, backup reminder, root warning, overlays -->
+    <string name="unlock_corrupted">⚠️ Il file della cassaforte è danneggiato e non può più essere letto, qualunque sia la password. Ripristina l\'ultimo backup (.skb) con il pulsante qui sotto.</string>
+    <string name="backup_never_banner">💾 La tua cassaforte non è mai stata salvata in un backup. Un backup cifrato fuori dal telefono è la tua unica protezione contro perdita, furto o ransomware. Tocca per crearlo.</string>
+    <string name="backup_stale_banner">💾 Ultimo backup %1$d giorni fa, %2$d modifica/e da allora. Tocca per farne uno nuovo.</string>
+    <string name="backup_pwd_banner">💾 La tua password principale è cambiata dall\'ultimo backup: i backup esistenti si aprono ancora con quella vecchia. Tocca per farne uno nuovo.</string>
+    <string name="root_banner">⚠️ Questo telefono sembra avere il root: l\'isolamento delle app di Android non protegge più la cassaforte. Tocca per saperne di più.</string>
+    <string name="sec_root_title">⚠️ Questo telefono sembra avere il root</string>
+    <string name="sec_root_body">È stato rilevato un accesso root (su, Magisk…). Su un telefono così, qualsiasi app a cui concedi il root può leggere i file di ShieldKey, la sua memoria mentre la cassaforte è aperta, o ciò che digiti. La cifratura regge ancora: a cassaforte chiusa, il file resta illeggibile senza la tua password. Ma ShieldKey non può impedire ciò che il root consente, né garantire questo rilevamento: può essere nascosto. Il rischio lo valuti tu.</string>
+    <string name="sec_overlay_title">🪟 Sovrapposizioni bloccate</string>
+    <string name="sec_overlay_body">Finché ShieldKey è sullo schermo, Android 12 e successivi vietano alle altre app di disegnarci sopra. Un falso campo password sopra quello vero, o un pulsante invisibile sotto il tuo dito — il trucco preferito dei trojan bancari — non può comparire.</string>
+    <string name="sec_overlay_tech">setHideOverlayWindows · Android 12+</string>
+
     <!-- Language -->
     <string name="lang_title">Lingua</string>
     <string name="lang_system">Sistema (predefinita)</string>

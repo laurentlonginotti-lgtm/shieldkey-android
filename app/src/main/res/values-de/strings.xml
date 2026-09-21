@@ -190,6 +190,18 @@
     <string name="chpwd_done_back">Zurück zu meinem Tresor</string>
     <string name="chpwd_weak_banner">⚠️ Ihr Master-Passwort ist kürzer als %1$d Zeichen. Aus einer Sicherungsdatei könnte es in wenigen Stunden geknackt werden. Tippen Sie, um es zu stärken.</string>
 
+    <!-- Resilience: corrupted vault, backup reminder, root warning, overlays -->
+    <string name="unlock_corrupted">⚠️ Die Tresordatei ist beschädigt und kann nicht mehr gelesen werden, unabhängig vom Passwort. Stellen Sie Ihre letzte Sicherung (.skb) mit der Schaltfläche unten wieder her.</string>
+    <string name="backup_never_banner">💾 Ihr Tresor wurde noch nie gesichert. Eine verschlüsselte Sicherung außerhalb des Telefons ist Ihr einziger Schutz vor Verlust, Diebstahl oder Ransomware. Tippen Sie, um eine zu erstellen.</string>
+    <string name="backup_stale_banner">💾 Letzte Sicherung vor %1$d Tagen, seitdem %2$d Änderung(en). Tippen Sie, um eine neue zu erstellen.</string>
+    <string name="backup_pwd_banner">💾 Ihr Master-Passwort hat sich seit der letzten Sicherung geändert: bestehende Sicherungen öffnen sich noch mit dem alten. Tippen Sie, um eine neue zu erstellen.</string>
+    <string name="root_banner">⚠️ Dieses Telefon scheint gerootet zu sein: Die App-Isolierung von Android schützt den Tresor nicht mehr. Tippen Sie für mehr Informationen.</string>
+    <string name="sec_root_title">⚠️ Dieses Telefon scheint gerootet zu sein</string>
+    <string name="sec_root_body">Root-Zugriff (su, Magisk…) wurde erkannt. Auf einem solchen Telefon kann jede App, der Sie Root gewähren, die Dateien von ShieldKey lesen, seinen Speicher bei geöffnetem Tresor oder das, was Sie tippen. Die Verschlüsselung hält weiterhin: Bei geschlossenem Tresor bleibt die Datei ohne Ihr Passwort unlesbar. Aber ShieldKey kann weder verhindern, was Root erlaubt, noch diese Erkennung garantieren — sie lässt sich verbergen. Das Risiko müssen Sie selbst abwägen.</string>
+    <string name="sec_overlay_title">🪟 Überlagerungen blockiert</string>
+    <string name="sec_overlay_body">Solange ShieldKey auf dem Bildschirm ist, verbietet Android 12 und neuer anderen Apps, darüber zu zeichnen. Ein gefälschtes Passwortfeld über dem echten oder eine unsichtbare Schaltfläche unter Ihrem Finger — der Lieblingstrick von Banking-Trojanern — kann nicht erscheinen.</string>
+    <string name="sec_overlay_tech">setHideOverlayWindows · Android 12+</string>
+
     <!-- Language -->
     <string name="lang_title">Sprache</string>
     <string name="lang_system">System (Standard)</string>

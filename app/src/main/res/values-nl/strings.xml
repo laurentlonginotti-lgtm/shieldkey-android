@@ -190,6 +190,18 @@
     <string name="chpwd_done_back">Terug naar mijn kluis</string>
     <string name="chpwd_weak_banner">⚠️ Je hoofdwachtwoord is korter dan %1$d tekens. Vanuit een back-upbestand kan het in enkele uren worden gekraakt. Tik om het te versterken.</string>
 
+    <!-- Resilience: corrupted vault, backup reminder, root warning, overlays -->
+    <string name="unlock_corrupted">⚠️ Het kluisbestand is beschadigd en kan niet meer worden gelezen, welk wachtwoord je ook invoert. Herstel je laatste back-up (.skb) met de knop hieronder.</string>
+    <string name="backup_never_banner">💾 Van je kluis is nog nooit een back-up gemaakt. Een versleutelde back-up buiten de telefoon is je enige bescherming tegen verlies, diefstal of ransomware. Tik om er een te maken.</string>
+    <string name="backup_stale_banner">💾 Laatste back-up %1$d dagen geleden, %2$d wijziging(en) sindsdien. Tik om een nieuwe te maken.</string>
+    <string name="backup_pwd_banner">💾 Je hoofdwachtwoord is gewijzigd sinds de laatste back-up: bestaande back-ups openen nog met het oude. Tik om een nieuwe te maken.</string>
+    <string name="root_banner">⚠️ Deze telefoon lijkt geroot te zijn: de app-isolatie van Android beschermt de kluis niet meer. Tik voor meer informatie.</string>
+    <string name="sec_root_title">⚠️ Deze telefoon lijkt geroot te zijn</string>
+    <string name="sec_root_body">Er is roottoegang gedetecteerd (su, Magisk…). Op zo\'n telefoon kan elke app waaraan je root geeft de bestanden van ShieldKey lezen, het geheugen terwijl de kluis open is, of wat je typt. De versleuteling houdt stand: met de kluis dicht blijft het bestand onleesbaar zonder je wachtwoord. Maar ShieldKey kan niet voorkomen wat root toestaat, en kan deze detectie niet garanderen — ze kan worden verborgen. Het risico is aan jou.</string>
+    <string name="sec_overlay_title">🪟 Overlays geblokkeerd</string>
+    <string name="sec_overlay_body">Zolang ShieldKey op het scherm staat, verbiedt Android 12 en hoger andere apps om eroverheen te tekenen. Een nep-wachtwoordveld over het echte, of een onzichtbare knop onder je vinger — de favoriete truc van banktrojans — kan niet verschijnen.</string>
+    <string name="sec_overlay_tech">setHideOverlayWindows · Android 12+</string>
+
     <!-- Language -->
     <string name="lang_title">Taal</string>
     <string name="lang_system">Systeem (standaard)</string>

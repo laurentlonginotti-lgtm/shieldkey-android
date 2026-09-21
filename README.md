@@ -39,6 +39,7 @@ maintenu** — l'acheter (achat unique, sans abonnement), c'est le confort et le
 - 🔓 Déverrouillage rapide (empreinte ou code de l'appareil), verrouillage auto à la veille
 - 🆘 Kit de secours hors-ligne (récupération sans serveur ni porte dérobée)
 - 🔑 Changement du mot de passe maître (code de secours conservé, ou renouvelé au choix) ; alerte si le mot de passe est trop court
+- 🧯 Résilience : coffre endommagé diagnostiqué (≠ mauvais mot de passe), rappel de sauvegarde, avertissement si le téléphone est rooté, superpositions d'autres applis bloquées (Android 12+)
 - 💾 Sauvegarde / restauration chiffrée `.skb` (changement de téléphone)
 - 📋 Presse-papier durci (masquage Android 13+, effacement automatique)
 - 🌐 Interface FR / EN

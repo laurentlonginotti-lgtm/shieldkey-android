@@ -55,7 +55,7 @@ import com.shieldkey.vault.ui.theme.SkText
  * Les paramètres crypto sont lus depuis [SkCrypto] pour rester exacts.
  */
 @Composable
-fun SecurityScreen(onClose: () -> Unit) {
+fun SecurityScreen(onClose: () -> Unit, rooted: Boolean = false) {
     Box(
         Modifier
             .fillMaxSize()
@@ -93,6 +93,7 @@ fun SecurityScreen(onClose: () -> Unit) {
             SecCard(stringResource(R.string.sec_bio_title), stringResource(R.string.sec_bio_body), stringResource(R.string.sec_bio_tech))
             SecCard(stringResource(R.string.sec_clip_title), stringResource(R.string.sec_clip_body))
             SecCard(stringResource(R.string.sec_screen_title), stringResource(R.string.sec_screen_body), stringResource(R.string.sec_screen_tech))
+            SecCard(stringResource(R.string.sec_overlay_title), stringResource(R.string.sec_overlay_body), stringResource(R.string.sec_overlay_tech))
             SecCard(stringResource(R.string.sec_docs_title), stringResource(R.string.sec_docs_body))
             SecCard(stringResource(R.string.sec_phish_title), stringResource(R.string.sec_phish_body))
 
@@ -115,6 +116,11 @@ fun SecurityScreen(onClose: () -> Unit) {
             )
             Spacer(Modifier.height(14.dp))
 
+            // Root détecté : la limite la plus concrète de toutes, donc en tête — et seulement
+            // quand elle s'applique, pour ne pas inquiéter les autres pour rien.
+            if (rooted) {
+                SecCard(stringResource(R.string.sec_root_title), stringResource(R.string.sec_root_body))
+            }
             SecCard(stringResource(R.string.sec_limit_phish_title), stringResource(R.string.sec_limit_phish_body))
             SecCard(stringResource(R.string.sec_limit_breach_title), stringResource(R.string.sec_limit_breach_body))
             SecCard(stringResource(R.string.sec_limit_malware_title), stringResource(R.string.sec_limit_malware_body))

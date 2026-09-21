@@ -69,6 +69,19 @@ Quand tu copies un champ sensible (mot de passe, CVV, IBAN, seed, clé privée),
 
 ## Autres protections
 
+- **Superpositions bloquées** (Android 12+, `setHideOverlayWindows`) : tant que ShieldKey est à l'écran,
+  aucune autre appli ne peut dessiner par-dessus — ni faux champ « mot de passe », ni bouton invisible
+  sous le doigt (la méthode favorite des chevaux de Troie bancaires).
+- **Téléphone rooté** : ShieldKey le détecte (binaire `su`, gestionnaires de root connus) et l'annonce,
+  sans jamais bloquer. Le root abolit le cloisonnement d'Android ; le chiffrement tient toujours, mais
+  une appli à qui tu accordes le root peut lire la mémoire pendant que le coffre est ouvert. Cette
+  détection se contourne (Magisk DenyList) : c'est un avertissement, pas une garantie.
+- **Coffre endommagé ≠ mauvais mot de passe** : un fichier altéré (support défaillant, rançongiciel sur
+  téléphone rooté) est diagnostiqué comme tel, et l'appli renvoie vers la restauration d'une sauvegarde
+  au lieu de laisser croire à une erreur de frappe.
+- **Rappel de sauvegarde** : jamais sauvegardé, sauvegarde de plus de 30 jours avec des modifications,
+  ou mot de passe changé depuis — le coffre le signale. Contre la perte, le vol et les rançongiciels,
+  c'est la sauvegarde `.skb` hors du téléphone qui protège, rien d'autre.
 - `allowBackup=false` : le système Android ne sauvegarde pas automatiquement le coffre.
 - Les **documents** sont chiffrés séparément (un fichier `.blob` par document, AES-256-GCM avec la DEK).
 - Les **sauvegardes `.skb`** sont rechiffrées (Argon2id + AES-256-GCM) avec ton mot de passe maître.

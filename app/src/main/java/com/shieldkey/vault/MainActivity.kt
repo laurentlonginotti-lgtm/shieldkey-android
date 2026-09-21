@@ -19,6 +19,7 @@
 package com.shieldkey.vault
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.compose.setContent
@@ -46,6 +47,14 @@ class MainActivity : FragmentActivity() {
             WindowManager.LayoutParams.FLAG_SECURE,
             WindowManager.LayoutParams.FLAG_SECURE
         )
+        // Superpositions : tant que ShieldKey est au premier plan, aucune autre appli ne peut
+        // dessiner par-dessus (faux champ « mot de passe » posé sur le vrai, bouton invisible
+        // sous le doigt — la méthode favorite des chevaux de Troie bancaires). Android 12+ ;
+        // en dessous, l'alternative (filterTouchesWhenObscured) bloquerait aussi les filtres
+        // d'écran légitimes (lumière bleue…) en silence : on ne l'impose pas.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            window.setHideOverlayWindows(true)
+        }
         setContent {
             ShieldKeyTheme {
                 ShieldKeyApp()

@@ -190,6 +190,18 @@
     <string name="chpwd_done_back">Retour à mon coffre</string>
     <string name="chpwd_weak_banner">⚠️ Votre mot de passe maître fait moins de %1$d caractères. À partir d\'un fichier de sauvegarde, il pourrait être cassé en quelques heures. Touchez pour le renforcer.</string>
 
+    <!-- Robustesse : coffre endommagé, rappel de sauvegarde, avertissement root, superpositions -->
+    <string name="unlock_corrupted">⚠️ Le fichier du coffre est endommagé : il ne peut plus être lu, quel que soit le mot de passe. Restaurez votre dernière sauvegarde (.skb) avec le bouton ci-dessous.</string>
+    <string name="backup_never_banner">💾 Votre coffre n\'a jamais été sauvegardé. Une sauvegarde chiffrée hors du téléphone est votre seule protection contre la perte, le vol ou un rançongiciel. Touchez pour la créer.</string>
+    <string name="backup_stale_banner">💾 Dernière sauvegarde il y a %1$d jours, %2$d modification(s) depuis. Touchez pour en refaire une.</string>
+    <string name="backup_pwd_banner">💾 Votre mot de passe maître a changé depuis la dernière sauvegarde : les sauvegardes existantes s\'ouvrent encore avec l\'ancien. Touchez pour en refaire une.</string>
+    <string name="root_banner">⚠️ Ce téléphone semble rooté : le cloisonnement d\'Android ne protège plus le coffre. Touchez pour en savoir plus.</string>
+    <string name="sec_root_title">⚠️ Ce téléphone semble rooté</string>
+    <string name="sec_root_body">Un accès root (su, Magisk…) a été détecté. Sur un tel téléphone, toute application à qui vous accordez le root peut lire les fichiers de ShieldKey, sa mémoire pendant que le coffre est ouvert, ou ce que vous tapez. Le chiffrement tient toujours : coffre fermé, le fichier reste illisible sans votre mot de passe. Mais ShieldKey ne peut ni empêcher ce qu\'un root autorise, ni garantir cette détection — elle se contourne. À vous de juger le risque.</string>
+    <string name="sec_overlay_title">🪟 Superpositions bloquées</string>
+    <string name="sec_overlay_body">Tant que ShieldKey est à l\'écran, Android 12 et plus interdit aux autres applications de dessiner par-dessus. Un faux champ « mot de passe » posé sur le vrai, ou un bouton invisible sous votre doigt — la méthode favorite des chevaux de Troie bancaires — ne peut pas s\'afficher.</string>
+    <string name="sec_overlay_tech">setHideOverlayWindows · Android 12+</string>
+
     <!-- Language -->
     <string name="lang_title">Langue</string>
     <string name="lang_system">Système (par défaut)</string>

@@ -190,6 +190,18 @@
     <string name="chpwd_done_back">Volver a mi caja fuerte</string>
     <string name="chpwd_weak_banner">⚠️ Tu contraseña maestra tiene menos de %1$d caracteres. A partir de un archivo de copia, podría romperse en pocas horas. Toca para reforzarla.</string>
 
+    <!-- Resilience: corrupted vault, backup reminder, root warning, overlays -->
+    <string name="unlock_corrupted">⚠️ El archivo de la caja fuerte está dañado y ya no se puede leer, sea cual sea la contraseña. Restaura tu última copia (.skb) con el botón de abajo.</string>
+    <string name="backup_never_banner">💾 Tu caja fuerte nunca se ha guardado en una copia. Una copia cifrada fuera del teléfono es tu única protección contra la pérdida, el robo o un ransomware. Toca para crearla.</string>
+    <string name="backup_stale_banner">💾 Última copia hace %1$d días, %2$d cambio(s) desde entonces. Toca para hacer una nueva.</string>
+    <string name="backup_pwd_banner">💾 Tu contraseña maestra ha cambiado desde la última copia: las copias existentes aún se abren con la anterior. Toca para hacer una nueva.</string>
+    <string name="root_banner">⚠️ Este teléfono parece estar rooteado: el aislamiento de apps de Android ya no protege la caja fuerte. Toca para saber más.</string>
+    <string name="sec_root_title">⚠️ Este teléfono parece estar rooteado</string>
+    <string name="sec_root_body">Se ha detectado acceso root (su, Magisk…). En un teléfono así, cualquier app a la que concedas root puede leer los archivos de ShieldKey, su memoria mientras la caja fuerte está abierta o lo que escribes. El cifrado sigue en pie: con la caja cerrada, el archivo sigue siendo ilegible sin tu contraseña. Pero ShieldKey no puede impedir lo que el root permite, ni garantizar esta detección: se puede ocultar. El riesgo lo juzgas tú.</string>
+    <string name="sec_overlay_title">🪟 Superposiciones bloqueadas</string>
+    <string name="sec_overlay_body">Mientras ShieldKey está en pantalla, Android 12 y posteriores prohíben a otras apps dibujar encima. Un campo de contraseña falso sobre el real, o un botón invisible bajo tu dedo — el truco favorito de los troyanos bancarios — no puede aparecer.</string>
+    <string name="sec_overlay_tech">setHideOverlayWindows · Android 12+</string>
+
     <!-- Language -->
     <string name="lang_title">Idioma</string>
     <string name="lang_system">Sistema (predeterminado)</string>

@@ -74,6 +74,7 @@ import com.shieldkey.vault.data.BackupManager
 import com.shieldkey.vault.data.VaultStore
 import com.shieldkey.vault.sound.SoundFx
 import com.shieldkey.vault.util.PasswordStrength
+import com.shieldkey.vault.util.RootCheck
 import com.shieldkey.vault.util.SecureClipboard
 import com.shieldkey.vault.ui.theme.SkBg
 import com.shieldkey.vault.ui.theme.SkBgDeep
@@ -111,6 +112,15 @@ fun ShieldKeyApp() {
     // Un kit de secours encore à l'écran survit à un verrouillage : le code neuf est déjà le seul
     // valable, le perdre parce que le téléphone s'est mis en veille serait irréparable.
     fun afterUnlock() = if (recoveryToShow.isNotEmpty()) Screen.RecoveryKit else Screen.Vault
+
+    // Root : une quinzaine de stat() et quelques requêtes au PackageManager, une fois par
+    // session. On avertit, on ne bloque jamais — voir RootCheck.
+    val rooted = remember { RootCheck.isLikelyRooted(context) }
+
+    // Coffre présent mais illisible : diagnostiqué dès le lancement (sans mot de passe) ou par
+    // unlock(). Tant que c'est vrai, tout mène au même message : restaurer une sauvegarde.
+    var vaultCorrupted by remember { mutableStateOf(store.isCorrupted()) }
+    val corruptedMsg = stringResource(R.string.unlock_corrupted)
 
     // Déverrouillage rapide (empreinte OU code de l'écran, facultatif) — voir BiometricGate.
     val bioStatus = BiometricGate.status(context)
@@ -193,6 +203,11 @@ fun ShieldKeyApp() {
                             SoundFx.error()
                             ctx.getString(R.string.unlock_throttled, res.secondsLeft)
                         }
+                        is VaultStore.UnlockResult.Corrupted -> {
+                            vaultCorrupted = true
+                            SoundFx.error()
+                            corruptedMsg
+                        }
                         else -> {
                             SoundFx.error()
                             ctx.getString(R.string.unlock_wrong)
@@ -202,8 +217,9 @@ fun ShieldKeyApp() {
                 onForgot = { screen = Screen.Recovery },
                 onSecurity = { showSecurity = true },
                 onRestore = { screen = Screen.Restore },
-                biometricEnabled = bioAvailable && bioEnabled,
-                notice = bioNotice,
+                // Coffre illisible : le déverrouillage rapide ouvrirait sur un crash, on le coupe.
+                biometricEnabled = bioAvailable && bioEnabled && !vaultCorrupted,
+                notice = if (vaultCorrupted) corruptedMsg else bioNotice,
                 onBiometric = {
                     val act = activity
                     if (act != null) {
@@ -212,8 +228,14 @@ fun ShieldKeyApp() {
                             authInProgress = false
                             when {
                                 k != null -> {
-                                    bioNotice = null
-                                    dek = k; SoundFx.success(); screen = afterUnlock()
+                                    if (store.vaultDecrypts(k)) {
+                                        bioNotice = null
+                                        dek = k; SoundFx.success(); screen = afterUnlock()
+                                    } else {
+                                        // DEK bonne, contenu illisible : le fichier est atteint.
+                                        vaultCorrupted = true
+                                        SoundFx.error()
+                                    }
                                 }
                                 // Le système a détruit la clé : les empreintes du téléphone ont
                                 // changé. On l'explique et on renvoie au mot de passe maître.
@@ -231,20 +253,29 @@ fun ShieldKeyApp() {
 
             Screen.Recovery -> RecoveryScreen(
                 onRecover = { code, newPwd ->
-                    val k = withContext(Dispatchers.Default) { store.unlockWithRecovery(code) }
-                    if (k != null) {
-                        // Le code de secours est renouvelé en même temps que le mot de passe :
-                        // on montre le nouveau kit AVANT d'entrer dans le coffre, sans quoi
-                        // l'utilisateur repartirait avec une feuille qui ne vaut plus rien.
-                        val newCode = withContext(Dispatchers.Default) {
-                            store.resetMasterPassword(k, newPwd)
+                    when (val res = withContext(Dispatchers.Default) { store.unlockWithRecovery(code) }) {
+                        is VaultStore.UnlockResult.Success -> {
+                            // Le code de secours est renouvelé en même temps que le mot de passe :
+                            // on montre le nouveau kit AVANT d'entrer dans le coffre, sans quoi
+                            // l'utilisateur repartirait avec une feuille qui ne vaut plus rien.
+                            val newCode = withContext(Dispatchers.Default) {
+                                store.resetMasterPassword(res.dek, newPwd)
+                            }
+                            dek = res.dek
+                            recoveryToShow = newCode
+                            kitRenewed = true
+                            SoundFx.success(); screen = Screen.RecoveryKit
+                            null
                         }
-                        dek = k
-                        recoveryToShow = newCode
-                        kitRenewed = true
-                        SoundFx.success(); screen = Screen.RecoveryKit; true
-                    } else {
-                        SoundFx.error(); false
+                        is VaultStore.UnlockResult.Corrupted -> {
+                            vaultCorrupted = true
+                            SoundFx.error()
+                            corruptedMsg
+                        }
+                        else -> {
+                            SoundFx.error()
+                            ctx.getString(R.string.rec_invalid)
+                        }
                     }
                 },
                 onCancel = { screen = Screen.Unlock }
@@ -258,6 +289,7 @@ fun ShieldKeyApp() {
                     if (restored) {
                         BiometricGate.disable(context)   // le déverrouillage rapide de l'ancien tél ne vaut plus
                         bioEnabled = false
+                        vaultCorrupted = false           // le fichier vient d'être remplacé
                         val res = withContext(Dispatchers.Default) { store.unlock(pwd) }
                         if (res is VaultStore.UnlockResult.Success) {
                             weakPassword = pwd.length < PasswordStrength.MIN_LENGTH
@@ -280,6 +312,7 @@ fun ShieldKeyApp() {
                         SecureClipboard.clearIfOurs(context)   // efface un éventuel secret copié
                     },
                     weakPassword = weakPassword,
+                    rooted = rooted,
                     onPasswordChanged = { weakPassword = false },
                     onRecoveryRenewed = { newCode ->
                         // Même chemin que la récupération : le nouveau kit s'affiche avant
@@ -316,7 +349,7 @@ fun ShieldKeyApp() {
         }
 
         // Page « Sécurité » en surimpression (accessible même verrouillé, pour la confiance).
-        if (showSecurity) SecurityScreen(onClose = { showSecurity = false })
+        if (showSecurity) SecurityScreen(onClose = { showSecurity = false }, rooted = rooted)
       }
     }
 }
